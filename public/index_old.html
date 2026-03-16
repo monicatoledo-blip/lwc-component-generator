@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LWC Profile Generator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>⚡ Lightning Web Component Generator</h1>
+            <p>Create a custom Unified Profile LWC</p>
+        </header>
+
+        <!-- Tabs Navigation -->
+        <div class="tabs-container">
+            <div class="tabs-nav">
+                <button class="tab-btn active" data-tab="form">1. Create Component</button>
+                <button class="tab-btn" data-tab="preview">2. Live Preview</button>
+                <button class="tab-btn" data-tab="instructions">3. Deployment Instructions</button>
+            </div>
+
+            <!-- Create Component Tab -->
+            <div class="tab-content active" id="form-tab">
+                <section class="form-instructions-section">
+                    <h2>📝 How to Fill Out This Form</h2>
+                    <div class="quick-tips">
+                        <div class="tip-card">
+                            <h3>🎨 Colors</h3>
+                            <p>You can use the color picker OR paste hex codes directly (e.g., <code>#a94442</code>). Try different colors to match your branding!</p>
+                        </div>
+                        <div class="tip-card">
+                            <h3>🖼️ Avatar URL</h3>
+                            <p>Paste a link to any profile image. Use a Salesforce file URL, external image URL, or placeholder service like <code>https://i.pravatar.cc/150</code></p>
+                        </div>
+                        <div class="tip-card">
+                            <h3>🔢 Icons</h3>
+                            <p>Use Salesforce Lightning Design System (SLDS) icon names like <code>utility:user</code>, <code>utility:email</code>, <code>utility:phone_portrait</code>. <a href="https://www.lightningdesignsystem.com/icons/" target="_blank">Browse icons here</a></p>
+                        </div>
+                        <div class="tip-card">
+                            <h3>👁️ Live Preview</h3>
+                            <p>Switch to the <strong>"Live Preview"</strong> tab to see your component update in real-time as you type. No refresh needed!</p>
+                        </div>
+                        <div class="tip-card">
+                            <h3>💾 Generate & Deploy</h3>
+                            <p>When you're happy with your design, click the <strong>"Generate LWC Component"</strong> button at the bottom to download. Then check the <strong>"Deployment Instructions"</strong> tab.</p>
+                        </div>
+                    </div>
+                </section>
+        <form id="lwcForm" method="POST" action="/generate">
+
+            <!-- Header Section -->
+                    <img src="https://i.pravatar.cc/150?img=47" alt="Avatar" class="preview-avatar" id="previewAvatar">
+                    <div class="preview-info">
+                        <div class="preview-name" id="previewName">Rachel Adams</div>
+                        <div class="preview-title" id="previewTitle">VP of Finance | BrightPath</div>
+                        <span class="preview-badge" id="previewBadge">VERIFIED DECISION MAKER</span>
+                    </div>
+                </div>
+
+                <div class="preview-divider"></div>
+
+                <div class="preview-fields">
+                    <div class="preview-field">
+                        <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M26 2a24 24 0 100 48 24 24 0 000-48zm0 8a7 7 0 110 14 7 7 0 010-14zm13 31c0 1-.9 2-2 2H15c-1.1 0-2-.9-2-2v-3c0-4.6 6-7 13-7s13 2.4 13 7v3z"/></svg>
+                        <span class="preview-field-label">Customer ID</span>
+                        <span class="preview-field-value">ADP-008291</span>
+                    </div>
+                    <div class="preview-field">
+                        <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M42 16H10c-2.2 0-4 1.8-4 4v16c0 2.2 1.8 4 4 4h32c2.2 0 4-1.8 4-4V20c0-2.2-1.8-4-4-4zm-1.4 4L26 28.8 11.4 20h29.2zM10 36V22.7l15.5 8.8c.3.2.7.2 1 0L42 22.7V36H10z"/></svg>
+                        <span class="preview-field-label">Email</span>
+                        <span class="preview-field-value">rachel.adams@brightpath.com</span>
+                    </div>
+                    <div class="preview-field">
+                        <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M46.8 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L17.7 7.2c-1.6-1.6-4.2-1.6-5.8 0L8.5 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.4-5.9z"/></svg>
+                        <span class="preview-field-label">Phone</span>
+                        <span class="preview-field-value">(315) 545-1254</span>
+                    </div>
+                    <div class="preview-field">
+                        <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M47.5 23.9l-21-19c-.9-.8-2.1-.8-3 0l-21 19c-.7.6-.8 1.7-.2 2.4.6.7 1.7.8 2.4.2l1.3-1.1V44c0 2.2 1.8 4 4 4h10c1.1 0 2-.9 2-2V34c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v12c0 1.1.9 2 2 2h10c2.2 0 4-1.8 4-4V25.4l1.3 1.1c.7.6 1.8.5 2.4-.2.6-.7.5-1.8-.2-2.4z"/></svg>
+                        <span class="preview-field-label">Address</span>
+                        <span class="preview-field-value">2259 Green Avenue, Alpharetta, GA</span>
+                    </div>
+                </div>
+
+                <div class="preview-divider"></div>
+
+                <div class="preview-fields">
+                    <div class="preview-field">
+                        <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M26 26c3.9 0 7-3.1 7-7s-3.1-7-7-7-7 3.1-7 7 3.1 7 7 7zm14-7c0 3.9-3.1 7-7 7s-7-3.1-7-7 3.1-7 7-7 7 3.1 7 7zm-28 0c0 3.9-3.1 7-7 7s-7-3.1-7-7 3.1-7 7-7 7 3.1 7 7zm14 10c-6.1 0-13 3.1-13 6v4h26v-4c0-2.9-6.9-6-13-6zm14 0c-.8 0-1.7.1-2.5.2 3 2 5.5 4.6 5.5 5.8v4h9v-4c0-2.9-6.9-6-12-6zm-28 0c-5.1 0-12 3.1-12 6v4h9v-4c0-1.2 2.5-3.8 5.5-5.8-.8-.1-1.7-.2-2.5-.2z"/></svg>
+                        <span class="preview-field-label">Segment</span>
+                        <span class="preview-field-value">Small Business (RUN) Cross-Sell</span>
+                    </div>
+                    <div class="preview-field">
+                        <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M48 46h-2V8c0-2.2-1.8-4-4-4h-8c-2.2 0-4 1.8-4 4v12h-8V8c0-2.2-1.8-4-4-4h-8C7.8 4 6 5.8 6 8v38H4c-1.1 0-2 .9-2 2v2h48v-2c0-1.1-.9-2-2-2zM13 12h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm12 0h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm10 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1z"/></svg>
+                        <span class="preview-field-label">Employee Count</span>
+                        <span class="preview-field-value">35</span>
+                    </div>
+                    <div class="preview-field">
+                        <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M44 18.6V44c0 2.2-1.8 4-4 4H12c-2.2 0-4-1.8-4-4V18.6c0-1.2.5-2.3 1.4-3.1L23.5 4.7c1.4-1.3 3.6-1.3 5 0l14.1 10.8c.9.8 1.4 1.9 1.4 3.1zM26 24c-3.3 0-6 2.7-6 6 0 2 1.2 3.8 3 4.7V38c0 1.7 1.3 3 3 3s3-1.3 3-3v-3.3c1.8-.9 3-2.7 3-4.7 0-3.3-2.7-6-6-6z"/></svg>
+                        <span class="preview-field-label">Lifetime Value</span>
+                        <span class="preview-field-value">$11,450</span>
+                    </div>
+                    <div class="preview-field">
+                        <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M48.5 25l-6-15c-.5-1.2-1.6-2-2.8-2H12.3c-1.2 0-2.4.8-2.8 2l-6 15c-.3.8-.3 1.6.1 2.3.4.7 1.1 1.2 1.9 1.4V43c0 1.7 1.3 3 3 3h35c1.7 0 3-1.3 3-3V28.7c.8-.2 1.5-.7 1.9-1.4.4-.7.5-1.5.1-2.3zM15.8 11.4c.2-.2.4-.4.7-.4h19c.3 0 .5.2.7.4l4.3 10.7c.1.3 0 .6-.2.8-.2.2-.5.3-.8.2l-6.7-2c-.5-.2-1.1-.2-1.6 0l-6.1 2c-.5.2-1.1.2-1.6 0l-6.1-2c-.5-.2-1.1-.2-1.6 0l-6.7 2c-.3.1-.6 0-.8-.2-.2-.2-.3-.5-.2-.8l4.3-10.7zM20 38c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
+                        <span class="preview-field-label">Propensity to Purchase</span>
+                        <span class="preview-field-value">Most Likely</span>
+                    </div>
+                </div>
+
+                <div class="preview-slider">
+                    <div class="preview-slider-bg">
+                        <div class="preview-slider-fill" id="previewSliderFill">
+                            <div class="preview-slider-knob"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="preview-engagement">
+                    <div class="preview-ring">
+                        <svg width="70" height="70" id="previewRingSvg">
+                            <circle cx="35" cy="35" r="30" fill="none" stroke="#d4a5a5" stroke-width="8"/>
+                            <circle cx="35" cy="35" r="30" fill="none" stroke="#1b4f72" stroke-width="8"
+                                stroke-dasharray="188.4" stroke-dashoffset="30" id="previewRingCircle"/>
+                        </svg>
+                        <div class="preview-ring-text" id="previewRingText">84%</div>
+                    </div>
+                    <div class="preview-engagement-text">
+                        <h3 id="previewEngagementTitle">Highly Engaged</h3>
+                        <p id="previewEngagementDesc">Compared to 12K similar RUN prospects</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+            </div>
+
+            <!-- Instructions Tab -->
+            <div class="tab-content" id="instructions-tab">
+                <section class="instructions-section">
+                    <h2>📋 Complete Deployment Guide (For Non-Technical Users)</h2>
+
+                    <div class="instruction-step">
+                        <h3>Step 1: Generate Your Component</h3>
+                        <ol>
+                            <li>Click on the <strong>"Create Component"</strong> tab at the top</li>
+                            <li>Fill out the form with your custom data (name, email, colors, etc.)</li>
+                            <li>Watch the preview update as you type</li>
+                            <li>Click the <strong>"⚡ Generate LWC Component"</strong> button at the bottom</li>
+                            <li>A ZIP file called <code>unifiedProfileLwc.zip</code> will download to your computer</li>
+                        </ol>
+                    </div>
+
+                    <div class="instruction-step">
+                        <h3>Step 2: Extract the ZIP File</h3>
+                        <ol>
+                            <li>Find the downloaded <code>unifiedProfileLwc.zip</code> file (usually in your Downloads folder)</li>
+                            <li><strong>Windows:</strong> Right-click the file → Select "Extract All" → Click "Extract"</li>
+                            <li><strong>Mac:</strong> Double-click the ZIP file (it will automatically extract)</li>
+                            <li>You should now see a folder called <code>unifiedProfileLwc</code> containing 4 files</li>
+                        </ol>
+                    </div>
+
+                    <div class="instruction-step">
+                        <h3>Step 3: Install Visual Studio Code & Salesforce Extensions</h3>
+                        <p><em>(Skip this step if you already have VS Code with Salesforce extensions installed)</em></p>
+                        <ol>
+                            <li>Download and install <strong>Visual Studio Code</strong> from <a href="https://code.visualstudio.com/" target="_blank">code.visualstudio.com</a></li>
+                            <li>Open VS Code</li>
+                            <li>Click the <strong>Extensions icon</strong> in the left sidebar (looks like 4 squares)</li>
+                            <li>Search for <strong>"Salesforce Extension Pack"</strong></li>
+                            <li>Click <strong>"Install"</strong> on the "Salesforce Extension Pack" by Salesforce</li>
+                            <li>Wait for all extensions to install (this may take a few minutes)</li>
+                        </ol>
+                    </div>
+
+                    <div class="instruction-step">
+                        <h3>Step 4: Set Up Your Salesforce Project</h3>
+                        <p><strong>Option A: If you have an existing Salesforce project</strong></p>
+                        <ol>
+                            <li>In VS Code, go to <strong>File → Open Folder</strong></li>
+                            <li>Navigate to your Salesforce project folder and open it</li>
+                            <li>In the left sidebar, navigate to <code>force-app/main/default/lwc/</code></li>
+                            <li>Drag and drop the <code>unifiedProfileLwc</code> folder into the <code>lwc</code> folder</li>
+                            <li>Right-click the <code>unifiedProfileLwc</code> folder</li>
+                            <li>Select <strong>"SFDX: Deploy Source to Org"</strong></li>
+                            <li>Wait for the success message in the Output panel at the bottom</li>
+                        </ol>
+
+                        <p><strong>Option B: If you DON'T have a Salesforce project yet</strong></p>
+                        <ol>
+                            <li>In VS Code, press <strong>Ctrl+Shift+P</strong> (Windows) or <strong>Cmd+Shift+P</strong> (Mac)</li>
+                            <li>Type <strong>"SFDX: Create Project"</strong> and press Enter</li>
+                            <li>Choose <strong>"Standard"</strong> as the project template</li>
+                            <li>Enter a project name (e.g., "MyLWCProject") and press Enter</li>
+                            <li>Choose a location to save your project (e.g., Documents folder)</li>
+                            <li>Once created, open the project folder in VS Code</li>
+                            <li>Press <strong>Ctrl+Shift+P</strong> (Windows) or <strong>Cmd+Shift+P</strong> (Mac) again</li>
+                            <li>Type <strong>"SFDX: Authorize an Org"</strong> and press Enter</li>
+                            <li>Choose <strong>"Production"</strong> or <strong>"Sandbox"</strong> based on your org type</li>
+                            <li>A browser window will open - log in to your Salesforce org</li>
+                            <li>After successful login, return to VS Code</li>
+                            <li>In the left sidebar, navigate to <code>force-app/main/default/lwc/</code></li>
+                            <li>Drag and drop the <code>unifiedProfileLwc</code> folder into the <code>lwc</code> folder</li>
+                            <li>Right-click the <code>unifiedProfileLwc</code> folder</li>
+                            <li>Select <strong>"SFDX: Deploy Source to Org"</strong></li>
+                            <li>Wait for the success message</li>
+                        </ol>
+                    </div>
+
+                    <div class="instruction-step">
+                        <h3>Step 5: Add Component to a Lightning Page</h3>
+                        <ol>
+                            <li>Log in to your Salesforce org</li>
+                            <li>Click the <strong>gear icon</strong> (⚙️) in the top right → Select <strong>"Setup"</strong></li>
+                            <li>In the Quick Find box, type <strong>"Lightning App Builder"</strong> and select it</li>
+                            <li>Click <strong>"New"</strong> to create a new page, or select an existing page to edit</li>
+                            <li>If creating new: Choose <strong>"App Page"</strong> or <strong>"Record Page"</strong>, give it a name, click <strong>"Next"</strong>, choose a template, click <strong>"Finish"</strong></li>
+                            <li>In the Components panel on the left, scroll down to <strong>"Custom"</strong> section</li>
+                            <li>You should see <strong>"unifiedProfileLwc"</strong> in the list</li>
+                            <li>Drag the <strong>"unifiedProfileLwc"</strong> component onto your page canvas</li>
+                            <li>Click <strong>"Save"</strong> in the top right</li>
+                            <li>Click <strong>"Activate"</strong> to make it live</li>
+                            <li>Choose where you want this page to appear (App, App + Record Type, etc.)</li>
+                            <li>Click <strong>"Save"</strong> again</li>
+                        </ol>
+                    </div>
+
+                    <div class="instruction-step">
+                        <h3>Need Help?</h3>
+                        <p>If you encounter any issues:</p>
+                        <ul>
+                            <li>Make sure you're logged into the correct Salesforce org in VS Code</li>
+                            <li>Check that all 4 files are in the <code>unifiedProfileLwc</code> folder</li>
+                            <li>Verify your Salesforce user has permission to create Lightning Web Components</li>
+                            <li>Try refreshing the Lightning App Builder page if you don't see the component</li>
+                        </ul>
+                    </div>
+                </section>
+            </div>
+
+            <!-- Form Tab -->
+            <div class="tab-content" id="form-tab">
+        <form id="lwcForm" method="POST" action="/generate">
+
+            <!-- Header Section -->
+            <section class="form-section">
+                <h2>Header & Avatar</h2>
+                <div class="form-group">
+                    <label>Avatar URL</label>
+                    <input type="text" name="avatarUrl" placeholder="https://i.pravatar.cc/150?img=47" value="https://i.pravatar.cc/150?img=47" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Name</label>
+                    <input type="text" name="contactName" placeholder="Rachel Adams" value="Rachel Adams" required>
+                </div>
+                <div class="form-group">
+                    <label>Contact Title</label>
+                    <input type="text" name="contactTitle" placeholder="VP of Finance | BrightPath" value="VP of Finance | BrightPath" required>
+                </div>
+            </section>
+
+            <!-- Badge Section -->
+            <section class="form-section">
+                <h2>Badge</h2>
+                <div class="form-group">
+                    <label>Badge Text</label>
+                    <input type="text" name="badgeText" placeholder="VERIFIED DECISION MAKER" value="VERIFIED DECISION MAKER" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Badge Background Color</label>
+                        <div class="color-input-group">
+                            <input type="color" class="color-picker" data-hex="badgeBgColorHex" value="#2d7a3e" required>
+                            <input type="text" class="hex-input" name="badgeBgColor" id="badgeBgColorHex" value="#2d7a3e" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#2d7a3e" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Badge Text Color</label>
+                        <div class="color-input-group">
+                            <input type="color" class="color-picker" data-hex="badgeTextColorHex" value="#ffffff" required>
+                            <input type="text" class="hex-input" name="badgeTextColor" id="badgeTextColorHex" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#ffffff" required>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Card Colors -->
+            <section class="form-section">
+                <h2>Card Styling</h2>
+                <div class="form-group">
+                    <label>Background Color</label>
+                    <div class="color-input-group">
+                        <input type="color" class="color-picker" data-hex="bgColorHex" value="#a94442" required>
+                        <input type="text" class="hex-input" name="bgColor" id="bgColorHex" value="#a94442" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#a94442" required>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fields Section 1 -->
+            <section class="form-section">
+                <h2>Details Section 1</h2>
+
+                <div class="field-group">
+                    <h3>Field 1</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Icon (SLDS)</label>
+                            <input type="text" name="field1Icon" placeholder="utility:user" value="utility:user" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Label</label>
+                            <input type="text" name="field1Label" placeholder="Customer ID" value="Customer ID" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Value</label>
+                            <input type="text" name="field1Value" placeholder="ADP-008291" value="ADP-008291" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Field 2</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Icon (SLDS)</label>
+                            <input type="text" name="field2Icon" placeholder="utility:email" value="utility:email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Label</label>
+                            <input type="text" name="field2Label" placeholder="Email" value="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Value</label>
+                            <input type="text" name="field2Value" placeholder="rachel.adams@brightpath.com" value="rachel.adams@brightpath.com" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Field 3</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Icon (SLDS)</label>
+                            <input type="text" name="field3Icon" placeholder="utility:phone_portrait" value="utility:phone_portrait" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Label</label>
+                            <input type="text" name="field3Label" placeholder="Phone" value="Phone" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Value</label>
+                            <input type="text" name="field3Value" placeholder="(315) 545-1254" value="(315) 545-1254" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Field 4</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Icon (SLDS)</label>
+                            <input type="text" name="field4Icon" placeholder="utility:location" value="utility:location" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Label</label>
+                            <input type="text" name="field4Label" placeholder="Address" value="Address" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Value</label>
+                            <input type="text" name="field4Value" placeholder="2259 Green Avenue, Alpharetta, GA 30004" value="2259 Green Avenue, Alpharetta, GA 30004" required>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Fields Section 2 -->
+            <section class="form-section">
+                <h2>Details Section 2</h2>
+
+                <div class="field-group">
+                    <h3>Field 5</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Icon (SLDS)</label>
+                            <input type="text" name="field5Icon" placeholder="utility:graph" value="utility:graph" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Label</label>
+                            <input type="text" name="field5Label" placeholder="Segment" value="Segment" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Value</label>
+                            <input type="text" name="field5Value" placeholder="Small Business (RUN) Cross-Sell" value="Small Business (RUN) Cross-Sell" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Field 6</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Icon (SLDS)</label>
+                            <input type="text" name="field6Icon" placeholder="utility:groups" value="utility:groups" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Label</label>
+                            <input type="text" name="field6Label" placeholder="Employee Count" value="Employee Count" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Value</label>
+                            <input type="text" name="field6Value" placeholder="35" value="35" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Field 7</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Icon (SLDS)</label>
+                            <input type="text" name="field7Icon" placeholder="utility:money" value="utility:money" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Label</label>
+                            <input type="text" name="field7Label" placeholder="Lifetime Value" value="Lifetime Value" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Value</label>
+                            <input type="text" name="field7Value" placeholder="$11,450" value="$11,450" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field-group">
+                    <h3>Field 8</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Icon (SLDS)</label>
+                            <input type="text" name="field8Icon" placeholder="utility:trending" value="utility:trending" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Label</label>
+                            <input type="text" name="field8Label" placeholder="Propensity to Purchase" value="Propensity to Purchase" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Value</label>
+                            <input type="text" name="field8Value" placeholder="Most Likely" value="Most Likely" required>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Propensity Slider -->
+            <section class="form-section">
+                <h2>Propensity Slider</h2>
+                <div class="form-group">
+                    <label>Slider Percentage (0-100)</label>
+                    <input type="number" name="sliderPercentage" min="0" max="100" value="85" placeholder="85" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Slider Background</label>
+                        <div class="color-input-group">
+                            <input type="color" class="color-picker" data-hex="sliderBgColorHex" value="#d4a5a5" required>
+                            <input type="text" class="hex-input" name="sliderBgColor" id="sliderBgColorHex" value="#d4a5a5" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#d4a5a5" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Slider Fill</label>
+                        <div class="color-input-group">
+                            <input type="color" class="color-picker" data-hex="sliderFillColorHex" value="#1b4f72" required>
+                            <input type="text" class="hex-input" name="sliderFillColor" id="sliderFillColorHex" value="#1b4f72" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#1b4f72" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Slider Knob</label>
+                        <div class="color-input-group">
+                            <input type="color" class="color-picker" data-hex="sliderKnobColorHex" value="#ffffff" required>
+                            <input type="text" class="hex-input" name="sliderKnobColor" id="sliderKnobColorHex" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#ffffff" required>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Engagement Ring -->
+            <section class="form-section">
+                <h2>Engagement Ring</h2>
+                <div class="form-group">
+                    <label>Ring Percentage (0-100)</label>
+                    <input type="number" name="ringPercentage" min="0" max="100" value="84" placeholder="84" required>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Ring Background</label>
+                        <div class="color-input-group">
+                            <input type="color" class="color-picker" data-hex="ringBgColorHex" value="#d4a5a5" required>
+                            <input type="text" class="hex-input" name="ringBgColor" id="ringBgColorHex" value="#d4a5a5" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#d4a5a5" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ring Progress</label>
+                        <div class="color-input-group">
+                            <input type="color" class="color-picker" data-hex="ringProgressColorHex" value="#1b4f72" required>
+                            <input type="text" class="hex-input" name="ringProgressColor" id="ringProgressColorHex" value="#1b4f72" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#1b4f72" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Ring Text Color</label>
+                        <div class="color-input-group">
+                            <input type="color" class="color-picker" data-hex="ringTextColorHex" value="#1b4f72" required>
+                            <input type="text" class="hex-input" name="ringTextColor" id="ringTextColorHex" value="#1b4f72" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#1b4f72" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Engagement Title</label>
+                    <input type="text" name="engagementTitle" placeholder="Highly Engaged" value="Highly Engaged" required>
+                </div>
+                <div class="form-group">
+                    <label>Engagement Description</label>
+                    <input type="text" name="engagementDescription" placeholder="Compared to 12K similar RUN prospects" value="Compared to 12K similar RUN prospects" required>
+                </div>
+            </section>
+
+            <!-- Metadata -->
+            <section class="form-section">
+                <h2>Metadata</h2>
+                <div class="form-group">
+                    <label>API Version</label>
+                    <input type="text" name="apiVersion" value="60.0" required>
+                </div>
+            </section>
+
+            <button type="submit" class="submit-btn">⚡ Generate LWC Component</button>
+        </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

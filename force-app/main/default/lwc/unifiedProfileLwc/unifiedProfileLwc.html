@@ -1,0 +1,96 @@
+<template>
+    <div class="profile-card" style="background-color: #a94442;">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="avatar-container">
+                <img src={avatarUrl} alt="Profile Avatar" class="avatar-image" />
+            </div>
+            <div class="header-info">
+                <h1 class="contact-name">BATMAN</h1>
+                <p class="contact-title">VP of Finance | BrightPath</p>
+                <span class="badge" style="background-color: #2d7a3e; color: #ffffff;">
+                    VERIFIED DECISION MAKER
+                </span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Details Section 1 -->
+        <div class="details-section">
+            <div class="detail-row">
+                <lightning-icon icon-name="utility:user" alternative-text="Customer ID" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">Customer ID</span>
+                <span class="detail-value">ADP-008291</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="utility:email" alternative-text="Email" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">Email</span>
+                <span class="detail-value">rachel.adams@brightpath.com</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="utility:phone_portrait" alternative-text="Phone" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">Phone</span>
+                <span class="detail-value">(315) 545-1254</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="utility:location" alternative-text="Address" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">Address</span>
+                <span class="detail-value">2259 Green Avenue, Alpharetta, GA 30004</span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Details Section 2 -->
+        <div class="details-section">
+            <div class="detail-row">
+                <lightning-icon icon-name="utility:graph" alternative-text="Segment" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">Segment</span>
+                <span class="detail-value">Small Business (RUN) Cross-Sell</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="utility:groups" alternative-text="Employee Count" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">Employee Count</span>
+                <span class="detail-value">35</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="utility:money" alternative-text="Lifetime Value" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">Lifetime Value</span>
+                <span class="detail-value">$11,450</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="utility:trending" alternative-text="Propensity to Purchase" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">Propensity to Purchase</span>
+                <span class="detail-value">Most Likely</span>
+            </div>
+        </div>
+
+        <!-- Propensity Slider -->
+        <div class="propensity-section">
+            <div class="slider-bar" style="background-color: #d4a5a5;">
+                <div class="slider-fill" style="width: 85%; background-color: #1b4f72;"></div>
+                <div class="slider-knob" style="left: 85%; background-color: #ffffff;"></div>
+            </div>
+        </div>
+
+        <!-- Engagement Section -->
+        <div class="engagement-section">
+            <div class="ring-container">
+                <svg class="progress-ring" width="100" height="100">
+                    <circle class="ring-background" cx="50" cy="50" r="40" style="stroke: #d4a5a5;"></circle>
+                    <circle class="ring-progress" cx="50" cy="50" r="40"
+                            style="stroke: #1b4f72; stroke-dasharray: 251.2; stroke-dashoffset: 40.19;">
+                    </circle>
+                </svg>
+                <div class="ring-percentage" style="color: #1b4f72;">
+                    84%
+                </div>
+            </div>
+            <div class="engagement-text">
+                <h2 class="engagement-title">Highly Engaged</h2>
+                <p class="engagement-description">Compared to 12K similar RUN prospects</p>
+            </div>
+        </div>
+    </div>
+</template>

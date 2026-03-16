@@ -1,0 +1,32 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm install:*)",
+      "Bash(npm run:*)",
+      "Bash(lsof -ti:3000)",
+      "Bash(pkill -f \"node server.js\")",
+      "Bash(lsof -ti:3001)",
+      "Bash(mv public/index.html public/index_old.html)",
+      "Bash(mv public/index.html.backup public/index.html)",
+      "Bash(/tmp/preview_tab.html:*)",
+      "Read(//tmp/**)",
+      "Bash(sed -n '52,136p' \"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/public/index_old.html\")",
+      "Bash(echo \"                </section>\")",
+      "Bash(echo \"            </div>\")",
+      "Bash(cp index.html index_broken.html)",
+      "Bash(cp index_old.html index.html)",
+      "Bash(sed -n '256,530p' \"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/public/index_old.html\")",
+      "Bash(echo \"</form>\")",
+      "Bash(/tmp/clean_index.html:*)",
+      "Bash(/tmp/final_index.html:*)",
+      "Bash(sed -n '139,249p' \"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/public/index_old.html\")",
+      "Bash(/tmp/fixed.html:*)",
+      "Bash(/tmp/final.html:*)",
+      "Bash(\"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/public/index_simple.html\":*)",
+      "Bash(grep -n \"^/\\\\* Tabs \\\\*/$\\\\|^.tabs-\\\\|^.tab-\" \"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/public/styles.css\")",
+      "Bash(echo \"✅ Single-page layout complete!:*)",
+      "Bash(/tmp/refactored_index.html:*)",
+      "Bash(/tmp/fixed_index.html:*)"
+    ]
+  }
+}

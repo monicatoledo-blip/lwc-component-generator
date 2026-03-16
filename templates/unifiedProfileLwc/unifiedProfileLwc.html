@@ -1,0 +1,96 @@
+<template>
+    <div class="profile-card" style="background-color: {{{bgColor}}};">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="avatar-container">
+                <img src={avatarUrl} alt="Profile Avatar" class="avatar-image" />
+            </div>
+            <div class="header-info">
+                <h1 class="contact-name">{{{contactName}}}</h1>
+                <p class="contact-title">{{{contactTitle}}}</p>
+                <span class="badge" style="background-color: {{{badgeBgColor}}}; color: {{{badgeTextColor}}};">
+                    {{{badgeText}}}
+                </span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Details Section 1 -->
+        <div class="details-section">
+            <div class="detail-row">
+                <lightning-icon icon-name="{{{field1Icon}}}" alternative-text="{{{field1Label}}}" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">{{{field1Label}}}</span>
+                <span class="detail-value">{{{field1Value}}}</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="{{{field2Icon}}}" alternative-text="{{{field2Label}}}" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">{{{field2Label}}}</span>
+                <span class="detail-value">{{{field2Value}}}</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="{{{field3Icon}}}" alternative-text="{{{field3Label}}}" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">{{{field3Label}}}</span>
+                <span class="detail-value">{{{field3Value}}}</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="{{{field4Icon}}}" alternative-text="{{{field4Label}}}" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">{{{field4Label}}}</span>
+                <span class="detail-value">{{{field4Value}}}</span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Details Section 2 -->
+        <div class="details-section">
+            <div class="detail-row">
+                <lightning-icon icon-name="{{{field5Icon}}}" alternative-text="{{{field5Label}}}" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">{{{field5Label}}}</span>
+                <span class="detail-value">{{{field5Value}}}</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="{{{field6Icon}}}" alternative-text="{{{field6Label}}}" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">{{{field6Label}}}</span>
+                <span class="detail-value">{{{field6Value}}}</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="{{{field7Icon}}}" alternative-text="{{{field7Label}}}" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">{{{field7Label}}}</span>
+                <span class="detail-value">{{{field7Value}}}</span>
+            </div>
+            <div class="detail-row">
+                <lightning-icon icon-name="{{{field8Icon}}}" alternative-text="{{{field8Label}}}" size="x-small" class="detail-icon"></lightning-icon>
+                <span class="detail-label">{{{field8Label}}}</span>
+                <span class="detail-value">{{{field8Value}}}</span>
+            </div>
+        </div>
+
+        <!-- Propensity Slider -->
+        <div class="propensity-section">
+            <div class="slider-bar" style="background-color: {{{sliderBgColor}}};">
+                <div class="slider-fill" style="width: {{{sliderPercentage}}}%; background-color: {{{sliderFillColor}}};"></div>
+                <div class="slider-knob" style="left: {{{sliderPercentage}}}%; background-color: {{{sliderKnobColor}}};"></div>
+            </div>
+        </div>
+
+        <!-- Engagement Section -->
+        <div class="engagement-section">
+            <div class="ring-container">
+                <svg class="progress-ring" width="100" height="100">
+                    <circle class="ring-background" cx="50" cy="50" r="40" style="stroke: {{{ringBgColor}}};"></circle>
+                    <circle class="ring-progress" cx="50" cy="50" r="40"
+                            style="stroke: {{{ringProgressColor}}}; stroke-dasharray: 251.2; stroke-dashoffset: {{{ringDashOffset}}};">
+                    </circle>
+                </svg>
+                <div class="ring-percentage" style="color: {{{ringTextColor}}};">
+                    {{{ringPercentage}}}%
+                </div>
+            </div>
+            <div class="engagement-text">
+                <h2 class="engagement-title">{{{engagementTitle}}}</h2>
+                <p class="engagement-description">{{{engagementDescription}}}</p>
+            </div>
+        </div>
+    </div>
+</template>
