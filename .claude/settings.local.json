@@ -34,7 +34,11 @@
       "Bash(node -c public/script.js)",
       "Bash(node -e \":*)",
       "Bash(kill 75635)",
-      "Bash(node server.js)"
+      "Bash(node server.js)",
+      "Bash(kill 30576 30573)",
+      "Bash(curl -s http://localhost:3000/script.js)",
+      "Bash(kill 41573)",
+      "Bash(node -c script.js)"
     ]
   }
 }

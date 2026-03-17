@@ -431,36 +431,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Update deployment instructions based on selected component
   function updateDeploymentInstructions(componentType) {
-    const folderNames = {
-      unifiedProfileLwc: {
-        folder: "unifiedProfileLwc",
-        label: "Unified Profile Mock"
-      },
-      agentforceLeadBriefLwc: {
-        folder: "agentforceLeadBriefLwc",
-        label: "Agentforce Lead Brief (Custom)"
-      },
-      nextBestActionsLwc: {
-        folder: "nextBestActionsLwc",
-        label: "Next Best Actions (Custom)"
-      },
-      nextBestLeadsLwc: {
-        folder: "nextBestLeadsLwc",
-        label: "Next Best Leads (Custom)"
-      }
-    };
-
-    const config = folderNames[componentType];
-
-    // Update all folder name references
-    document.getElementById("folderName1").textContent = config.folder + "-1";
-    document.getElementById("folderName2").textContent = config.folder + " (1)";
-    document.getElementById("folderName3").textContent = config.folder;
-    document.getElementById("folderName4").textContent = config.folder;
-    document.getElementById("folderName5").textContent = config.folder;
-
-    // Update component label
-    document.getElementById("componentLabel").textContent = config.label;
+    // No longer needed - deployment instructions are now generic
+    // Old folder name references removed since we use direct deployment now
   }
 
   componentSelect.addEventListener("change", (e) => {
@@ -607,7 +579,18 @@ document.addEventListener("DOMContentLoaded", () => {
       // Update hex input when color picker changes
       picker.addEventListener("input", (e) => {
         hexInput.value = e.target.value.toUpperCase();
-        updatePreview();
+
+        // Call appropriate preview function based on active component
+        const selectedComponent = componentSelect.value;
+        if (selectedComponent === "unifiedProfileLwc") {
+          updatePreview();
+        } else if (selectedComponent === "agentforceLeadBriefLwc") {
+          updateAgentforcePreview();
+        } else if (selectedComponent === "nextBestActionsLwc") {
+          updateNbaPreview();
+        } else if (selectedComponent === "nextBestLeadsLwc") {
+          updateNblPreview();
+        }
       });
 
       // Update color picker when hex input changes
@@ -620,7 +603,18 @@ document.addEventListener("DOMContentLoaded", () => {
         // Validate and update
         if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
           picker.value = value;
-          updatePreview();
+
+          // Call appropriate preview function based on active component
+          const selectedComponent = componentSelect.value;
+          if (selectedComponent === "unifiedProfileLwc") {
+            updatePreview();
+          } else if (selectedComponent === "agentforceLeadBriefLwc") {
+            updateAgentforcePreview();
+          } else if (selectedComponent === "nextBestActionsLwc") {
+            updateNbaPreview();
+          } else if (selectedComponent === "nextBestLeadsLwc") {
+            updateNblPreview();
+          }
         }
         // Force uppercase
         e.target.value = value.toUpperCase();
@@ -632,8 +626,17 @@ document.addEventListener("DOMContentLoaded", () => {
   const form = document.getElementById("lwcForm");
   const inputs = form.querySelectorAll("input, select, textarea");
 
+  console.log(
+    "Setting up Unified Profile preview listeners for",
+    inputs.length,
+    "inputs"
+  );
+
   inputs.forEach((input) => {
-    input.addEventListener("input", updatePreview);
+    input.addEventListener("input", () => {
+      console.log("Unified Profile input changed:", input.name);
+      updatePreview();
+    });
 
     // Prevent Enter key from submitting the form
     input.addEventListener("keydown", (e) => {
@@ -730,9 +733,11 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function updatePreview() {
+  console.log("updatePreview() called");
   const form = document.getElementById("lwcForm");
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
+  console.log("Preview data:", data);
 
   // Update card background and text color
   const previewCard = document.getElementById("previewCard");
@@ -1155,42 +1160,21 @@ async function handleDownload(buttonElement) {
   }
 }
 
-// Form submission handler
-document.getElementById("lwcForm").addEventListener("submit", async (e) => {
+// Prevent form submissions (forms now only use deploy buttons)
+document.getElementById("lwcForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  const submitBtn = e.target.querySelector(".submit-btn");
-  await handleDownload(submitBtn);
 });
 
-// Bottom download button handler
-document
-  .getElementById("download-btn-bottom")
-  .addEventListener("click", async () => {
-    const bottomBtn = document.getElementById("download-btn-bottom");
-    await handleDownload(bottomBtn);
-  });
-
-// Agentforce form submission handler
-document
-  .getElementById("agentforceForm")
-  .addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const submitBtn = e.target.querySelector(".submit-btn");
-    await handleDownload(submitBtn);
-  });
-
-// NBA form submission handler
-document.getElementById("nbaForm").addEventListener("submit", async (e) => {
+document.getElementById("agentforceForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  const submitBtn = e.target.querySelector(".submit-btn");
-  await handleDownload(submitBtn);
 });
 
-// NBL form submission handler
-document.getElementById("nblForm").addEventListener("submit", async (e) => {
+document.getElementById("nbaForm").addEventListener("submit", (e) => {
   e.preventDefault();
-  const submitBtn = e.target.querySelector(".submit-btn");
-  await handleDownload(submitBtn);
+});
+
+document.getElementById("nblForm").addEventListener("submit", (e) => {
+  e.preventDefault();
 });
 
 // Deploy button handlers
