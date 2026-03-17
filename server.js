@@ -345,6 +345,19 @@ app.post("/deploy", upload.any(), async (req, res) => {
       );
 
       for (const file of req.files) {
+        console.log(
+          `   File: ${file.fieldname}, Size: ${file.size} bytes, Type: ${file.mimetype}`
+        );
+
+        if (!file.buffer || file.buffer.length === 0) {
+          console.error(`❌ File ${file.fieldname} has no data`);
+          return res.status(500).json({
+            success: false,
+            error: "Image upload failed",
+            message: `File ${file.fieldname} is empty`
+          });
+        }
+
         try {
           const cloudinaryUrl = await uploadToCloudinary(
             file.buffer,
@@ -356,11 +369,15 @@ app.post("/deploy", upload.any(), async (req, res) => {
           templateData[file.fieldname] = cloudinaryUrl;
           hasUploadedImages = true;
         } catch (uploadError) {
+          const errorMessage =
+            uploadError.message ||
+            uploadError.error?.message ||
+            String(uploadError);
           console.error(`❌ Failed to upload ${file.fieldname}:`, uploadError);
           return res.status(500).json({
             success: false,
             error: "Image upload failed",
-            message: `Failed to upload ${file.fieldname}: ${uploadError.message}`
+            message: `Failed to upload ${file.fieldname}: ${errorMessage}`
           });
         }
       }

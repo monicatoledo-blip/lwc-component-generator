@@ -1090,9 +1090,16 @@ function processFormData(form, componentType) {
 
       if (file) {
         // File was uploaded - remove the URL field and keep file
+        console.log(
+          `📁 Using file for ${fieldName}:`,
+          file.name,
+          file.size,
+          "bytes"
+        );
         formData.delete(`${fieldName}_url`);
       } else if (urlInput.value) {
         // No file uploaded, use URL instead
+        console.log(`🔗 Using URL for ${fieldName}:`, urlInput.value);
         formData.delete(fieldName); // Remove empty file field
         formData.set(fieldName, urlInput.value); // Add URL as the field value
         formData.delete(`${fieldName}_url`); // Remove the _url suffix field
