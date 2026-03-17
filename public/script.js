@@ -342,6 +342,8 @@ function setupImagePreviewHandlers() {
         const urlInput = form.querySelector(`input[name="${fieldName}_url"]`);
         if (urlInput && fileInput.files.length > 0) {
           urlInput.value = "";
+          // Also clear from saved form state
+          saveFormState();
         }
 
         // Trigger preview update
