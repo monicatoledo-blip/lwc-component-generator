@@ -135,6 +135,9 @@ app.post("/generate", upload.any(), async (req, res) => {
       "utf-8"
     );
 
+    // Debug: Log avatarUrl being used for template compilation
+    console.log(`🖼️  Avatar URL for deployment: ${templateData.avatarUrl}`);
+
     // Compile templates with Handlebars
     const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
     const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
@@ -405,6 +408,9 @@ app.post("/deploy", upload.any(), async (req, res) => {
       path.join(templatesDir, `${componentType}.js-meta.xml`),
       "utf-8"
     );
+
+    // Debug: Log avatarUrl being used for template compilation
+    console.log(`🖼️  Avatar URL for deployment: ${templateData.avatarUrl}`);
 
     // Compile templates with Handlebars
     const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
