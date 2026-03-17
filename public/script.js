@@ -75,16 +75,20 @@ function restoreFormState() {
       if (!form) return;
 
       // Restore all form field values
+      let restoredCount = 0;
       Object.entries(formState.fields).forEach(([name, value]) => {
         const input = form.querySelector(`[name="${name}"]`);
         if (input) {
           input.value = value;
           // Trigger input event to update preview
           input.dispatchEvent(new Event("input", { bubbles: true }));
+          restoredCount++;
         }
       });
 
-      console.log("✅ Form state restored from sessionStorage");
+      console.log(
+        `✅ Form state restored from sessionStorage (${restoredCount} fields restored)`
+      );
 
       // Show notification if this was after OAuth
       if (sessionStorage.getItem(AUTH_PENDING_KEY) === "true") {
