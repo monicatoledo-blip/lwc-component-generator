@@ -1,0 +1,163 @@
+/* Container */
+.lead-brief-container {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    max-width: 100%;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+}
+
+/* Header Section */
+.header-section {
+    padding: 24px 32px 16px 32px;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.astro-icon {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+}
+
+.header-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #181818;
+    margin: 0;
+    flex: 1;
+}
+
+.timestamp-badge {
+    background-color: #f3f3f3;
+    color: #706e6b;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+/* Divider */
+.divider {
+    height: 1px;
+    background-color: #e5e5e5;
+    margin: 0 32px;
+}
+
+/* Content Body */
+.content-body {
+    padding: 32px;
+}
+
+.content-section {
+    margin-bottom: 32px;
+}
+
+.content-section:last-child {
+    margin-bottom: 0;
+}
+
+.section-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: #181818;
+    margin: 0 0 12px 0;
+}
+
+.section-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3e3e3c;
+    margin: 0;
+}
+
+/* AI Quote Block */
+.ai-quote-block {
+    background-color: #f0f6fc;
+    border-left: 4px solid #1b96ff;
+    padding: 20px 24px;
+    border-radius: 0 4px 4px 0;
+    margin-top: 12px;
+}
+
+.quote-text {
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.6;
+    color: #181818;
+    margin: 0;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    padding: 20px 32px 24px 32px;
+}
+
+.secondary-button {
+    flex: 0 0 auto;
+}
+
+.primary-button {
+    flex: 0 0 auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .header-section {
+        padding: 20px 24px 12px 24px;
+    }
+
+    .header-content {
+        flex-wrap: wrap;
+    }
+
+    .astro-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .header-title {
+        font-size: 24px;
+        flex-basis: 100%;
+        order: 2;
+        margin-top: 12px;
+    }
+
+    .timestamp-badge {
+        order: 3;
+        margin-left: auto;
+    }
+
+    .divider {
+        margin: 0 24px;
+    }
+
+    .content-body {
+        padding: 24px;
+    }
+
+    .content-section {
+        margin-bottom: 24px;
+    }
+
+    .section-heading {
+        font-size: 16px;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+        padding: 16px 24px 20px 24px;
+    }
+
+    .secondary-button,
+    .primary-button {
+        width: 100%;
+    }
+}

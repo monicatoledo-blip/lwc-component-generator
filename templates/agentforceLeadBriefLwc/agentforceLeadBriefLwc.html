@@ -1,0 +1,53 @@
+<template>
+    <div class="lead-brief-container">
+        <!-- Header Section -->
+        <div class="header-section">
+            <div class="header-content">
+                <img src={astroIconUrl} alt="Agentforce Astro" class="astro-icon" />
+                <h1 class="header-title">{{{title}}}</h1>
+                <span class="timestamp-badge">{{{timestampText}}}</span>
+            </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <!-- Content Sections -->
+        <div class="content-body">
+            <!-- Intent Section -->
+            <div class="content-section">
+                <h2 class="section-heading">{{{intentHeading}}}</h2>
+                <p class="section-text">{{{intentText}}}</p>
+            </div>
+
+            <!-- Context Section -->
+            <div class="content-section">
+                <h2 class="section-heading">{{{contextHeading}}}</h2>
+                <p class="section-text">{{{contextText}}}</p>
+            </div>
+
+            <!-- Suggested Opener Section -->
+            <div class="content-section">
+                <h2 class="section-heading">{{{openerHeading}}}</h2>
+                <div class="ai-quote-block">
+                    <p class="quote-text">{{{openerText}}}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+            <lightning-button
+                icon-name="utility:email"
+                label={secondaryButtonText}
+                variant="neutral"
+                class="secondary-button">
+            </lightning-button>
+            <lightning-button
+                icon-name="utility:phone_portrait"
+                label={primaryButtonText}
+                variant="brand"
+                class="primary-button">
+            </lightning-button>
+        </div>
+    </div>
+</template>

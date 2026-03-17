@@ -13,19 +13,33 @@
             <p>Create a custom Unified Profile LWC</p>
         </header>
 
-        <!-- Sticky Side Nav -->
+        <!-- Sticky Side Navigation -->
         <nav class="side-nav">
-            <a href="#header-section" class="nav-link active">Create Component</a>
+            <a href="#create" class="nav-link active">Create Component</a>
             <a href="#preview" class="nav-link">Live Preview</a>
             <a href="#deploy" class="nav-link">Deploy</a>
         </nav>
 
         <main class="main-content">
-            <!-- Section 1: Create Component -->
-            <section id="create" class="page-section">
-                <h2 class="section-title">Create Component</h2>
+            <!-- Component Selector Control Bar -->
+            <section class="component-control-bar">
+                <label for="componentSelect" class="component-select-label">
+                    Select Component to Build
+                </label>
+                <select id="componentSelect" class="component-select-dropdown">
+                    <option value="unifiedProfileLwc">Unified Profile</option>
+                    <option value="agentforceLeadBriefLwc">Agentforce Lead Brief</option>
+                </select>
+            </section>
 
-                <form id="lwcForm" method="POST" action="/generate">
+            <!-- Unified Profile Container -->
+            <div id="unified-profile-container">
+                <!-- Section 1: Create Component -->
+                <section id="create" class="page-section">
+                    <h2 class="section-title">Create Component</h2>
+                    <p class="section-guidance">Configure your component details below. Watch the Live Preview update in real-time to ensure your design matches your demo story.</p>
+
+                    <form id="lwcForm" method="POST" action="/generate">
                     <!-- Header Section -->
                     <section id="header-section" class="form-section">
                         <h2>Header & Avatar</h2>
@@ -438,6 +452,144 @@
                     </div>
                 </div>
             </section>
+            </div>
+            <!-- End Unified Profile Container -->
+
+            <!-- Agentforce Lead Brief Container -->
+            <div id="agentforce-brief-container" style="display: none;">
+                <!-- Create Component Section -->
+                <section id="create-brief" class="page-section">
+                    <h2 class="section-title">Create Agentforce Lead Brief</h2>
+                    <p class="section-guidance">Configure your component details below. Watch the Live Preview update in real-time to ensure your design matches your demo story.</p>
+
+                    <form id="agentforceForm" method="POST" action="/generate">
+                        <!-- Header Section -->
+                        <section class="form-section">
+                            <h2>Header</h2>
+                            <div class="form-group">
+                                <label>Astro Icon URL</label>
+                                <input type="text" name="astroIconUrl" id="input-astro-icon" placeholder="https://cdn.prod.website-files.com/..." value="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Title</label>
+                                <input type="text" name="title" id="input-title" placeholder="Agentforce Lead Brief" value="Agentforce Lead Brief" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Timestamp Text</label>
+                                <input type="text" name="timestampText" id="input-timestamp" placeholder="Generated just now" value="Generated just now" required>
+                            </div>
+                        </section>
+
+                        <!-- Intent Section -->
+                        <section class="form-section">
+                            <h2>Intent Summary</h2>
+                            <div class="form-group">
+                                <label>Intent Heading</label>
+                                <input type="text" name="intentHeading" id="input-intent-heading" placeholder="Intent Summary" value="Intent Summary" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Intent Text</label>
+                                <textarea name="intentText" id="input-intent-text" class="textarea-input" rows="3" placeholder="Rachel Adams submitted the 'RUN IPM Contact Sales' form..." required>Rachel Adams submitted the 'RUN IPM Contact Sales' form after interacting with the Q1 LinkedIn Payroll Promo.</textarea>
+                            </div>
+                        </section>
+
+                        <!-- Context Section -->
+                        <section class="form-section">
+                            <h2>Key Context</h2>
+                            <div class="form-group">
+                                <label>Context Heading</label>
+                                <input type="text" name="contextHeading" id="input-context-heading" placeholder="Key Context" value="Key Context" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Context Text</label>
+                                <textarea name="contextText" id="input-context-text" class="textarea-input" rows="3" placeholder="BrightPath has 35 employees..." required>BrightPath has 35 employees. Rachel spent 3m 15s viewing the 'Compare Time & Attendance' pricing page before filling out a form to learn more.</textarea>
+                            </div>
+                        </section>
+
+                        <!-- Suggested Opener Section -->
+                        <section class="form-section">
+                            <h2>Suggested Opener</h2>
+                            <div class="form-group">
+                                <label>Opener Heading</label>
+                                <input type="text" name="openerHeading" id="input-opener-heading" placeholder="Suggested Opener" value="Suggested Opener" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Opener Text</label>
+                                <textarea name="openerText" id="input-opener-text" class="textarea-input" rows="4" placeholder="Hi Rachel, I noticed you were exploring..." required>Hi Rachel, I noticed you were exploring how to integrate Time & Attendance tracking with a new payroll run for your team of 35. What specific challenges are you having with your current timekeeping process?</textarea>
+                            </div>
+                        </section>
+
+                        <!-- Button Text Section -->
+                        <section class="form-section">
+                            <h2>Action Buttons</h2>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Secondary Button Text</label>
+                                    <input type="text" name="secondaryButtonText" id="input-secondary-btn" placeholder="Send Email" value="Send Email" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Primary Button Text</label>
+                                    <input type="text" name="primaryButtonText" id="input-primary-btn" placeholder="Click to Dial" value="Click to Dial" required>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Download Button -->
+                        <button type="submit" class="submit-btn">⚡ Download Component (ZIP)</button>
+                    </form>
+                </section>
+
+                <!-- Live Preview Section -->
+                <section id="preview-brief" class="page-section">
+                    <h2 class="section-title">Live Preview</h2>
+                    <p class="section-description">Updates in real-time as you fill out the form above</p>
+
+                    <div class="agentforce-preview-card" id="agentforcePreviewCard">
+                        <!-- Header -->
+                        <div class="agentforce-header">
+                            <img src="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png" alt="Agentforce Astro" class="agentforce-astro-icon" id="previewAstroIcon">
+                            <h1 class="agentforce-title" id="previewBriefTitle">Agentforce Lead Brief</h1>
+                            <span class="agentforce-timestamp" id="previewTimestamp">Generated just now</span>
+                        </div>
+
+                        <div class="agentforce-divider"></div>
+
+                        <!-- Intent Section -->
+                        <div class="agentforce-section">
+                            <h2 class="agentforce-section-heading" id="previewIntentHeading">Intent Summary</h2>
+                            <p class="agentforce-section-text" id="previewIntentText">Rachel Adams submitted the 'RUN IPM Contact Sales' form after interacting with the Q1 LinkedIn Payroll Promo.</p>
+                        </div>
+
+                        <!-- Context Section -->
+                        <div class="agentforce-section">
+                            <h2 class="agentforce-section-heading" id="previewContextHeading">Key Context</h2>
+                            <p class="agentforce-section-text" id="previewContextText">BrightPath has 35 employees. Rachel spent 3m 15s viewing the 'Compare Time & Attendance' pricing page before filling out a form to learn more.</p>
+                        </div>
+
+                        <!-- Suggested Opener Section -->
+                        <div class="agentforce-section">
+                            <h2 class="agentforce-section-heading" id="previewOpenerHeading">Suggested Opener</h2>
+                            <div class="agentforce-quote-block">
+                                <p class="agentforce-quote-text" id="previewOpenerText">Hi Rachel, I noticed you were exploring how to integrate Time & Attendance tracking with a new payroll run for your team of 35. What specific challenges are you having with your current timekeeping process?</p>
+                            </div>
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div class="agentforce-actions">
+                            <button class="agentforce-btn-secondary" id="previewSecondaryBtn">
+                                <svg class="btn-icon" viewBox="0 0 52 52"><path d="M42 16H10c-2.2 0-4 1.8-4 4v16c0 2.2 1.8 4 4 4h32c2.2 0 4-1.8 4-4V20c0-2.2-1.8-4-4-4zm-1.4 4L26 28.8 11.4 20h29.2zM10 36V22.7l15.5 8.8c.3.2.7.2 1 0L42 22.7V36H10z" fill="currentColor"/></svg>
+                                Send Email
+                            </button>
+                            <button class="agentforce-btn-primary" id="previewPrimaryBtn">
+                                <svg class="btn-icon" viewBox="0 0 52 52"><path d="M46.8 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L17.7 7.2c-1.6-1.6-4.2-1.6-5.8 0L8.5 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.4-5.9z" fill="currentColor"/></svg>
+                                Click to Dial
+                            </button>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- End Agentforce Lead Brief Container -->
+
             <section id="deploy" class="page-section deployment-section">
                 <h2 class="section-title">Deployment Instructions</h2>
                 <p class="deployment-intro">Follow these steps carefully to deploy your custom Lightning Web Component to Salesforce.</p>
@@ -464,7 +616,7 @@
                         <div class="warning-icon">⚠️</div>
                         <div class="warning-content">
                             <strong>STOP: Check the extracted folder name!</strong>
-                            <p>If your computer added a number to it like <code>unifiedProfileLwc-1</code> or <code>unifiedProfileLwc (1)</code>, you <strong>MUST</strong> rename the folder to exactly <code>unifiedProfileLwc</code>.</p>
+                            <p>If your computer added a number to it like <code id="folderName1">unifiedProfileLwc-1</code> or <code id="folderName2">unifiedProfileLwc (1)</code>, you <strong>MUST</strong> rename the folder to exactly <code id="folderName3">unifiedProfileLwc</code>.</p>
                             <p>Salesforce will reject the deployment if the folder name doesn't match the files inside!</p>
                         </div>
                     </div>
@@ -475,14 +627,14 @@
                     <ol>
                         <li>Open your Salesforce project in VS Code</li>
                         <li>In the left sidebar, expand <code>force-app</code> → <code>main</code> → <code>default</code> → <code>lwc</code></li>
-                        <li>Drag and drop your renamed <code>unifiedProfileLwc</code> folder directly onto the <code>lwc</code> folder</li>
+                        <li>Drag and drop your renamed <code id="folderName4">unifiedProfileLwc</code> folder directly onto the <code>lwc</code> folder</li>
                     </ol>
                 </div>
 
                 <div class="instruction-step">
                     <h3>Step 4: Deploy to Salesforce</h3>
                     <ol>
-                        <li>Right-click the <code>unifiedProfileLwc</code> folder you just moved</li>
+                        <li>Right-click the <code id="folderName5">unifiedProfileLwc</code> folder you just moved</li>
                         <li>Click <code>SFDX: Deploy Source to Org</code></li>
                         <li>Wait for the <strong>'Deploy successful'</strong> popup in the bottom right corner</li>
                     </ol>
@@ -493,7 +645,7 @@
                     <ol>
                         <li>Log into your Salesforce org</li>
                         <li>Navigate to a Record Page, click the <strong>Gear Icon ⚙️</strong>, and select <strong>Edit Page</strong></li>
-                        <li>Look under the <strong>'Custom'</strong> list on the left for <strong>Unified Profile Mock</strong> and drag it onto the page</li>
+                        <li>Look under the <strong>'Custom'</strong> list on the left for <strong id="componentLabel">Unified Profile Mock</strong> and drag it onto the page</li>
                         <li>Click <strong>Save</strong> and <strong>Activate</strong></li>
                     </ol>
                 </div>

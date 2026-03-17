@@ -40,57 +40,21 @@ header p {
     margin: 0;
 }
 
-/* Side Navigation */
-.side-nav {
-    position: fixed;
-    right: 20px;
-    top: 50%;
-    transform: translateY(-50%);
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    z-index: 50;
-}
-
-.nav-link {
-    padding: 12px 20px;
-    background: white;
-    color: #555;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    font-size: 14px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-    transition: all 0.3s;
-    border-left: 4px solid transparent;
-}
-
-.nav-link:hover {
-    background: #667eea;
-    color: white;
-    transform: translateX(-5px);
-}
-
-.nav-link.active {
-    background: #667eea;
-    color: white;
-    border-left-color: #764ba2;
-}
-
-/* Main Content with proper spacing for sticky nav */
+/* Main Content */
 .main-content {
     width: 100%;
     max-width: 1100px;
     margin: 0 auto;
-    margin-right: 220px;
-    padding: 40px;
+    margin-right: 280px;
+    padding: 0;
 }
 
 .page-section {
     background: white;
     border-radius: 12px;
     padding: 40px;
-    margin-bottom: 40px;
+    margin: 40px;
+    margin-top: 0;
     box-shadow: 0 2px 12px rgba(0,0,0,0.08);
     scroll-margin-top: 100px;
 }
@@ -98,9 +62,17 @@ header p {
 .section-title {
     font-size: 32px;
     color: #333;
-    margin: 0 0 24px 0;
+    margin: 0 0 12px 0;
     padding-bottom: 16px;
     border-bottom: 3px solid #667eea;
+}
+
+.section-guidance {
+    font-size: 15px;
+    color: #666;
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+    font-weight: 400;
 }
 
 .section-description {
@@ -205,7 +177,8 @@ header p {
 }
 
 .form-group input[type="text"],
-.form-group input[type="number"] {
+.form-group input[type="number"],
+.form-group textarea {
     width: 100%;
     padding: 14px 16px;
     border: 2px solid #e0e0e0;
@@ -213,10 +186,17 @@ header p {
     font-size: 15px;
     transition: all 0.3s ease;
     line-height: 1.5;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.textarea-input {
+    resize: vertical;
+    min-height: 80px;
 }
 
 .form-group input[type="text"]:focus,
-.form-group input[type="number"]:focus {
+.form-group input[type="number"]:focus,
+.form-group textarea:focus {
     outline: none;
     border-color: #667eea;
     box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -526,6 +506,218 @@ header p {
     color: #0277bd;
 }
 
+/* Component Control Bar */
+.component-control-bar {
+    background: #f3f3f3;
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    border-bottom: 1px solid #e0e0e0;
+    margin: 0;
+}
+
+.component-select-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: #333;
+    white-space: nowrap;
+    margin: 0;
+}
+
+.component-select-dropdown {
+    flex: 1;
+    max-width: 400px;
+    padding: 12px 16px;
+    font-size: 15px;
+    font-weight: 500;
+    border: 1px solid #1589ee;
+    border-radius: 6px;
+    background: white;
+    color: #333;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.component-select-dropdown:hover {
+    border-color: #0b5cab;
+    box-shadow: 0 2px 6px rgba(21, 137, 238, 0.2);
+}
+
+.component-select-dropdown:focus {
+    outline: none;
+    border-color: #1589ee;
+    box-shadow: 0 0 0 3px rgba(21, 137, 238, 0.1);
+}
+
+/* Side Navigation */
+.side-nav {
+    position: fixed;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    z-index: 100;
+}
+
+.nav-link {
+    padding: 14px 20px;
+    background: white;
+    color: #555;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    border-left: 4px solid transparent;
+    text-align: center;
+    min-width: 130px;
+}
+
+.nav-link:hover {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    transform: translateX(-5px);
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.3);
+}
+
+.nav-link.active {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-left-color: #764ba2;
+    box-shadow: 0 4px 16px rgba(102, 126, 234, 0.35);
+}
+
+/* Agentforce Preview Card */
+.agentforce-preview-card {
+    background: white;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    max-width: 800px;
+    margin: 0 auto;
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.agentforce-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 24px 32px 16px 32px;
+}
+
+.agentforce-astro-icon {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    border-radius: 4px;
+}
+
+.agentforce-title {
+    font-size: 28px;
+    font-weight: 700;
+    color: #181818;
+    margin: 0;
+    flex: 1;
+}
+
+.agentforce-timestamp {
+    background-color: #f3f3f3;
+    color: #706e6b;
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 4px;
+    white-space: nowrap;
+}
+
+.agentforce-divider {
+    height: 1px;
+    background-color: #e5e5e5;
+    margin: 0 32px;
+}
+
+.agentforce-section {
+    padding: 24px 32px;
+}
+
+.agentforce-section-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: #181818;
+    margin: 0 0 12px 0;
+}
+
+.agentforce-section-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3e3e3c;
+    margin: 0;
+}
+
+.agentforce-quote-block {
+    background-color: #f0f6fc;
+    border-left: 4px solid #1b96ff;
+    padding: 20px 24px;
+    border-radius: 0 4px 4px 0;
+    margin-top: 12px;
+}
+
+.agentforce-quote-text {
+    font-size: 14px;
+    font-style: italic;
+    line-height: 1.6;
+    color: #181818;
+    margin: 0;
+}
+
+.agentforce-actions {
+    display: flex;
+    gap: 12px;
+    padding: 20px 32px 24px 32px;
+}
+
+.agentforce-btn-secondary,
+.agentforce-btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.agentforce-btn-secondary {
+    background: white;
+    color: #0176d3;
+    border: 2px solid #0176d3;
+}
+
+.agentforce-btn-secondary:hover {
+    background: #f3f3f3;
+}
+
+.agentforce-btn-primary {
+    background: #0176d3;
+    color: white;
+}
+
+.agentforce-btn-primary:hover {
+    background: #014486;
+}
+
+.btn-icon {
+    width: 16px;
+    height: 16px;
+}
+
 /* Preview Section */
 .preview-section {
     display: flex;
@@ -693,31 +885,13 @@ header p {
 
 /* Tablet Layout - 1024px and below */
 @media (max-width: 1024px) {
-    .side-nav {
-        position: static;
-        transform: none;
-        flex-direction: row;
-        justify-content: center;
-        gap: 16px;
-        padding: 20px;
-        background: white;
-        border-radius: 12px;
-        margin: 20px;
-        box-shadow: 0 2px 12px rgba(0,0,0,0.08);
-    }
-
-    .nav-link {
-        padding: 10px 16px;
-        font-size: 13px;
-    }
-
-    .nav-link:hover {
-        transform: translateY(-2px);
-    }
-
     .main-content {
+        padding: 0;
         margin-right: 0;
-        padding: 20px;
+    }
+
+    .component-control-bar {
+        padding: 16px 24px;
     }
 
     header h1 {
@@ -735,6 +909,32 @@ header p {
     .bottom-button-container {
         padding: 40px 20px;
     }
+
+    .side-nav {
+        position: fixed;
+        right: 20px;
+        left: auto;
+        top: auto;
+        bottom: 20px;
+        transform: none;
+        flex-direction: row;
+        justify-content: center;
+        gap: 10px;
+        background: white;
+        padding: 10px;
+        border-radius: 12px;
+        box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
+    }
+
+    .nav-link {
+        min-width: auto;
+        padding: 10px 14px;
+        font-size: 12px;
+    }
+
+    .nav-link:hover {
+        transform: translateY(-2px);
+    }
 }
 
 /* Mobile Layout - 768px and below */
@@ -751,25 +951,40 @@ header p {
         font-size: 13px;
     }
 
-    .side-nav {
+    .component-control-bar {
         flex-direction: column;
-        margin: 16px;
-        padding: 16px;
+        align-items: stretch;
+        padding: 16px 20px;
+        gap: 12px;
     }
 
-    .nav-link {
-        width: 100%;
-        text-align: center;
-        padding: 12px 16px;
+    .component-select-label {
+        font-size: 14px;
+    }
+
+    .component-select-dropdown {
+        max-width: 100%;
         font-size: 14px;
     }
 
     .main-content {
-        padding: 16px;
+        padding: 0;
+        margin-right: 0;
     }
 
     .form-row {
         flex-direction: column;
+    }
+
+    .status-widget {
+        width: calc(100% - 32px);
+        max-width: 100%;
+        right: 16px;
+        left: 16px;
+    }
+
+    .page-section {
+        margin-bottom: 100px;
     }
 
     .page-section {
@@ -824,6 +1039,73 @@ header p {
     .bottom-button-container {
         padding: 32px 16px;
     }
+
+    .component-select-dropdown {
+        font-size: 14px;
+        padding: 14px 16px;
+    }
+
+    .agentforce-header {
+        padding: 20px 24px 12px 24px;
+        flex-wrap: wrap;
+    }
+
+    .agentforce-astro-icon {
+        width: 48px;
+        height: 48px;
+    }
+
+    .agentforce-title {
+        font-size: 24px;
+        flex-basis: 100%;
+        order: 2;
+        margin-top: 12px;
+    }
+
+    .agentforce-timestamp {
+        order: 3;
+        margin-left: auto;
+    }
+
+    .agentforce-divider {
+        margin: 0 24px;
+    }
+
+    .agentforce-section {
+        padding: 16px 24px;
+    }
+
+    .agentforce-section-heading {
+        font-size: 16px;
+    }
+
+    .agentforce-actions {
+        flex-direction: column;
+        padding: 16px 24px 20px 24px;
+    }
+
+    .agentforce-btn-secondary,
+    .agentforce-btn-primary {
+        width: 100%;
+        justify-content: center;
+    }
+
+    .side-nav {
+        width: calc(100% - 32px);
+        right: 16px;
+        left: 16px;
+        flex-wrap: nowrap;
+        gap: 8px;
+    }
+
+    .nav-link {
+        font-size: 11px;
+        padding: 10px 12px;
+    }
+
+    .page-section {
+        margin-bottom: 100px;
+    }
 }
 
 /* Extra Small Devices - 480px and below */
@@ -877,5 +1159,19 @@ header p {
     .instruction-step code {
         font-size: 11px;
         padding: 4px 8px;
+    }
+
+    .side-nav {
+        bottom: 10px;
+        right: 10px;
+        left: 10px;
+        padding: 8px;
+        gap: 6px;
+    }
+
+    .nav-link {
+        padding: 8px 10px;
+        min-width: auto;
+        font-size: 10px;
     }
 }

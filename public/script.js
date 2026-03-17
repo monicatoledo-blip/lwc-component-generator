@@ -1,5 +1,54 @@
 // Sync color pickers with hex inputs
 document.addEventListener('DOMContentLoaded', () => {
+    // Component Selector Logic
+    const componentSelect = document.getElementById('componentSelect');
+    const unifiedProfileContainer = document.getElementById('unified-profile-container');
+    const agentforceBriefContainer = document.getElementById('agentforce-brief-container');
+
+    // Update deployment instructions based on selected component
+    function updateDeploymentInstructions(componentType) {
+        const folderNames = {
+            'unifiedProfileLwc': {
+                folder: 'unifiedProfileLwc',
+                label: 'Unified Profile Mock'
+            },
+            'agentforceLeadBriefLwc': {
+                folder: 'agentforceLeadBriefLwc',
+                label: 'Agentforce Lead Brief (Custom)'
+            }
+        };
+
+        const config = folderNames[componentType];
+
+        // Update all folder name references
+        document.getElementById('folderName1').textContent = config.folder + '-1';
+        document.getElementById('folderName2').textContent = config.folder + ' (1)';
+        document.getElementById('folderName3').textContent = config.folder;
+        document.getElementById('folderName4').textContent = config.folder;
+        document.getElementById('folderName5').textContent = config.folder;
+
+        // Update component label
+        document.getElementById('componentLabel').textContent = config.label;
+    }
+
+    componentSelect.addEventListener('change', (e) => {
+        const selectedComponent = e.target.value;
+
+        if (selectedComponent === 'unifiedProfileLwc') {
+            unifiedProfileContainer.style.display = 'block';
+            agentforceBriefContainer.style.display = 'none';
+        } else if (selectedComponent === 'agentforceLeadBriefLwc') {
+            unifiedProfileContainer.style.display = 'none';
+            agentforceBriefContainer.style.display = 'block';
+        }
+
+        // Update deployment instructions
+        updateDeploymentInstructions(selectedComponent);
+    });
+
+    // Initialize deployment instructions on page load
+    updateDeploymentInstructions('unifiedProfileLwc');
+
     // Smooth scroll for navigation links
     const navLinks = document.querySelectorAll('.nav-link');
 
@@ -22,7 +71,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let current = '';
         sections.forEach(section => {
             const sectionTop = section.offsetTop;
-            const sectionHeight = section.clientHeight;
             if (scrollY >= (sectionTop - 200)) {
                 current = section.getAttribute('id');
             }
@@ -92,6 +140,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial preview update
     updatePreview();
+
+    // Setup Agentforce preview updates
+    const agentforceForm = document.getElementById('agentforceForm');
+    const agentforceInputs = agentforceForm.querySelectorAll('input, textarea');
+
+    agentforceInputs.forEach(input => {
+        input.addEventListener('input', updateAgentforcePreview);
+
+        // Prevent Enter key from submitting the form
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && input.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Prevent Enter key from submitting Agentforce form at form level
+    agentforceForm.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+        }
+    });
+
+    // Initial Agentforce preview update
+    updateAgentforcePreview();
 });
 
 function updatePreview() {
@@ -185,6 +258,77 @@ function updatePreview() {
     if (data.engagementDescription && engagementDesc) engagementDesc.textContent = data.engagementDescription;
 }
 
+// Update Agentforce Lead Brief Preview
+function updateAgentforcePreview() {
+    const form = document.getElementById('agentforceForm');
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    // Update Astro icon
+    const previewAstroIcon = document.getElementById('previewAstroIcon');
+    if (data.astroIconUrl && previewAstroIcon) {
+        previewAstroIcon.src = data.astroIconUrl;
+    }
+
+    // Update title
+    const previewBriefTitle = document.getElementById('previewBriefTitle');
+    if (data.title && previewBriefTitle) {
+        previewBriefTitle.textContent = data.title;
+    }
+
+    // Update timestamp
+    const previewTimestamp = document.getElementById('previewTimestamp');
+    if (data.timestampText && previewTimestamp) {
+        previewTimestamp.textContent = data.timestampText;
+    }
+
+    // Update intent section
+    const previewIntentHeading = document.getElementById('previewIntentHeading');
+    const previewIntentText = document.getElementById('previewIntentText');
+    if (data.intentHeading && previewIntentHeading) {
+        previewIntentHeading.textContent = data.intentHeading;
+    }
+    if (data.intentText && previewIntentText) {
+        previewIntentText.textContent = data.intentText;
+    }
+
+    // Update context section
+    const previewContextHeading = document.getElementById('previewContextHeading');
+    const previewContextText = document.getElementById('previewContextText');
+    if (data.contextHeading && previewContextHeading) {
+        previewContextHeading.textContent = data.contextHeading;
+    }
+    if (data.contextText && previewContextText) {
+        previewContextText.textContent = data.contextText;
+    }
+
+    // Update opener section
+    const previewOpenerHeading = document.getElementById('previewOpenerHeading');
+    const previewOpenerText = document.getElementById('previewOpenerText');
+    if (data.openerHeading && previewOpenerHeading) {
+        previewOpenerHeading.textContent = data.openerHeading;
+    }
+    if (data.openerText && previewOpenerText) {
+        previewOpenerText.textContent = data.openerText;
+    }
+
+    // Update button text
+    const previewSecondaryBtn = document.getElementById('previewSecondaryBtn');
+    const previewPrimaryBtn = document.getElementById('previewPrimaryBtn');
+    if (data.secondaryButtonText && previewSecondaryBtn) {
+        const btnText = previewSecondaryBtn.childNodes[previewSecondaryBtn.childNodes.length - 1];
+        if (btnText && btnText.nodeType === Node.TEXT_NODE) {
+            btnText.textContent = data.secondaryButtonText;
+        }
+    }
+    if (data.primaryButtonText && previewPrimaryBtn) {
+        const btnText = previewPrimaryBtn.childNodes[previewPrimaryBtn.childNodes.length - 1];
+        if (btnText && btnText.nodeType === Node.TEXT_NODE) {
+            btnText.textContent = data.primaryButtonText;
+        }
+    }
+}
+
 // Download handler function
 async function handleDownload(buttonElement) {
     const originalText = buttonElement.textContent;
@@ -193,9 +337,19 @@ async function handleDownload(buttonElement) {
     buttonElement.disabled = true;
 
     try {
-        const form = document.getElementById('lwcForm');
+        // Determine which form is active
+        const componentSelect = document.getElementById('componentSelect');
+        const selectedComponent = componentSelect.value;
+
+        const form = selectedComponent === 'unifiedProfileLwc'
+            ? document.getElementById('lwcForm')
+            : document.getElementById('agentforceForm');
+
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
+
+        // Add component type to data
+        data.componentType = selectedComponent;
 
         const response = await fetch('/generate', {
             method: 'POST',
@@ -213,7 +367,7 @@ async function handleDownload(buttonElement) {
         const url = window.URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = 'unifiedProfileLwc.zip';
+        a.download = selectedComponent + '.zip';
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
@@ -244,4 +398,11 @@ document.getElementById('lwcForm').addEventListener('submit', async (e) => {
 document.getElementById('download-btn-bottom').addEventListener('click', async () => {
     const bottomBtn = document.getElementById('download-btn-bottom');
     await handleDownload(bottomBtn);
+});
+
+// Agentforce form submission handler
+document.getElementById('agentforceForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('.submit-btn');
+    await handleDownload(submitBtn);
 });
