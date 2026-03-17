@@ -32,7 +32,9 @@
       "Bash(\"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/nextBestLeadsLwc/nextBestLeadsLwc.css\":*)",
       "Bash(node -c server.js)",
       "Bash(node -c public/script.js)",
-      "Bash(node -e \":*)"
+      "Bash(node -e \":*)",
+      "Bash(kill 75635)",
+      "Bash(node server.js)"
     ]
   }
 }
