@@ -3,6 +3,8 @@ const express = require("express");
 const session = require("express-session");
 const path = require("path");
 const fs = require("fs").promises;
+const fsSync = require("fs");
+const os = require("os");
 const Handlebars = require("handlebars");
 const JSZip = require("jszip");
 const jsforce = require("jsforce");
@@ -22,8 +24,21 @@ cloudinary.config({
   api_secret: process.env.CLOUDINARY_API_SECRET
 });
 
-// Configure multer for file uploads (memory storage)
-const storage = multer.memoryStorage();
+// Configure multer for file uploads (disk storage with temp directory)
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, os.tmpdir());
+  },
+  filename: (req, file, cb) => {
+    // Create unique filename with timestamp
+    const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
+    cb(
+      null,
+      file.fieldname + "-" + uniqueSuffix + path.extname(file.originalname)
+    );
+  }
+});
+
 const upload = multer({
   storage: storage,
   limits: {
@@ -93,7 +108,7 @@ app.post("/generate", upload.any(), async (req, res) => {
       for (const file of req.files) {
         try {
           const cloudinaryUrl = await uploadToCloudinary(
-            file.buffer,
+            file.path,
             file.originalname
           );
           console.log(`✅ Uploaded ${file.fieldname}: ${cloudinaryUrl}`);
@@ -101,7 +116,10 @@ app.post("/generate", upload.any(), async (req, res) => {
           // Replace the field value with the Cloudinary URL
           templateData[file.fieldname] = cloudinaryUrl;
         } catch (uploadError) {
-          console.error(`❌ Failed to upload ${file.fieldname}:`, uploadError);
+          console.error(
+            `❌ Failed to upload ${file.fieldname}:`,
+            uploadError.message
+          );
           // Keep the original value if upload fails
         }
       }
@@ -171,25 +189,53 @@ app.post("/generate", upload.any(), async (req, res) => {
   }
 });
 
-// Helper function to upload image to Cloudinary
-async function uploadToCloudinary(fileBuffer, originalName) {
-  return new Promise((resolve, reject) => {
-    const uploadStream = cloudinary.uploader.upload_stream(
-      {
-        folder: "lwc-generator",
-        public_id: `${Date.now()}-${originalName.replace(/\.[^/.]+$/, "")}`,
-        resource_type: "image"
-      },
-      (error, result) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(result.secure_url);
-        }
-      }
+// Helper function to upload image to Cloudinary using disk-based upload
+async function uploadToCloudinary(filePath, originalName) {
+  try {
+    console.log(
+      `📤 Uploading ${originalName} to Cloudinary from ${filePath}...`
     );
-    uploadStream.end(fileBuffer);
-  });
+
+    const result = await cloudinary.uploader.upload(filePath, {
+      folder: "lwc-generator",
+      public_id: `${Date.now()}-${originalName.replace(/\.[^/.]+$/, "")}`,
+      resource_type: "image"
+    });
+
+    console.log(`✅ Upload successful: ${result.secure_url}`);
+
+    // Clean up temp file after successful upload
+    try {
+      fsSync.unlinkSync(filePath);
+      console.log(`🗑️  Cleaned up temp file: ${filePath}`);
+    } catch (unlinkError) {
+      console.warn(
+        `⚠️  Could not delete temp file ${filePath}:`,
+        unlinkError.message
+      );
+    }
+
+    return result.secure_url;
+  } catch (error) {
+    // Clean up temp file even if upload fails
+    try {
+      fsSync.unlinkSync(filePath);
+      console.log(`🗑️  Cleaned up temp file after error: ${filePath}`);
+    } catch (unlinkError) {
+      console.warn(
+        `⚠️  Could not delete temp file ${filePath}:`,
+        unlinkError.message
+      );
+    }
+
+    // Throw detailed Cloudinary error
+    const errorMessage = error.message || error.error?.message || String(error);
+    console.error(
+      `❌ Cloudinary upload failed for ${originalName}:`,
+      errorMessage
+    );
+    throw new Error(`Cloudinary upload failed: ${errorMessage}`);
+  }
 }
 
 // Helper function to get dynamic callback URL from request
@@ -204,14 +250,13 @@ function getCallbackUrl(req) {
   return `${protocol}://${host}/oauth2/callback`;
 }
 
-// Helper function to create CspTrustedSite metadata XML
+// Helper function to create CspTrustedSite metadata XML - LEGACY FORMAT
 function createCspTrustedSiteXml() {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Cloudinary CDN for LWC Generator images</description>
+    <context>All</context>
     <endpointUrl>https://res.cloudinary.com</endpointUrl>
     <isActive>true</isActive>
-    <isApplicableToImgSrc>true</isApplicableToImgSrc>
 </CspTrustedSite>`;
 }
 
@@ -288,7 +333,10 @@ app.get("/oauth2/callback", async (req, res) => {
       redirectUri: callbackUrl
     });
 
-    const conn = new jsforce.Connection({ oauth2 });
+    const conn = new jsforce.Connection({
+      oauth2,
+      version: "60.0"
+    });
     const userInfo = await conn.authorize(code);
 
     // Store credentials in session
@@ -347,7 +395,7 @@ app.post("/deploy", upload.any(), async (req, res) => {
           `   File: ${file.fieldname}, Size: ${file.size} bytes, Type: ${file.mimetype}`
         );
 
-        if (!file.buffer || file.buffer.length === 0) {
+        if (!file.path || file.size === 0) {
           console.error(`❌ File ${file.fieldname} has no data`);
           return res.status(500).json({
             success: false,
@@ -358,7 +406,7 @@ app.post("/deploy", upload.any(), async (req, res) => {
 
         try {
           const cloudinaryUrl = await uploadToCloudinary(
-            file.buffer,
+            file.path,
             file.originalname
           );
           console.log(`✅ Uploaded ${file.fieldname}: ${cloudinaryUrl}`);
@@ -367,10 +415,7 @@ app.post("/deploy", upload.any(), async (req, res) => {
           templateData[file.fieldname] = cloudinaryUrl;
           hasUploadedImages = true;
         } catch (uploadError) {
-          const errorMessage =
-            uploadError.message ||
-            uploadError.error?.message ||
-            String(uploadError);
+          const errorMessage = uploadError.message || String(uploadError);
           console.error(`❌ Failed to upload ${file.fieldname}:`, uploadError);
           return res.status(500).json({
             success: false,
@@ -418,13 +463,11 @@ app.post("/deploy", upload.any(), async (req, res) => {
     const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
     const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
 
-    // Create package.xml for Metadata API (includes CSP if images were uploaded)
-    let packageXml;
-    if (hasUploadedImages) {
-      packageXml = `<?xml version="1.0" encoding="UTF-8"?>
+    // Create package.xml for Metadata API - HARDCODED EXACT XML
+    const packageXml = `<?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
-        <members>${componentType}</members>
+        <members>*</members>
         <name>LightningComponentBundle</name>
     </types>
     <types>
@@ -433,16 +476,6 @@ app.post("/deploy", upload.any(), async (req, res) => {
     </types>
     <version>60.0</version>
 </Package>`;
-    } else {
-      packageXml = `<?xml version="1.0" encoding="UTF-8"?>
-<Package xmlns="http://soap.sforce.com/2006/04/metadata">
-    <types>
-        <members>${componentType}</members>
-        <name>LightningComponentBundle</name>
-    </types>
-    <version>60.0</version>
-</Package>`;
-    }
 
     // Create ZIP for Metadata API deployment
     const zip = new JSZip();
@@ -457,17 +490,15 @@ app.post("/deploy", upload.any(), async (req, res) => {
     lwcFolder.file(`${componentType}.css`, cssCompiled);
     lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
 
-    // Add CspTrustedSite metadata if images were uploaded
-    if (hasUploadedImages) {
-      const cspFolder = zip.folder("cspTrustedSites");
-      cspFolder.file(
-        "Cloudinary_CDN.cspTrustedSite",
-        createCspTrustedSiteXml()
-      );
-      console.log(
-        "📋 Added CSP Trusted Site for Cloudinary to deployment package"
-      );
-    }
+    // Add CspTrustedSite metadata - ALWAYS INCLUDED
+    const cspFolder = zip.folder("cspTrustedSites");
+    cspFolder.file(
+      "Cloudinary_CDN.cspTrustedSite-meta.xml",
+      createCspTrustedSiteXml()
+    );
+    console.log(
+      "📋 Added CSP Trusted Site for Cloudinary to deployment package"
+    );
 
     // Generate ZIP as base64
     const zipBuffer = await zip.generateAsync({
@@ -494,7 +525,8 @@ app.post("/deploy", upload.any(), async (req, res) => {
       oauth2,
       instanceUrl: req.session.instanceUrl,
       accessToken: req.session.accessToken,
-      refreshToken: req.session.refreshToken
+      refreshToken: req.session.refreshToken,
+      version: "60.0"
     });
 
     // Deploy using Metadata API

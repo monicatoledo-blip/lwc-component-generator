@@ -213,6 +213,16 @@ function updateAuthUI() {
       authStatus.innerHTML = "";
     }
   }
+
+  // Show/hide authentication notice banners
+  const authNotices = document.querySelectorAll(".auth-notice");
+  authNotices.forEach((notice) => {
+    if (isAuthenticated) {
+      notice.style.display = "none";
+    } else {
+      notice.style.display = "flex";
+    }
+  });
 }
 
 // Handle deployment
