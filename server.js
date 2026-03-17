@@ -238,6 +238,19 @@ app.get("/auth/salesforce", (req, res) => {
   // Store callback URL in session for use in callback handler
   req.session.oauthCallbackUrl = callbackUrl;
 
+  // Debug: Log environment variable status
+  console.log("🔍 OAuth Environment Check:");
+  console.log("   Client ID exists:", !!process.env.SALESFORCE_CLIENT_ID);
+  console.log(
+    "   Client Secret exists:",
+    !!process.env.SALESFORCE_CLIENT_SECRET
+  );
+  console.log(
+    "   Login URL:",
+    process.env.SALESFORCE_LOGIN_URL || "https://login.salesforce.com"
+  );
+  console.log("   Callback URL:", callbackUrl);
+
   // Create OAuth2 instance with dynamic callback URL
   const oauth2 = new jsforce.OAuth2({
     loginUrl:
@@ -252,6 +265,7 @@ app.get("/auth/salesforce", (req, res) => {
   });
 
   console.log(`🔐 OAuth flow initiated with callback: ${callbackUrl}`);
+  console.log(`🔗 Auth URL: ${authUrl}`);
   res.redirect(authUrl);
 });
 
