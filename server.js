@@ -1,94 +1,571 @@
-const express = require('express');
-const path = require('path');
-const fs = require('fs').promises;
-const Handlebars = require('handlebars');
-const JSZip = require('jszip');
+require("dotenv").config();
+const express = require("express");
+const session = require("express-session");
+const path = require("path");
+const fs = require("fs").promises;
+const Handlebars = require("handlebars");
+const JSZip = require("jszip");
+const jsforce = require("jsforce");
+const multer = require("multer");
+const cloudinary = require("cloudinary").v2;
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// Trust proxy for Heroku, AWS, etc. (enables req.protocol and x-forwarded-* headers)
+app.set("trust proxy", 1);
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+});
+
+// Configure multer for file uploads (memory storage)
+const storage = multer.memoryStorage();
+const upload = multer({
+  storage: storage,
+  limits: {
+    fileSize: 5 * 1024 * 1024 // 5MB limit
+  },
+  fileFilter: (req, file, cb) => {
+    // Accept images only
+    if (!file.mimetype.startsWith("image/")) {
+      return cb(new Error("Only image files are allowed!"), false);
+    }
+    cb(null, true);
+  }
+});
+
+// Session configuration
+app.use(
+  session({
+    secret:
+      process.env.SESSION_SECRET ||
+      "cumulus-financial-lwc-generator-secret-key",
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: process.env.NODE_ENV === "production",
+      maxAge: 24 * 60 * 60 * 1000 // 24 hours
+    }
+  })
+);
+
 // Function to find available port
 function findAvailablePort(startPort) {
-    return new Promise((resolve) => {
-        const server = app.listen(startPort, () => {
-            const port = server.address().port;
-            server.close(() => resolve(port));
-        }).on('error', () => {
-            resolve(findAvailablePort(startPort + 1));
-        });
-    });
+  return new Promise((resolve) => {
+    const server = app
+      .listen(startPort, () => {
+        const port = server.address().port;
+        server.close(() => resolve(port));
+      })
+      .on("error", () => {
+        resolve(findAvailablePort(startPort + 1));
+      });
+  });
 }
 
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static('public'));
+app.use(express.static("public"));
 
 // Serve the form
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// Generate LWC endpoint
-app.post('/generate', async (req, res) => {
-    try {
-        const formData = req.body;
-        const componentType = formData.componentType || 'unifiedProfileLwc';
+// Generate LWC endpoint with file upload support
+app.post("/generate", upload.any(), async (req, res) => {
+  try {
+    const formData = req.body;
+    const componentType = formData.componentType || "unifiedProfileLwc";
 
-        // Prepare template data based on component type
-        let templateData = { ...formData };
+    // Prepare template data based on component type
+    let templateData = { ...formData };
 
-        // For Unified Profile, calculate ring dash offset
-        if (componentType === 'unifiedProfileLwc') {
-            const ringPercentage = parseFloat(formData.ringPercentage) || 0;
-            const circumference = 251.2;
-            const ringDashOffset = circumference - (circumference * ringPercentage / 100);
-            templateData.ringDashOffset = ringDashOffset.toFixed(2);
+    // Process uploaded images and upload to Cloudinary
+    if (req.files && req.files.length > 0) {
+      console.log(`📸 Processing ${req.files.length} uploaded image(s)...`);
+
+      for (const file of req.files) {
+        try {
+          const cloudinaryUrl = await uploadToCloudinary(
+            file.buffer,
+            file.originalname
+          );
+          console.log(`✅ Uploaded ${file.fieldname}: ${cloudinaryUrl}`);
+
+          // Replace the field value with the Cloudinary URL
+          templateData[file.fieldname] = cloudinaryUrl;
+        } catch (uploadError) {
+          console.error(`❌ Failed to upload ${file.fieldname}:`, uploadError);
+          // Keep the original value if upload fails
         }
-
-        // Read template files
-        const templatesDir = path.join(__dirname, 'templates', componentType);
-        const htmlTemplate = await fs.readFile(path.join(templatesDir, `${componentType}.html`), 'utf-8');
-        const jsTemplate = await fs.readFile(path.join(templatesDir, `${componentType}.js`), 'utf-8');
-        const cssTemplate = await fs.readFile(path.join(templatesDir, `${componentType}.css`), 'utf-8');
-        const metaTemplate = await fs.readFile(path.join(templatesDir, `${componentType}.js-meta.xml`), 'utf-8');
-
-        // Compile templates with Handlebars
-        const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
-        const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
-        const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
-        const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
-
-        // Create ZIP file
-        const zip = new JSZip();
-        const lwcFolder = zip.folder(componentType);
-
-        lwcFolder.file(`${componentType}.html`, htmlCompiled);
-        lwcFolder.file(`${componentType}.js`, jsCompiled);
-        lwcFolder.file(`${componentType}.css`, cssCompiled);
-        lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
-
-        // Generate ZIP
-        const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
-
-        // Send ZIP file
-        res.setHeader('Content-Type', 'application/zip');
-        res.setHeader('Content-Disposition', `attachment; filename=${componentType}.zip`);
-        res.send(zipBuffer);
-
-    } catch (error) {
-        console.error('Error generating LWC:', error);
-        res.status(500).json({ error: 'Failed to generate LWC', details: error.message });
+      }
     }
+
+    // For Unified Profile, calculate ring dash offset
+    if (componentType === "unifiedProfileLwc") {
+      const ringPercentage = parseFloat(formData.ringPercentage) || 0;
+      const circumference = 251.2;
+      const ringDashOffset =
+        circumference - (circumference * ringPercentage) / 100;
+      templateData.ringDashOffset = ringDashOffset.toFixed(2);
+    }
+
+    // Read template files
+    const templatesDir = path.join(__dirname, "templates", componentType);
+    const htmlTemplate = await fs.readFile(
+      path.join(templatesDir, `${componentType}.html`),
+      "utf-8"
+    );
+    const jsTemplate = await fs.readFile(
+      path.join(templatesDir, `${componentType}.js`),
+      "utf-8"
+    );
+    const cssTemplate = await fs.readFile(
+      path.join(templatesDir, `${componentType}.css`),
+      "utf-8"
+    );
+    const metaTemplate = await fs.readFile(
+      path.join(templatesDir, `${componentType}.js-meta.xml`),
+      "utf-8"
+    );
+
+    // Compile templates with Handlebars
+    const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
+    const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
+    const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
+    const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
+
+    // Create ZIP file
+    const zip = new JSZip();
+    const lwcFolder = zip.folder(componentType);
+
+    lwcFolder.file(`${componentType}.html`, htmlCompiled);
+    lwcFolder.file(`${componentType}.js`, jsCompiled);
+    lwcFolder.file(`${componentType}.css`, cssCompiled);
+    lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
+
+    // Generate ZIP
+    const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
+
+    // Send ZIP file
+    res.setHeader("Content-Type", "application/zip");
+    res.setHeader(
+      "Content-Disposition",
+      `attachment; filename=${componentType}.zip`
+    );
+    res.send(zipBuffer);
+  } catch (error) {
+    console.error("Error generating LWC:", error);
+    res
+      .status(500)
+      .json({ error: "Failed to generate LWC", details: error.message });
+  }
+});
+
+// Helper function to upload image to Cloudinary
+async function uploadToCloudinary(fileBuffer, originalName) {
+  return new Promise((resolve, reject) => {
+    const uploadStream = cloudinary.uploader.upload_stream(
+      {
+        folder: "lwc-generator",
+        public_id: `${Date.now()}-${originalName.replace(/\.[^/.]+$/, "")}`,
+        resource_type: "image"
+      },
+      (error, result) => {
+        if (error) {
+          reject(error);
+        } else {
+          resolve(result.secure_url);
+        }
+      }
+    );
+    uploadStream.end(fileBuffer);
+  });
+}
+
+// Helper function to get dynamic callback URL from request
+function getCallbackUrl(req) {
+  // Get protocol (http or https)
+  const protocol = req.protocol || req.get("x-forwarded-proto") || "http";
+
+  // Get host (includes port if present)
+  const host = req.get("host");
+
+  // Construct full callback URL
+  return `${protocol}://${host}/oauth2/callback`;
+}
+
+// Helper function to create CspTrustedSite metadata XML
+function createCspTrustedSiteXml() {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Cloudinary CDN for LWC Generator images</description>
+    <endpointUrl>https://res.cloudinary.com</endpointUrl>
+    <isActive>true</isActive>
+    <isApplicableToConnect>false</isApplicableToConnect>
+    <isApplicableToFontSrc>false</isApplicableToFontSrc>
+    <isApplicableToFrameSrc>false</isApplicableToFrameSrc>
+    <isApplicableToImgSrc>true</isApplicableToImgSrc>
+    <isApplicableToMediaSrc>false</isApplicableToMediaSrc>
+    <isApplicableToStyleSrc>false</isApplicableToStyleSrc>
+</CspTrustedSite>`;
+}
+
+// Check authentication status
+app.get("/auth/status", (req, res) => {
+  res.json({
+    authenticated: !!req.session.accessToken,
+    instanceUrl: req.session.instanceUrl || null
+  });
+});
+
+// Initiate Salesforce OAuth flow
+app.get("/auth/salesforce", (req, res) => {
+  // Store the component data in session if provided
+  if (req.query.componentData) {
+    req.session.pendingComponentData = req.query.componentData;
+  }
+
+  // Get dynamic callback URL based on current request
+  const callbackUrl = getCallbackUrl(req);
+
+  // Store callback URL in session for use in callback handler
+  req.session.oauthCallbackUrl = callbackUrl;
+
+  // Create OAuth2 instance with dynamic callback URL
+  const oauth2 = new jsforce.OAuth2({
+    loginUrl:
+      process.env.SALESFORCE_LOGIN_URL || "https://login.salesforce.com",
+    clientId: process.env.SALESFORCE_CLIENT_ID,
+    clientSecret: process.env.SALESFORCE_CLIENT_SECRET,
+    redirectUri: callbackUrl
+  });
+
+  const authUrl = oauth2.getAuthorizationUrl({
+    scope: "api web refresh_token"
+  });
+
+  console.log(`🔐 OAuth flow initiated with callback: ${callbackUrl}`);
+  res.redirect(authUrl);
+});
+
+// OAuth2 callback handler
+app.get("/oauth2/callback", async (req, res) => {
+  const { code } = req.query;
+
+  if (!code) {
+    return res.status(400).send("Authorization code not provided");
+  }
+
+  try {
+    // Retrieve the callback URL from session (set during /auth/salesforce)
+    const callbackUrl = req.session.oauthCallbackUrl || getCallbackUrl(req);
+
+    // Create OAuth2 instance with the same callback URL used for authorization
+    const oauth2 = new jsforce.OAuth2({
+      loginUrl:
+        process.env.SALESFORCE_LOGIN_URL || "https://login.salesforce.com",
+      clientId: process.env.SALESFORCE_CLIENT_ID,
+      clientSecret: process.env.SALESFORCE_CLIENT_SECRET,
+      redirectUri: callbackUrl
+    });
+
+    const conn = new jsforce.Connection({ oauth2 });
+    const userInfo = await conn.authorize(code);
+
+    // Store credentials in session
+    req.session.accessToken = conn.accessToken;
+    req.session.refreshToken = conn.refreshToken;
+    req.session.instanceUrl = conn.instanceUrl;
+    req.session.userId = userInfo.id;
+
+    console.log("✅ User authenticated:", userInfo.id);
+    console.log(`   Instance: ${conn.instanceUrl}`);
+
+    // Redirect back to the app
+    res.redirect("/?auth=success");
+  } catch (error) {
+    console.error("❌ OAuth error:", error);
+    res.redirect("/?auth=error");
+  }
+});
+
+// Logout route
+app.get("/auth/logout", (req, res) => {
+  req.session.destroy((err) => {
+    if (err) {
+      console.error("Logout error:", err);
+    }
+    res.redirect("/");
+  });
+});
+
+// Deploy to Salesforce endpoint with file upload support
+app.post("/deploy", upload.any(), async (req, res) => {
+  try {
+    // Check authentication
+    if (!req.session.accessToken) {
+      return res.status(401).json({
+        error: "Not authenticated",
+        message: "Please authenticate with Salesforce first"
+      });
+    }
+
+    const formData = req.body;
+    const componentType = formData.componentType || "unifiedProfileLwc";
+
+    // Prepare template data based on component type
+    let templateData = { ...formData };
+
+    // Process uploaded images and upload to Cloudinary
+    let hasUploadedImages = false;
+    if (req.files && req.files.length > 0) {
+      console.log(
+        `📸 Processing ${req.files.length} uploaded image(s) for deployment...`
+      );
+
+      for (const file of req.files) {
+        try {
+          const cloudinaryUrl = await uploadToCloudinary(
+            file.buffer,
+            file.originalname
+          );
+          console.log(`✅ Uploaded ${file.fieldname}: ${cloudinaryUrl}`);
+
+          // Replace the field value with the Cloudinary URL
+          templateData[file.fieldname] = cloudinaryUrl;
+          hasUploadedImages = true;
+        } catch (uploadError) {
+          console.error(`❌ Failed to upload ${file.fieldname}:`, uploadError);
+          return res.status(500).json({
+            success: false,
+            error: "Image upload failed",
+            message: `Failed to upload ${file.fieldname}: ${uploadError.message}`
+          });
+        }
+      }
+    }
+
+    // For Unified Profile, calculate ring dash offset
+    if (componentType === "unifiedProfileLwc") {
+      const ringPercentage = parseFloat(formData.ringPercentage) || 0;
+      const circumference = 251.2;
+      const ringDashOffset =
+        circumference - (circumference * ringPercentage) / 100;
+      templateData.ringDashOffset = ringDashOffset.toFixed(2);
+    }
+
+    // Read template files
+    const templatesDir = path.join(__dirname, "templates", componentType);
+    const htmlTemplate = await fs.readFile(
+      path.join(templatesDir, `${componentType}.html`),
+      "utf-8"
+    );
+    const jsTemplate = await fs.readFile(
+      path.join(templatesDir, `${componentType}.js`),
+      "utf-8"
+    );
+    const cssTemplate = await fs.readFile(
+      path.join(templatesDir, `${componentType}.css`),
+      "utf-8"
+    );
+    const metaTemplate = await fs.readFile(
+      path.join(templatesDir, `${componentType}.js-meta.xml`),
+      "utf-8"
+    );
+
+    // Compile templates with Handlebars
+    const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
+    const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
+    const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
+    const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
+
+    // Create package.xml for Metadata API (includes CSP if images were uploaded)
+    let packageXml;
+    if (hasUploadedImages) {
+      packageXml = `<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>${componentType}</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <types>
+        <members>Cloudinary_CDN</members>
+        <name>CspTrustedSite</name>
+    </types>
+    <version>60.0</version>
+</Package>`;
+    } else {
+      packageXml = `<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://soap.sforce.com/2006/04/metadata">
+    <types>
+        <members>${componentType}</members>
+        <name>LightningComponentBundle</name>
+    </types>
+    <version>60.0</version>
+</Package>`;
+    }
+
+    // Create ZIP for Metadata API deployment
+    const zip = new JSZip();
+
+    // Add package.xml at root
+    zip.file("package.xml", packageXml);
+
+    // Add LWC files in proper structure
+    const lwcFolder = zip.folder("lwc").folder(componentType);
+    lwcFolder.file(`${componentType}.html`, htmlCompiled);
+    lwcFolder.file(`${componentType}.js`, jsCompiled);
+    lwcFolder.file(`${componentType}.css`, cssCompiled);
+    lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
+
+    // Add CspTrustedSite metadata if images were uploaded
+    if (hasUploadedImages) {
+      const cspFolder = zip.folder("cspTrustedSites");
+      cspFolder.file(
+        "Cloudinary_CDN.cspTrustedSite",
+        createCspTrustedSiteXml()
+      );
+      console.log(
+        "📋 Added CSP Trusted Site for Cloudinary to deployment package"
+      );
+    }
+
+    // Generate ZIP as base64
+    const zipBuffer = await zip.generateAsync({
+      type: "nodebuffer",
+      compression: "DEFLATE",
+      compressionOptions: { level: 9 }
+    });
+    const zipBase64 = zipBuffer.toString("base64");
+
+    // Get dynamic callback URL for this request
+    const callbackUrl = getCallbackUrl(req);
+
+    // Create OAuth2 instance with dynamic callback URL
+    const oauth2 = new jsforce.OAuth2({
+      loginUrl:
+        process.env.SALESFORCE_LOGIN_URL || "https://login.salesforce.com",
+      clientId: process.env.SALESFORCE_CLIENT_ID,
+      clientSecret: process.env.SALESFORCE_CLIENT_SECRET,
+      redirectUri: callbackUrl
+    });
+
+    // Connect to Salesforce with stored credentials
+    const conn = new jsforce.Connection({
+      oauth2,
+      instanceUrl: req.session.instanceUrl,
+      accessToken: req.session.accessToken,
+      refreshToken: req.session.refreshToken
+    });
+
+    // Deploy using Metadata API
+    console.log("🚀 Starting deployment to Salesforce...");
+
+    const deployResult = await conn.metadata.deploy(zipBase64, {
+      rollbackOnError: true,
+      singlePackage: true
+    });
+
+    // Poll for deployment status
+    const deployId = deployResult.id;
+    let deployStatus;
+    let maxPolls = 60; // Max 5 minutes (60 * 5 seconds)
+    let pollCount = 0;
+
+    while (pollCount < maxPolls) {
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
+
+      deployStatus = await conn.metadata.checkDeployStatus(deployId, true);
+
+      if (deployStatus.done === "true" || deployStatus.done === true) {
+        break;
+      }
+
+      pollCount++;
+    }
+
+    // Check deployment result
+    if (deployStatus.success === "true" || deployStatus.success === true) {
+      console.log("✅ Deployment successful!");
+      res.json({
+        success: true,
+        message: "Component deployed successfully to Salesforce!",
+        componentName: componentType,
+        deployId: deployId
+      });
+    } else {
+      // Collect error messages
+      const errors = [];
+      if (deployStatus.details?.componentFailures) {
+        const failures = Array.isArray(deployStatus.details.componentFailures)
+          ? deployStatus.details.componentFailures
+          : [deployStatus.details.componentFailures];
+
+        failures.forEach((failure) => {
+          errors.push(`${failure.fileName}: ${failure.problem}`);
+        });
+      }
+
+      console.error("❌ Deployment failed:", errors);
+      res.status(400).json({
+        success: false,
+        error: "Deployment failed",
+        message: errors.join("; ") || "Unknown deployment error"
+      });
+    }
+  } catch (error) {
+    console.error("❌ Deployment error:", error);
+
+    // Check if it's an auth error
+    if (
+      error.name === "INVALID_SESSION_ID" ||
+      error.errorCode === "INVALID_SESSION_ID"
+    ) {
+      req.session.destroy();
+      return res.status(401).json({
+        error: "Session expired",
+        message: "Please authenticate again"
+      });
+    }
+
+    res.status(500).json({
+      error: "Deployment failed",
+      message: error.message || "An error occurred during deployment"
+    });
+  }
 });
 
 // Start server
 (async () => {
-    // On Heroku, use the provided PORT. Locally, find an available port.
-    const finalPort = process.env.PORT ? PORT : await findAvailablePort(PORT);
-    app.listen(finalPort, () => {
-        console.log(`\n🚀 LWC Generator Server is running!`);
-        console.log(`\n📝 Open your browser and navigate to: http://localhost:${finalPort}`);
-        console.log(`\n✨ Fill out the form and download your custom LWC component!\n`);
-    });
+  // On Heroku, use the provided PORT. Locally, find an available port.
+  const finalPort = process.env.PORT ? PORT : await findAvailablePort(PORT);
+  app.listen(finalPort, () => {
+    console.log(`\n🚀 LWC Generator Server is running!`);
+    console.log(
+      `\n📝 Open your browser and navigate to: http://localhost:${finalPort}`
+    );
+    console.log(
+      `\n✨ Fill out the form and download your custom LWC component!\n`
+    );
+
+    // Show OAuth configuration status
+    if (process.env.SALESFORCE_CLIENT_ID) {
+      console.log("🔐 Salesforce OAuth configured");
+      console.log("   Callback URL: Dynamically determined from request");
+      console.log(
+        `   Example: http://localhost:${finalPort}/oauth2/callback\n`
+      );
+    } else {
+      console.log(
+        "⚠️  Salesforce OAuth not configured. Set up .env file for deployment features.\n"
+      );
+    }
+  });
 })();

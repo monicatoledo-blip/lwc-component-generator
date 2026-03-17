@@ -29,7 +29,10 @@
       "Bash(/tmp/fixed_index.html:*)",
       "Bash(\"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/nextBestLeadsLwc/nextBestLeadsLwc.js-meta.xml\":*)",
       "Bash(\"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/nextBestLeadsLwc/nextBestLeadsLwc.html\":*)",
-      "Bash(\"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/nextBestLeadsLwc/nextBestLeadsLwc.css\":*)"
+      "Bash(\"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/nextBestLeadsLwc/nextBestLeadsLwc.css\":*)",
+      "Bash(node -c server.js)",
+      "Bash(node -c public/script.js)",
+      "Bash(node -e \":*)"
     ]
   }
 }

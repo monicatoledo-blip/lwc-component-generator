@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>60.0</apiVersion>
     <isExposed>true</isExposed>
@@ -8,4 +8,101 @@
         <target>lightning__AppPage</target>
         <target>lightning__HomePage</target>
     </targets>
+    <targetConfigs>
+        <targetConfig
+      targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage"
+    >
+            <property
+        name="headerTitle"
+        type="String"
+        default="{{{headerTitle}}}"
+        label="Header Title"
+        description="Main header title"
+      />
+            <property
+        name="headerSubtitle"
+        type="String"
+        default="{{{headerSubtitle}}}"
+        label="Header Subtitle"
+        description="Header subtitle text"
+      />
+            <property
+        name="headerIcon"
+        type="String"
+        default="{{{headerIcon}}}"
+        label="Header Icon URL"
+        description="URL for header icon"
+      />
+            <property
+        name="card1Title"
+        type="String"
+        default="{{{card1Title}}}"
+        label="Card 1 Title"
+        description="Title for first action card"
+      />
+            <property
+        name="card1Text"
+        type="String"
+        default="{{{card1Text}}}"
+        label="Card 1 Text"
+        description="Description for first action card"
+      />
+            <property
+        name="card1Image"
+        type="String"
+        default="{{{card1Image}}}"
+        label="Card 1 Image URL"
+        description="Image URL for first action card"
+      />
+            <property
+        name="card1PrimaryBtn"
+        type="String"
+        default="{{{card1PrimaryBtn}}}"
+        label="Card 1 Primary Button"
+        description="Primary button text for first card"
+      />
+            <property
+        name="card1SecondaryBtn"
+        type="String"
+        default="{{{card1SecondaryBtn}}}"
+        label="Card 1 Secondary Button"
+        description="Secondary button text for first card"
+      />
+            <property
+        name="card2Title"
+        type="String"
+        default="{{{card2Title}}}"
+        label="Card 2 Title"
+        description="Title for second action card"
+      />
+            <property
+        name="card2Text"
+        type="String"
+        default="{{{card2Text}}}"
+        label="Card 2 Text"
+        description="Description for second action card"
+      />
+            <property
+        name="card2Image"
+        type="String"
+        default="{{{card2Image}}}"
+        label="Card 2 Image URL"
+        description="Image URL for second action card"
+      />
+            <property
+        name="card2PrimaryBtn"
+        type="String"
+        default="{{{card2PrimaryBtn}}}"
+        label="Card 2 Primary Button"
+        description="Primary button text for second card"
+      />
+            <property
+        name="card2SecondaryBtn"
+        type="String"
+        default="{{{card2SecondaryBtn}}}"
+        label="Card 2 Secondary Button"
+        description="Secondary button text for second card"
+      />
+        </targetConfig>
+    </targetConfigs>
 </LightningComponentBundle>

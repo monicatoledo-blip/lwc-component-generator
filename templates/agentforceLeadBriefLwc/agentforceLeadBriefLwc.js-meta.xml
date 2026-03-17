@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>60.0</apiVersion>
     <isExposed>true</isExposed>
@@ -8,4 +8,87 @@
         <target>lightning__RecordPage</target>
         <target>lightning__HomePage</target>
     </targets>
+    <targetConfigs>
+        <targetConfig
+      targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage"
+    >
+            <property
+        name="title"
+        type="String"
+        default="{{{title}}}"
+        label="Title"
+        description="The main title of the brief"
+      />
+            <property
+        name="astroIconUrl"
+        type="String"
+        default="{{{astroIconUrl}}}"
+        label="Astro Icon URL"
+        description="URL for the Agentforce Astro icon"
+      />
+            <property
+        name="timestampText"
+        type="String"
+        default="{{{timestampText}}}"
+        label="Timestamp Text"
+        description="Timestamp display text"
+      />
+            <property
+        name="intentHeading"
+        type="String"
+        default="{{{intentHeading}}}"
+        label="Intent Heading"
+        description="Heading for intent section"
+      />
+            <property
+        name="intentText"
+        type="String"
+        default="{{{intentText}}}"
+        label="Intent Text"
+        description="Intent summary text"
+      />
+            <property
+        name="contextHeading"
+        type="String"
+        default="{{{contextHeading}}}"
+        label="Context Heading"
+        description="Heading for context section"
+      />
+            <property
+        name="contextText"
+        type="String"
+        default="{{{contextText}}}"
+        label="Context Text"
+        description="Context details text"
+      />
+            <property
+        name="openerHeading"
+        type="String"
+        default="{{{openerHeading}}}"
+        label="Opener Heading"
+        description="Heading for suggested opener section"
+      />
+            <property
+        name="openerText"
+        type="String"
+        default="{{{openerText}}}"
+        label="Opener Text"
+        description="Suggested opener text"
+      />
+            <property
+        name="primaryButtonText"
+        type="String"
+        default="{{{primaryButtonText}}}"
+        label="Primary Button Text"
+        description="Text for primary action button"
+      />
+            <property
+        name="secondaryButtonText"
+        type="String"
+        default="{{{secondaryButtonText}}}"
+        label="Secondary Button Text"
+        description="Text for secondary action button"
+      />
+        </targetConfig>
+    </targetConfigs>
 </LightningComponentBundle>

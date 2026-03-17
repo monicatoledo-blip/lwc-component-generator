@@ -1,1029 +1,2149 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>LWC Profile Generator</title>
-    <link rel="stylesheet" href="styles.css">
-</head>
-<body>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
     <div class="container">
-        <header>
-            <img src="https://image.s4.sfmc-content.com/lib/fe3111727664047b741079/m/1/ccb17401-00ab-42c3-b141-7a1b93f23360.png" alt="Cumulus Financial" class="header-logo">
-            <div class="header-text">
-                <h1>Component Catalog</h1>
-                <p>The official repository of customizable Salesforce components for Cumulus Financial SEs.</p>
+      <header>
+        <img
+          src="https://image.s4.sfmc-content.com/lib/fe3111727664047b741079/m/1/ccb17401-00ab-42c3-b141-7a1b93f23360.png"
+          alt="Cumulus Financial"
+          class="header-logo"
+        />
+        <div class="header-text">
+          <h1>Component Catalog</h1>
+          <p>
+            The official repository of customizable Salesforce components for
+            Cumulus Financial SEs.
+          </p>
+        </div>
+      </header>
+
+      <!-- Sticky Side Navigation -->
+      <nav class="side-nav">
+        <a href="#create" class="nav-link active">Create Component</a>
+        <a href="#preview" class="nav-link">Live Preview</a>
+        <a href="#deploy" class="nav-link">Deploy</a>
+      </nav>
+
+      <main class="main-content">
+        <!-- Component Selector Control Bar -->
+        <section class="component-control-bar">
+          <div class="control-bar-left">
+            <label for="componentSelect" class="component-select-label">
+              Select Component to Build
+            </label>
+            <select id="componentSelect" class="component-select-dropdown">
+              <option value="unifiedProfileLwc">Unified Profile</option>
+              <option value="agentforceLeadBriefLwc">
+                Agentforce Lead Brief
+              </option>
+              <option value="nextBestActionsLwc">Next Best Actions</option>
+              <option value="nextBestLeadsLwc">Next Best Leads</option>
+            </select>
+          </div>
+          <div class="control-bar-right">
+            <div id="auth-status-indicator" class="auth-status-indicator">
+              <span class="auth-status-dot"></span>
+              <span class="auth-status-text">Checking connection...</span>
             </div>
-        </header>
+          </div>
+        </section>
 
-        <!-- Sticky Side Navigation -->
-        <nav class="side-nav">
-            <a href="#create" class="nav-link active">Create Component</a>
-            <a href="#preview" class="nav-link">Live Preview</a>
-            <a href="#deploy" class="nav-link">Deploy</a>
-        </nav>
+        <!-- Unified Profile Container -->
+        <div id="unified-profile-container">
+          <!-- Section 1: Create Component -->
+          <section id="create" class="page-section">
+            <h2 class="section-title">Create Component</h2>
+            <p class="section-guidance">
+              Configure your component details below. Watch the Live Preview
+              update in real-time to ensure your design matches your demo story.
+            </p>
 
-        <main class="main-content">
-            <!-- Component Selector Control Bar -->
-            <section class="component-control-bar">
-                <label for="componentSelect" class="component-select-label">
-                    Select Component to Build
-                </label>
-                <select id="componentSelect" class="component-select-dropdown">
-                    <option value="unifiedProfileLwc">Unified Profile</option>
-                    <option value="agentforceLeadBriefLwc">Agentforce Lead Brief</option>
-                    <option value="nextBestActionsLwc">Next Best Actions</option>
-                    <option value="nextBestLeadsLwc">Next Best Leads</option>
-                </select>
-            </section>
-
-            <!-- Unified Profile Container -->
-            <div id="unified-profile-container">
-                <!-- Section 1: Create Component -->
-                <section id="create" class="page-section">
-                    <h2 class="section-title">Create Component</h2>
-                    <p class="section-guidance">Configure your component details below. Watch the Live Preview update in real-time to ensure your design matches your demo story.</p>
-
-                    <form id="lwcForm" method="POST" action="/generate">
-                    <!-- Header Section -->
-                    <section id="header-section" class="form-section">
-                        <h2>Header & Avatar</h2>
-                        <div class="form-group">
-                            <label>
-                                Avatar URL
-                                <span class="tooltip-icon">ℹ️
-                                    <span class="tooltip-text">Paste any image URL or use Cumulus placeholder</span>
-                                </span>
-                            </label>
-                            <input type="text" name="avatarUrl" placeholder="https://image.s4.sfmc-content.com/lib/fe3111727664047b741079/m/1/a69ec893-3603-4a93-b312-105bd62867c5.png" value="https://image.s4.sfmc-content.com/lib/fe3111727664047b741079/m/1/a69ec893-3603-4a93-b312-105bd62867c5.png" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Contact Name</label>
-                            <input type="text" name="contactName" placeholder="Rachel Adams" value="Rachel Adams" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Contact Title</label>
-                            <input type="text" name="contactTitle" placeholder="VP of Finance, Apex Manufacturing" value="VP of Finance, Apex Manufacturing" required>
-                        </div>
-                    </section>
-            <!-- Badge Section -->
-            <section class="form-section">
+            <form id="lwcForm" method="POST" action="/generate">
+              <!-- Header Section -->
+              <section id="header-section" class="form-section">
+                <h2>Header & Avatar</h2>
+                <div class="form-group">
+                  <label>
+                    Avatar Image
+                    <span class="tooltip-icon"
+                      >ℹ️
+                      <span class="tooltip-text"
+                        >Upload an image file OR paste a URL</span
+                      >
+                    </span>
+                  </label>
+                  <div class="image-upload-group">
+                    <input
+                      type="file"
+                      name="avatarUrl"
+                      accept="image/*"
+                      class="file-upload-input"
+                      id="avatar-file"
+                    />
+                    <span class="file-or-divider">OR</span>
+                    <input
+                      type="text"
+                      name="avatarUrl_url"
+                      placeholder="https://image.s4.sfmc-content.com/..."
+                      value="https://image.s4.sfmc-content.com/lib/fe3111727664047b741079/m/1/a69ec893-3603-4a93-b312-105bd62867c5.png"
+                      class="url-input"
+                      id="avatar-url"
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Contact Name</label>
+                  <input
+                    type="text"
+                    name="contactName"
+                    placeholder="Rachel Adams"
+                    value="Rachel Adams"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Contact Title</label>
+                  <input
+                    type="text"
+                    name="contactTitle"
+                    placeholder="VP of Finance, Apex Manufacturing"
+                    value="VP of Finance, Apex Manufacturing"
+                    required
+                  />
+                </div>
+              </section>
+              <!-- Badge Section -->
+              <section class="form-section">
                 <h2>Badge</h2>
                 <div class="form-group">
-                    <label>Badge Text</label>
-                    <input type="text" name="badgeText" placeholder="VERIFIED DECISION MAKER" value="VERIFIED DECISION MAKER" required>
+                  <label>Badge Text</label>
+                  <input
+                    type="text"
+                    name="badgeText"
+                    placeholder="VERIFIED DECISION MAKER"
+                    value="VERIFIED DECISION MAKER"
+                    required
+                  />
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Badge Background Color</label>
-                        <div class="color-input-group">
-                            <input type="color" class="color-picker" data-hex="badgeBgColorHex" value="#2d7a3e" required>
-                            <input type="text" class="hex-input" name="badgeBgColor" id="badgeBgColorHex" value="#2d7a3e" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#2d7a3e" required>
-                        </div>
+                  <div class="form-group">
+                    <label>Badge Background Color</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="badgeBgColorHex"
+                        value="#2d7a3e"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="badgeBgColor"
+                        id="badgeBgColorHex"
+                        value="#2d7a3e"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#2d7a3e"
+                        required
+                      />
                     </div>
-                    <div class="form-group">
-                        <label>Badge Text Color</label>
-                        <div class="color-input-group">
-                            <input type="color" class="color-picker" data-hex="badgeTextColorHex" value="#ffffff" required>
-                            <input type="text" class="hex-input" name="badgeTextColor" id="badgeTextColorHex" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#ffffff" required>
-                        </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Badge Text Color</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="badgeTextColorHex"
+                        value="#ffffff"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="badgeTextColor"
+                        id="badgeTextColorHex"
+                        value="#ffffff"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#ffffff"
+                        required
+                      />
                     </div>
+                  </div>
                 </div>
-            </section>
+              </section>
 
-            <!-- Card Colors -->
-            <section class="form-section">
+              <!-- Card Colors -->
+              <section class="form-section">
                 <h2>Card Styling</h2>
-                <div class="form-group">
+                <div class="form-row">
+                  <div class="form-group">
                     <label>Background Color</label>
                     <div class="color-input-group">
-                        <input type="color" class="color-picker" data-hex="bgColorHex" value="#2a94d6" required>
-                        <input type="text" class="hex-input" name="bgColor" id="bgColorHex" value="#2a94d6" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#2a94d6" required>
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="bgColorHex"
+                        value="#2a94d6"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="bgColor"
+                        id="bgColorHex"
+                        value="#2a94d6"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#2a94d6"
+                        required
+                      />
                     </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Text Color</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="textColorHex"
+                        value="#ffffff"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="textColor"
+                        id="textColorHex"
+                        value="#ffffff"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#ffffff"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-            </section>
+              </section>
 
-            <!-- Fields Section 1 -->
-            <section class="form-section">
+              <!-- Fields Section 1 -->
+              <section class="form-section">
                 <h2>Details Section 1</h2>
 
                 <div class="field-group">
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Icon Name
-                                <span class="tooltip-icon">ℹ️
-                                    <span class="tooltip-text">SLDS icon names like utility:user, utility:email, utility:phone_portrait. <a href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464" target="_blank" rel="noopener noreferrer">View SLDS Icons</a></span>
-                                </span>
-                            </label>
-                            <input type="text" name="field1Icon" placeholder="utility:user" value="utility:user" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Label</label>
-                            <input type="text" name="field1Label" placeholder="Customer ID" value="Customer ID" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Value</label>
-                            <input type="text" name="field1Value" id="input-field1-value" placeholder="C-58392" value="C-58392" required>
-                        </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>
+                        Icon Name
+                        <span class="tooltip-icon"
+                          >ℹ️
+                          <span class="tooltip-text"
+                            >SLDS icon names like utility:user, utility:email,
+                            utility:phone_portrait.
+                            <a
+                              href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              >View SLDS Icons</a
+                            ></span
+                          >
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        name="field1Icon"
+                        placeholder="utility:user"
+                        value="utility:user"
+                        required
+                      />
                     </div>
+                    <div class="form-group">
+                      <label>Label</label>
+                      <input
+                        type="text"
+                        name="field1Label"
+                        placeholder="Customer ID"
+                        value="Customer ID"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Value</label>
+                      <input
+                        type="text"
+                        name="field1Value"
+                        id="input-field1-value"
+                        placeholder="C-58392"
+                        value="C-58392"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div class="field-group">
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Icon Name
-                                <span class="tooltip-icon">ℹ️
-                                    <span class="tooltip-text">SLDS icon names like utility:user, utility:email, utility:phone_portrait. <a href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464" target="_blank" rel="noopener noreferrer">View SLDS Icons</a></span>
-                                </span>
-                            </label>
-                            <input type="text" name="field2Icon" placeholder="utility:email" value="utility:email" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Label</label>
-                            <input type="text" name="field2Label" placeholder="Email" value="Email" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Value</label>
-                            <input type="text" name="field2Value" id="input-field2-value" placeholder="radams@apexmfg.com" value="radams@apexmfg.com" required>
-                        </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>
+                        Icon Name
+                        <span class="tooltip-icon"
+                          >ℹ️
+                          <span class="tooltip-text"
+                            >SLDS icon names like utility:user, utility:email,
+                            utility:phone_portrait.
+                            <a
+                              href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              >View SLDS Icons</a
+                            ></span
+                          >
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        name="field2Icon"
+                        placeholder="utility:email"
+                        value="utility:email"
+                        required
+                      />
                     </div>
+                    <div class="form-group">
+                      <label>Label</label>
+                      <input
+                        type="text"
+                        name="field2Label"
+                        placeholder="Email"
+                        value="Email"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Value</label>
+                      <input
+                        type="text"
+                        name="field2Value"
+                        id="input-field2-value"
+                        placeholder="radams@apexmfg.com"
+                        value="radams@apexmfg.com"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div class="field-group">
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Icon Name
-                                <span class="tooltip-icon">ℹ️
-                                    <span class="tooltip-text">SLDS icon names like utility:user, utility:email, utility:phone_portrait. <a href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464" target="_blank" rel="noopener noreferrer">View SLDS Icons</a></span>
-                                </span>
-                            </label>
-                            <input type="text" name="field3Icon" placeholder="utility:phone_portrait" value="utility:phone_portrait" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Label</label>
-                            <input type="text" name="field3Label" placeholder="Phone" value="Phone" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Value</label>
-                            <input type="text" name="field3Value" id="input-field3-value" placeholder="+1 (312) 555-0198" value="+1 (312) 555-0198" required>
-                        </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>
+                        Icon Name
+                        <span class="tooltip-icon"
+                          >ℹ️
+                          <span class="tooltip-text"
+                            >SLDS icon names like utility:user, utility:email,
+                            utility:phone_portrait.
+                            <a
+                              href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              >View SLDS Icons</a
+                            ></span
+                          >
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        name="field3Icon"
+                        placeholder="utility:phone_portrait"
+                        value="utility:phone_portrait"
+                        required
+                      />
                     </div>
+                    <div class="form-group">
+                      <label>Label</label>
+                      <input
+                        type="text"
+                        name="field3Label"
+                        placeholder="Phone"
+                        value="Phone"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Value</label>
+                      <input
+                        type="text"
+                        name="field3Value"
+                        id="input-field3-value"
+                        placeholder="+1 (312) 555-0198"
+                        value="+1 (312) 555-0198"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div class="field-group">
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Icon Name
-                                <span class="tooltip-icon">ℹ️
-                                    <span class="tooltip-text">SLDS icon names like utility:user, utility:email, utility:phone_portrait. <a href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464" target="_blank" rel="noopener noreferrer">View SLDS Icons</a></span>
-                                </span>
-                            </label>
-                            <input type="text" name="field4Icon" placeholder="utility:location" value="utility:location" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Label</label>
-                            <input type="text" name="field4Label" placeholder="Address" value="Address" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Value</label>
-                            <input type="text" name="field4Value" id="input-field4-value" placeholder="500 W Madison St, Chicago, IL 60661" value="500 W Madison St, Chicago, IL 60661" required>
-                        </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>
+                        Icon Name
+                        <span class="tooltip-icon"
+                          >ℹ️
+                          <span class="tooltip-text"
+                            >SLDS icon names like utility:user, utility:email,
+                            utility:phone_portrait.
+                            <a
+                              href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              >View SLDS Icons</a
+                            ></span
+                          >
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        name="field4Icon"
+                        placeholder="utility:location"
+                        value="utility:location"
+                        required
+                      />
                     </div>
+                    <div class="form-group">
+                      <label>Label</label>
+                      <input
+                        type="text"
+                        name="field4Label"
+                        placeholder="Address"
+                        value="Address"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Value</label>
+                      <input
+                        type="text"
+                        name="field4Value"
+                        id="input-field4-value"
+                        placeholder="500 W Madison St, Chicago, IL 60661"
+                        value="500 W Madison St, Chicago, IL 60661"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-            </section>
+              </section>
 
-            <!-- Fields Section 2 -->
-            <section class="form-section">
+              <!-- Fields Section 2 -->
+              <section class="form-section">
                 <h2>Details Section 2</h2>
 
                 <div class="field-group">
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Icon Name
-                                <span class="tooltip-icon">ℹ️
-                                    <span class="tooltip-text">SLDS icon names like utility:user, utility:email, utility:phone_portrait. <a href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464" target="_blank" rel="noopener noreferrer">View SLDS Icons</a></span>
-                                </span>
-                            </label>
-                            <input type="text" name="field5Icon" placeholder="utility:graph" value="utility:graph" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Label</label>
-                            <input type="text" name="field5Label" placeholder="Segment" value="Segment" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Value</label>
-                            <input type="text" name="field5Value" id="input-field5-value" placeholder="Commercial" value="Commercial" required>
-                        </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>
+                        Icon Name
+                        <span class="tooltip-icon"
+                          >ℹ️
+                          <span class="tooltip-text"
+                            >SLDS icon names like utility:user, utility:email,
+                            utility:phone_portrait.
+                            <a
+                              href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              >View SLDS Icons</a
+                            ></span
+                          >
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        name="field5Icon"
+                        placeholder="utility:graph"
+                        value="utility:graph"
+                        required
+                      />
                     </div>
+                    <div class="form-group">
+                      <label>Label</label>
+                      <input
+                        type="text"
+                        name="field5Label"
+                        placeholder="Segment"
+                        value="Segment"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Value</label>
+                      <input
+                        type="text"
+                        name="field5Value"
+                        id="input-field5-value"
+                        placeholder="Commercial"
+                        value="Commercial"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div class="field-group">
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Icon Name
-                                <span class="tooltip-icon">ℹ️
-                                    <span class="tooltip-text">SLDS icon names like utility:user, utility:email, utility:phone_portrait. <a href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464" target="_blank" rel="noopener noreferrer">View SLDS Icons</a></span>
-                                </span>
-                            </label>
-                            <input type="text" name="field6Icon" placeholder="utility:groups" value="utility:groups" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Label</label>
-                            <input type="text" name="field6Label" placeholder="Employee Count" value="Employee Count" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Value</label>
-                            <input type="text" name="field6Value" id="input-field6-value" placeholder="850" value="850" required>
-                        </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>
+                        Icon Name
+                        <span class="tooltip-icon"
+                          >ℹ️
+                          <span class="tooltip-text"
+                            >SLDS icon names like utility:user, utility:email,
+                            utility:phone_portrait.
+                            <a
+                              href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              >View SLDS Icons</a
+                            ></span
+                          >
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        name="field6Icon"
+                        placeholder="utility:groups"
+                        value="utility:groups"
+                        required
+                      />
                     </div>
+                    <div class="form-group">
+                      <label>Label</label>
+                      <input
+                        type="text"
+                        name="field6Label"
+                        placeholder="Employee Count"
+                        value="Employee Count"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Value</label>
+                      <input
+                        type="text"
+                        name="field6Value"
+                        id="input-field6-value"
+                        placeholder="850"
+                        value="850"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div class="field-group">
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Icon Name
-                                <span class="tooltip-icon">ℹ️
-                                    <span class="tooltip-text">SLDS icon names like utility:user, utility:email, utility:phone_portrait. <a href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464" target="_blank" rel="noopener noreferrer">View SLDS Icons</a></span>
-                                </span>
-                            </label>
-                            <input type="text" name="field7Icon" placeholder="utility:money" value="utility:money" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Label</label>
-                            <input type="text" name="field7Label" placeholder="Lifetime Value" value="Lifetime Value" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Value</label>
-                            <input type="text" name="field7Value" id="input-field7-value" placeholder="$3.2M" value="$3.2M" required>
-                        </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>
+                        Icon Name
+                        <span class="tooltip-icon"
+                          >ℹ️
+                          <span class="tooltip-text"
+                            >SLDS icon names like utility:user, utility:email,
+                            utility:phone_portrait.
+                            <a
+                              href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              >View SLDS Icons</a
+                            ></span
+                          >
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        name="field7Icon"
+                        placeholder="utility:money"
+                        value="utility:money"
+                        required
+                      />
                     </div>
+                    <div class="form-group">
+                      <label>Label</label>
+                      <input
+                        type="text"
+                        name="field7Label"
+                        placeholder="Lifetime Value"
+                        value="Lifetime Value"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Value</label>
+                      <input
+                        type="text"
+                        name="field7Value"
+                        id="input-field7-value"
+                        placeholder="$3.2M"
+                        value="$3.2M"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
 
                 <div class="field-group">
-                    
-                    <div class="form-row">
-                        <div class="form-group">
-                            <label>
-                                Icon Name
-                                <span class="tooltip-icon">ℹ️
-                                    <span class="tooltip-text">SLDS icon names like utility:user, utility:email, utility:phone_portrait. <a href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464" target="_blank" rel="noopener noreferrer">View SLDS Icons</a></span>
-                                </span>
-                            </label>
-                            <input type="text" name="field8Icon" placeholder="utility:trending" value="utility:trending" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Label</label>
-                            <input type="text" name="field8Label" placeholder="Propensity to Purchase" value="Propensity to Purchase" required>
-                        </div>
-                        <div class="form-group">
-                            <label>Value</label>
-                            <input type="text" name="field8Value" id="input-field8-value" placeholder="Very High" value="Very High" required>
-                        </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>
+                        Icon Name
+                        <span class="tooltip-icon"
+                          >ℹ️
+                          <span class="tooltip-text"
+                            >SLDS icon names like utility:user, utility:email,
+                            utility:phone_portrait.
+                            <a
+                              href="https://www.lightningdesignsystem.com/2e1ef8501/p/83309d-icons/b/586464"
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              >View SLDS Icons</a
+                            ></span
+                          >
+                        </span>
+                      </label>
+                      <input
+                        type="text"
+                        name="field8Icon"
+                        placeholder="utility:trending"
+                        value="utility:trending"
+                        required
+                      />
                     </div>
+                    <div class="form-group">
+                      <label>Label</label>
+                      <input
+                        type="text"
+                        name="field8Label"
+                        placeholder="Propensity to Purchase"
+                        value="Propensity to Purchase"
+                        required
+                      />
+                    </div>
+                    <div class="form-group">
+                      <label>Value</label>
+                      <input
+                        type="text"
+                        name="field8Value"
+                        id="input-field8-value"
+                        placeholder="Very High"
+                        value="Very High"
+                        required
+                      />
+                    </div>
+                  </div>
                 </div>
-            </section>
+              </section>
 
-            <!-- Propensity Slider -->
-            <section class="form-section">
+              <!-- Propensity Slider -->
+              <section class="form-section">
                 <h2>Propensity Slider</h2>
                 <div class="form-group">
-                    <label>Slider Percentage (0-100)</label>
-                    <input type="number" name="sliderPercentage" min="0" max="100" value="85" placeholder="85" required>
+                  <label>Slider Percentage (0-100)</label>
+                  <input
+                    type="number"
+                    name="sliderPercentage"
+                    min="0"
+                    max="100"
+                    value="85"
+                    placeholder="85"
+                    required
+                  />
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Slider Background</label>
-                        <div class="color-input-group">
-                            <input type="color" class="color-picker" data-hex="sliderBgColorHex" value="#d1d1d1" required>
-                            <input type="text" class="hex-input" name="sliderBgColor" id="sliderBgColorHex" value="#d1d1d1" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#d1d1d1" required>
-                        </div>
+                  <div class="form-group">
+                    <label>Slider Background</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="sliderBgColorHex"
+                        value="#d1d1d1"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="sliderBgColor"
+                        id="sliderBgColorHex"
+                        value="#d1d1d1"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#d1d1d1"
+                        required
+                      />
                     </div>
-                    <div class="form-group">
-                        <label>Slider Fill</label>
-                        <div class="color-input-group">
-                            <input type="color" class="color-picker" data-hex="sliderFillColorHex" value="#0E172A" required>
-                            <input type="text" class="hex-input" name="sliderFillColor" id="sliderFillColorHex" value="#0E172A" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#0E172A" required>
-                        </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Slider Fill</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="sliderFillColorHex"
+                        value="#0E172A"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="sliderFillColor"
+                        id="sliderFillColorHex"
+                        value="#0E172A"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#0E172A"
+                        required
+                      />
                     </div>
-                    <div class="form-group">
-                        <label>Slider Knob</label>
-                        <div class="color-input-group">
-                            <input type="color" class="color-picker" data-hex="sliderKnobColorHex" value="#ffffff" required>
-                            <input type="text" class="hex-input" name="sliderKnobColor" id="sliderKnobColorHex" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#ffffff" required>
-                        </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Slider Knob</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="sliderKnobColorHex"
+                        value="#ffffff"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="sliderKnobColor"
+                        id="sliderKnobColorHex"
+                        value="#ffffff"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#ffffff"
+                        required
+                      />
                     </div>
+                  </div>
                 </div>
-            </section>
+              </section>
 
-            <!-- Engagement Ring -->
-            <section class="form-section">
+              <!-- Engagement Ring -->
+              <section class="form-section">
                 <h2>Engagement Ring</h2>
                 <div class="form-group">
-                    <label>Ring Percentage (0-100)</label>
-                    <input type="number" name="ringPercentage" min="0" max="100" value="84" placeholder="84" required>
+                  <label>Ring Percentage (0-100)</label>
+                  <input
+                    type="number"
+                    name="ringPercentage"
+                    min="0"
+                    max="100"
+                    value="84"
+                    placeholder="84"
+                    required
+                  />
                 </div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Ring Background</label>
-                        <div class="color-input-group">
-                            <input type="color" class="color-picker" data-hex="ringBgColorHex" value="#d1d1d1" required>
-                            <input type="text" class="hex-input" name="ringBgColor" id="ringBgColorHex" value="#d1d1d1" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#d1d1d1" required>
-                        </div>
+                  <div class="form-group">
+                    <label>Ring Background</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="ringBgColorHex"
+                        value="#d1d1d1"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="ringBgColor"
+                        id="ringBgColorHex"
+                        value="#d1d1d1"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#d1d1d1"
+                        required
+                      />
                     </div>
-                    <div class="form-group">
-                        <label>Ring Progress</label>
-                        <div class="color-input-group">
-                            <input type="color" class="color-picker" data-hex="ringProgressColorHex" value="#0E172A" required>
-                            <input type="text" class="hex-input" name="ringProgressColor" id="ringProgressColorHex" value="#0E172A" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#0E172A" required>
-                        </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Ring Progress</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="ringProgressColorHex"
+                        value="#0E172A"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="ringProgressColor"
+                        id="ringProgressColorHex"
+                        value="#0E172A"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#0E172A"
+                        required
+                      />
                     </div>
-                    <div class="form-group">
-                        <label>Ring Text Color</label>
-                        <div class="color-input-group">
-                            <input type="color" class="color-picker" data-hex="ringTextColorHex" value="#ffffff" required>
-                            <input type="text" class="hex-input" name="ringTextColor" id="ringTextColorHex" value="#ffffff" pattern="^#[0-9A-Fa-f]{6}$" placeholder="#ffffff" required>
-                        </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Ring Text Color</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="ringTextColorHex"
+                        value="#ffffff"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="ringTextColor"
+                        id="ringTextColorHex"
+                        value="#ffffff"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#ffffff"
+                        required
+                      />
                     </div>
+                  </div>
                 </div>
                 <div class="form-group">
-                    <label>Engagement Title</label>
-                    <input type="text" name="engagementTitle" placeholder="Relationship Strength" value="Relationship Strength" required>
+                  <label>Engagement Title</label>
+                  <input
+                    type="text"
+                    name="engagementTitle"
+                    placeholder="Relationship Strength"
+                    value="Relationship Strength"
+                    required
+                  />
                 </div>
                 <div class="form-group">
-                    <label>Engagement Description</label>
-                    <input type="text" name="engagementDescription" placeholder="Strong relationship with 6+ touchpoints per quarter including executive meetings, product consultations, and financial planning workshops." value="Strong relationship with 6+ touchpoints per quarter including executive meetings, product consultations, and financial planning workshops." required>
+                  <label>Engagement Description</label>
+                  <input
+                    type="text"
+                    name="engagementDescription"
+                    placeholder="Strong relationship with 6+ touchpoints per quarter including executive meetings, product consultations, and financial planning workshops."
+                    value="Strong relationship with 6+ touchpoints per quarter including executive meetings, product consultations, and financial planning workshops."
+                    required
+                  />
                 </div>
-            </section>
+              </section>
 
-                    <!-- Download Button -->
-                    <button type="submit" class="submit-btn">⚡ Download Component (ZIP)</button>
-                </form>
-            </section>
+              <!-- Download Button -->
+              <div class="button-group">
+                <button type="submit" class="submit-btn">
+                  ⚡ Download Component (ZIP)
+                </button>
+                <button type="button" class="deploy-btn">
+                  🔐 Connect to Salesforce
+                </button>
+              </div>
+            </form>
+          </section>
 
-            <!-- Section 2: Live Preview -->
-            <section id="preview" class="page-section">
-                <h2 class="section-title">Live Preview</h2>
-                <p class="section-description">Updates in real-time as you fill out the form above</p>
-                
-                <div class="preview-card" id="previewCard">
-                    <div class="preview-header">
-                        <img src="https://image.s4.sfmc-content.com/lib/fe3111727664047b741079/m/1/a69ec893-3603-4a93-b312-105bd62867c5.png" alt="Avatar" class="preview-avatar" id="previewAvatar">
-                        <div class="preview-info">
-                            <div class="preview-name" id="previewName">Rachel Adams</div>
-                            <div class="preview-title" id="previewTitle">VP of Finance, Apex Manufacturing</div>
-                            <span class="preview-badge" id="previewBadge">VERIFIED DECISION MAKER</span>
-                        </div>
-                    </div>
-                    <div class="preview-divider"></div>
-                    <div class="preview-fields">
-                        <div class="preview-field">
-                            <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M26 2a24 24 0 100 48 24 24 0 000-48zm0 8a7 7 0 110 14 7 7 0 010-14zm13 31c0 1-.9 2-2 2H15c-1.1 0-2-.9-2-2v-3c0-4.6 6-7 13-7s13 2.4 13 7v3z"/></svg>
-                            <span class="preview-field-label" id="previewField1Label">Customer ID</span>
-                            <span class="preview-field-value" id="previewField1Value">C-58392</span>
-                        </div>
-                        <div class="preview-field">
-                            <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M42 16H10c-2.2 0-4 1.8-4 4v16c0 2.2 1.8 4 4 4h32c2.2 0 4-1.8 4-4V20c0-2.2-1.8-4-4-4zm-1.4 4L26 28.8 11.4 20h29.2zM10 36V22.7l15.5 8.8c.3.2.7.2 1 0L42 22.7V36H10z"/></svg>
-                            <span class="preview-field-label" id="previewField2Label">Email</span>
-                            <span class="preview-field-value" id="previewField2Value">radams@apexmfg.com</span>
-                        </div>
-                        <div class="preview-field">
-                            <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M46.8 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L17.7 7.2c-1.6-1.6-4.2-1.6-5.8 0L8.5 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.4-5.9z"/></svg>
-                            <span class="preview-field-label" id="previewField3Label">Phone</span>
-                            <span class="preview-field-value" id="previewField3Value">+1 (312) 555-0198</span>
-                        </div>
-                        <div class="preview-field">
-                            <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M47.5 23.9l-21-19c-.9-.8-2.1-.8-3 0l-21 19c-.7.6-.8 1.7-.2 2.4.6.7 1.7.8 2.4.2l1.3-1.1V44c0 2.2 1.8 4 4 4h10c1.1 0 2-.9 2-2V34c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v12c0 1.1.9 2 2 2h10c2.2 0 4-1.8 4-4V25.4l1.3 1.1c.7.6 1.8.5 2.4-.2.6-.7.5-1.8-.2-2.4z"/></svg>
-                            <span class="preview-field-label" id="previewField4Label">Address</span>
-                            <span class="preview-field-value" id="previewField4Value">500 W Madison St, Chicago, IL 60661</span>
-                        </div>
-                    </div>
-                    <div class="preview-divider"></div>
-                    <div class="preview-fields">
-                        <div class="preview-field">
-                            <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M26 26c3.9 0 7-3.1 7-7s-3.1-7-7-7-7 3.1-7 7 3.1 7 7 7zm14-7c0 3.9-3.1 7-7 7s-7-3.1-7-7 3.1-7 7-7 7 3.1 7 7zm-28 0c0 3.9-3.1 7-7 7s-7-3.1-7-7 3.1-7 7-7 7 3.1 7 7zm14 10c-6.1 0-13 3.1-13 6v4h26v-4c0-2.9-6.9-6-13-6zm14 0c-.8 0-1.7.1-2.5.2 3 2 5.5 4.6 5.5 5.8v4h9v-4c0-2.9-6.9-6-12-6zm-28 0c-5.1 0-12 3.1-12 6v4h9v-4c0-1.2 2.5-3.8 5.5-5.8-.8-.1-1.7-.2-2.5-.2z"/></svg>
-                            <span class="preview-field-label" id="previewField5Label">Segment</span>
-                            <span class="preview-field-value" id="previewField5Value">Commercial</span>
-                        </div>
-                        <div class="preview-field">
-                            <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M48 46h-2V8c0-2.2-1.8-4-4-4h-8c-2.2 0-4 1.8-4 4v12h-8V8c0-2.2-1.8-4-4-4h-8C7.8 4 6 5.8 6 8v38H4c-1.1 0-2 .9-2 2v2h48v-2c0-1.1-.9-2-2-2zM13 12h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm12 0h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm10 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1z"/></svg>
-                            <span class="preview-field-label" id="previewField6Label">Employee Count</span>
-                            <span class="preview-field-value" id="previewField6Value">850</span>
-                        </div>
-                        <div class="preview-field">
-                            <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M44 18.6V44c0 2.2-1.8 4-4 4H12c-2.2 0-4-1.8-4-4V18.6c0-1.2.5-2.3 1.4-3.1L23.5 4.7c1.4-1.3 3.6-1.3 5 0l14.1 10.8c.9.8 1.4 1.9 1.4 3.1zM26 24c-3.3 0-6 2.7-6 6 0 2 1.2 3.8 3 4.7V38c0 1.7 1.3 3 3 3s3-1.3 3-3v-3.3c1.8-.9 3-2.7 3-4.7 0-3.3-2.7-6-6-6z"/></svg>
-                            <span class="preview-field-label" id="previewField7Label">Lifetime Value</span>
-                            <span class="preview-field-value" id="previewField7Value">$3.2M</span>
-                        </div>
-                        <div class="preview-field">
-                            <svg class="preview-field-icon" fill="white" viewBox="0 0 52 52"><path d="M48.5 25l-6-15c-.5-1.2-1.6-2-2.8-2H12.3c-1.2 0-2.4.8-2.8 2l-6 15c-.3.8-.3 1.6.1 2.3.4.7 1.1 1.2 1.9 1.4V43c0 1.7 1.3 3 3 3h35c1.7 0 3-1.3 3-3V28.7c.8-.2 1.5-.7 1.9-1.4.4-.7.5-1.5.1-2.3zM15.8 11.4c.2-.2.4-.4.7-.4h19c.3 0 .5.2.7.4l4.3 10.7c.1.3 0 .6-.2.8-.2.2-.5.3-.8.2l-6.7-2c-.5-.2-1.1-.2-1.6 0l-6.1 2c-.5.2-1.1.2-1.6 0l-6.1-2c-.5-.2-1.1-.2-1.6 0l-6.7 2c-.3.1-.6 0-.8-.2-.2-.2-.3-.5-.2-.8l4.3-10.7zM20 38c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"/></svg>
-                            <span class="preview-field-label" id="previewField8Label">Propensity to Purchase</span>
-                            <span class="preview-field-value" id="previewField8Value">Very High</span>
-                        </div>
-                    </div>
-                    <div class="preview-slider">
-                        <div class="preview-slider-bg">
-                            <div class="preview-slider-fill" id="previewSliderFill">
-                                <div class="preview-slider-knob"></div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="preview-engagement">
-                        <div class="preview-ring">
-                            <svg width="70" height="70" id="previewRingSvg">
-                                <circle cx="35" cy="35" r="30" fill="none" stroke="#d1d1d1" stroke-width="8"/>
-                                <circle cx="35" cy="35" r="30" fill="none" stroke="#0E172A" stroke-width="8"
-                                    stroke-dasharray="188.4" stroke-dashoffset="30" id="previewRingCircle"/>
-                            </svg>
-                            <div class="preview-ring-text" id="previewRingText">84%</div>
-                        </div>
-                        <div class="preview-engagement-text">
-                            <h3 id="previewEngagementTitle">Relationship Strength</h3>
-                            <p id="previewEngagementDesc">Strong relationship with 6+ touchpoints per quarter including executive meetings, product consultations, and financial planning workshops.</p>
-                        </div>
-                    </div>
+          <!-- Section 2: Live Preview -->
+          <section id="preview" class="page-section">
+            <h2 class="section-title">Live Preview</h2>
+            <p class="section-description">
+              Updates in real-time as you fill out the form above
+            </p>
+
+            <div class="preview-card" id="previewCard">
+              <div class="preview-header">
+                <img
+                  src="https://image.s4.sfmc-content.com/lib/fe3111727664047b741079/m/1/a69ec893-3603-4a93-b312-105bd62867c5.png"
+                  alt="Avatar"
+                  class="preview-avatar"
+                  id="previewAvatar"
+                />
+                <div class="preview-info">
+                  <div class="preview-name" id="previewName">Rachel Adams</div>
+                  <div class="preview-title" id="previewTitle">
+                    VP of Finance, Apex Manufacturing
+                  </div>
+                  <span class="preview-badge" id="previewBadge"
+                    >VERIFIED DECISION MAKER</span
+                  >
                 </div>
-            </section>
+              </div>
+              <div class="preview-divider"></div>
+              <div class="preview-fields">
+                <div class="preview-field">
+                  <svg
+                    class="preview-field-icon"
+                    fill="white"
+                    viewBox="0 0 52 52"
+                  >
+                    <path
+                      d="M26 2a24 24 0 100 48 24 24 0 000-48zm0 8a7 7 0 110 14 7 7 0 010-14zm13 31c0 1-.9 2-2 2H15c-1.1 0-2-.9-2-2v-3c0-4.6 6-7 13-7s13 2.4 13 7v3z"
+                    />
+                  </svg>
+                  <span class="preview-field-label" id="previewField1Label"
+                    >Customer ID</span
+                  >
+                  <span class="preview-field-value" id="previewField1Value"
+                    >C-58392</span
+                  >
+                </div>
+                <div class="preview-field">
+                  <svg
+                    class="preview-field-icon"
+                    fill="white"
+                    viewBox="0 0 52 52"
+                  >
+                    <path
+                      d="M42 16H10c-2.2 0-4 1.8-4 4v16c0 2.2 1.8 4 4 4h32c2.2 0 4-1.8 4-4V20c0-2.2-1.8-4-4-4zm-1.4 4L26 28.8 11.4 20h29.2zM10 36V22.7l15.5 8.8c.3.2.7.2 1 0L42 22.7V36H10z"
+                    />
+                  </svg>
+                  <span class="preview-field-label" id="previewField2Label"
+                    >Email</span
+                  >
+                  <span class="preview-field-value" id="previewField2Value"
+                    >radams@apexmfg.com</span
+                  >
+                </div>
+                <div class="preview-field">
+                  <svg
+                    class="preview-field-icon"
+                    fill="white"
+                    viewBox="0 0 52 52"
+                  >
+                    <path
+                      d="M46.8 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L17.7 7.2c-1.6-1.6-4.2-1.6-5.8 0L8.5 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.4-5.9z"
+                    />
+                  </svg>
+                  <span class="preview-field-label" id="previewField3Label"
+                    >Phone</span
+                  >
+                  <span class="preview-field-value" id="previewField3Value"
+                    >+1 (312) 555-0198</span
+                  >
+                </div>
+                <div class="preview-field">
+                  <svg
+                    class="preview-field-icon"
+                    fill="white"
+                    viewBox="0 0 52 52"
+                  >
+                    <path
+                      d="M47.5 23.9l-21-19c-.9-.8-2.1-.8-3 0l-21 19c-.7.6-.8 1.7-.2 2.4.6.7 1.7.8 2.4.2l1.3-1.1V44c0 2.2 1.8 4 4 4h10c1.1 0 2-.9 2-2V34c0-1.1.9-2 2-2h4c1.1 0 2 .9 2 2v12c0 1.1.9 2 2 2h10c2.2 0 4-1.8 4-4V25.4l1.3 1.1c.7.6 1.8.5 2.4-.2.6-.7.5-1.8-.2-2.4z"
+                    />
+                  </svg>
+                  <span class="preview-field-label" id="previewField4Label"
+                    >Address</span
+                  >
+                  <span class="preview-field-value" id="previewField4Value"
+                    >500 W Madison St, Chicago, IL 60661</span
+                  >
+                </div>
+              </div>
+              <div class="preview-divider"></div>
+              <div class="preview-fields">
+                <div class="preview-field">
+                  <svg
+                    class="preview-field-icon"
+                    fill="white"
+                    viewBox="0 0 52 52"
+                  >
+                    <path
+                      d="M26 26c3.9 0 7-3.1 7-7s-3.1-7-7-7-7 3.1-7 7 3.1 7 7 7zm14-7c0 3.9-3.1 7-7 7s-7-3.1-7-7 3.1-7 7-7 7 3.1 7 7zm-28 0c0 3.9-3.1 7-7 7s-7-3.1-7-7 3.1-7 7-7 7 3.1 7 7zm14 10c-6.1 0-13 3.1-13 6v4h26v-4c0-2.9-6.9-6-13-6zm14 0c-.8 0-1.7.1-2.5.2 3 2 5.5 4.6 5.5 5.8v4h9v-4c0-2.9-6.9-6-12-6zm-28 0c-5.1 0-12 3.1-12 6v4h9v-4c0-1.2 2.5-3.8 5.5-5.8-.8-.1-1.7-.2-2.5-.2z"
+                    />
+                  </svg>
+                  <span class="preview-field-label" id="previewField5Label"
+                    >Segment</span
+                  >
+                  <span class="preview-field-value" id="previewField5Value"
+                    >Commercial</span
+                  >
+                </div>
+                <div class="preview-field">
+                  <svg
+                    class="preview-field-icon"
+                    fill="white"
+                    viewBox="0 0 52 52"
+                  >
+                    <path
+                      d="M48 46h-2V8c0-2.2-1.8-4-4-4h-8c-2.2 0-4 1.8-4 4v12h-8V8c0-2.2-1.8-4-4-4h-8C7.8 4 6 5.8 6 8v38H4c-1.1 0-2 .9-2 2v2h48v-2c0-1.1-.9-2-2-2zM13 12h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm12 0h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm10 8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1zm0-8h4c.6 0 1 .4 1 1v2c0 .6-.4 1-1 1h-4c-.6 0-1-.4-1-1v-2c0-.6.4-1 1-1z"
+                    />
+                  </svg>
+                  <span class="preview-field-label" id="previewField6Label"
+                    >Employee Count</span
+                  >
+                  <span class="preview-field-value" id="previewField6Value"
+                    >850</span
+                  >
+                </div>
+                <div class="preview-field">
+                  <svg
+                    class="preview-field-icon"
+                    fill="white"
+                    viewBox="0 0 52 52"
+                  >
+                    <path
+                      d="M44 18.6V44c0 2.2-1.8 4-4 4H12c-2.2 0-4-1.8-4-4V18.6c0-1.2.5-2.3 1.4-3.1L23.5 4.7c1.4-1.3 3.6-1.3 5 0l14.1 10.8c.9.8 1.4 1.9 1.4 3.1zM26 24c-3.3 0-6 2.7-6 6 0 2 1.2 3.8 3 4.7V38c0 1.7 1.3 3 3 3s3-1.3 3-3v-3.3c1.8-.9 3-2.7 3-4.7 0-3.3-2.7-6-6-6z"
+                    />
+                  </svg>
+                  <span class="preview-field-label" id="previewField7Label"
+                    >Lifetime Value</span
+                  >
+                  <span class="preview-field-value" id="previewField7Value"
+                    >$3.2M</span
+                  >
+                </div>
+                <div class="preview-field">
+                  <svg
+                    class="preview-field-icon"
+                    fill="white"
+                    viewBox="0 0 52 52"
+                  >
+                    <path
+                      d="M48.5 25l-6-15c-.5-1.2-1.6-2-2.8-2H12.3c-1.2 0-2.4.8-2.8 2l-6 15c-.3.8-.3 1.6.1 2.3.4.7 1.1 1.2 1.9 1.4V43c0 1.7 1.3 3 3 3h35c1.7 0 3-1.3 3-3V28.7c.8-.2 1.5-.7 1.9-1.4.4-.7.5-1.5.1-2.3zM15.8 11.4c.2-.2.4-.4.7-.4h19c.3 0 .5.2.7.4l4.3 10.7c.1.3 0 .6-.2.8-.2.2-.5.3-.8.2l-6.7-2c-.5-.2-1.1-.2-1.6 0l-6.1 2c-.5.2-1.1.2-1.6 0l-6.1-2c-.5-.2-1.1-.2-1.6 0l-6.7 2c-.3.1-.6 0-.8-.2-.2-.2-.3-.5-.2-.8l4.3-10.7zM20 38c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm6 0c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2z"
+                    />
+                  </svg>
+                  <span class="preview-field-label" id="previewField8Label"
+                    >Propensity to Purchase</span
+                  >
+                  <span class="preview-field-value" id="previewField8Value"
+                    >Very High</span
+                  >
+                </div>
+              </div>
+              <div class="preview-slider">
+                <div class="preview-slider-bg">
+                  <div class="preview-slider-fill" id="previewSliderFill">
+                    <div class="preview-slider-knob"></div>
+                  </div>
+                </div>
+              </div>
+              <div class="preview-engagement">
+                <div class="preview-ring">
+                  <svg width="70" height="70" id="previewRingSvg">
+                    <circle
+                      cx="35"
+                      cy="35"
+                      r="30"
+                      fill="none"
+                      stroke="#d1d1d1"
+                      stroke-width="8"
+                    />
+                    <circle
+                      cx="35"
+                      cy="35"
+                      r="30"
+                      fill="none"
+                      stroke="#0E172A"
+                      stroke-width="8"
+                      stroke-dasharray="188.4"
+                      stroke-dashoffset="30"
+                      id="previewRingCircle"
+                    />
+                  </svg>
+                  <div class="preview-ring-text" id="previewRingText">84%</div>
+                </div>
+                <div class="preview-engagement-text">
+                  <h3 id="previewEngagementTitle">Relationship Strength</h3>
+                  <p id="previewEngagementDesc">
+                    Strong relationship with 6+ touchpoints per quarter
+                    including executive meetings, product consultations, and
+                    financial planning workshops.
+                  </p>
+                </div>
+              </div>
             </div>
-            <!-- End Unified Profile Container -->
+          </section>
+        </div>
+        <!-- End Unified Profile Container -->
 
-            <!-- Agentforce Lead Brief Container -->
-            <div id="agentforce-brief-container" style="display: none;">
-                <!-- Create Component Section -->
-                <section id="agentforce-create" class="page-section">
-                    <h2 class="section-title">Create Agentforce Lead Brief</h2>
-                    <p class="section-guidance">Configure your component details below. Watch the Live Preview update in real-time to ensure your design matches your demo story.</p>
+        <!-- Agentforce Lead Brief Container -->
+        <div id="agentforce-brief-container" style="display: none">
+          <!-- Create Component Section -->
+          <section id="agentforce-create" class="page-section">
+            <h2 class="section-title">Create Agentforce Lead Brief</h2>
+            <p class="section-guidance">
+              Configure your component details below. Watch the Live Preview
+              update in real-time to ensure your design matches your demo story.
+            </p>
 
-                    <form id="agentforceForm" method="POST" action="/generate">
-                        <!-- Header Section -->
-                        <section class="form-section">
-                            <h2>Header</h2>
-                            <div class="form-group">
-                                <label>Astro Icon URL</label>
-                                <input type="text" name="astroIconUrl" id="input-astro-icon" placeholder="https://cdn.prod.website-files.com/..." value="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Title</label>
-                                <input type="text" name="title" id="input-title" placeholder="Agentforce Lead Brief" value="Agentforce Lead Brief" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Timestamp Text</label>
-                                <input type="text" name="timestampText" id="input-timestamp" placeholder="Generated just now" value="Generated just now" required>
-                            </div>
-                        </section>
+            <form id="agentforceForm" method="POST" action="/generate">
+              <!-- Header Section -->
+              <section class="form-section">
+                <h2>Header</h2>
+                <div class="form-group">
+                  <label>Astro Icon Image</label>
+                  <div class="image-upload-group">
+                    <input
+                      type="file"
+                      name="astroIconUrl"
+                      accept="image/*"
+                      class="file-upload-input"
+                      id="astro-file"
+                    />
+                    <span class="file-or-divider">OR</span>
+                    <input
+                      type="text"
+                      name="astroIconUrl_url"
+                      placeholder="https://cdn.prod.website-files.com/..."
+                      value="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png"
+                      class="url-input"
+                      id="astro-url"
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Title</label>
+                  <input
+                    type="text"
+                    name="title"
+                    id="input-title"
+                    placeholder="Agentforce Lead Brief"
+                    value="Agentforce Lead Brief"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Timestamp Text</label>
+                  <input
+                    type="text"
+                    name="timestampText"
+                    id="input-timestamp"
+                    placeholder="Generated just now"
+                    value="Generated just now"
+                    required
+                  />
+                </div>
+              </section>
 
-                        <!-- Intent Section -->
-                        <section class="form-section">
-                            <h2>Intent Summary</h2>
-                            <div class="form-group">
-                                <label>Intent Heading</label>
-                                <input type="text" name="intentHeading" id="input-intent-heading" placeholder="Intent Summary" value="Intent Summary" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Intent Text</label>
-                                <textarea name="intentText" id="input-intent-text" class="textarea-input" rows="3" placeholder="Rachel Adams requested information about..." required>Rachel Adams requested information about Commercial Wealth Management solutions for mid-market manufacturers, with a focus on corporate treasury services.</textarea>
-                            </div>
-                        </section>
+              <!-- Intent Section -->
+              <section class="form-section">
+                <h2>Intent Summary</h2>
+                <div class="form-group">
+                  <label>Intent Heading</label>
+                  <input
+                    type="text"
+                    name="intentHeading"
+                    id="input-intent-heading"
+                    placeholder="Intent Summary"
+                    value="Intent Summary"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Intent Text</label>
+                  <textarea
+                    name="intentText"
+                    id="input-intent-text"
+                    class="textarea-input"
+                    rows="3"
+                    placeholder="Rachel Adams requested information about..."
+                    required
+                  >
+Rachel Adams requested information about Commercial Wealth Management solutions for mid-market manufacturers, with a focus on corporate treasury services.</textarea
+                  >
+                </div>
+              </section>
 
-                        <!-- Context Section -->
-                        <section class="form-section">
-                            <h2>Key Context</h2>
-                            <div class="form-group">
-                                <label>Context Heading</label>
-                                <input type="text" name="contextHeading" id="input-context-heading" placeholder="Key Context" value="Key Context" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Context Text</label>
-                                <textarea name="contextText" id="input-context-text" class="textarea-input" rows="3" placeholder="Apex Manufacturing has..." required>Apex Manufacturing generates $50M in annual revenue and maintains $12M in cash reserves. Rachel has decision-making authority for corporate banking and investment strategies.</textarea>
-                            </div>
-                        </section>
+              <!-- Context Section -->
+              <section class="form-section">
+                <h2>Key Context</h2>
+                <div class="form-group">
+                  <label>Context Heading</label>
+                  <input
+                    type="text"
+                    name="contextHeading"
+                    id="input-context-heading"
+                    placeholder="Key Context"
+                    value="Key Context"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Context Text</label>
+                  <textarea
+                    name="contextText"
+                    id="input-context-text"
+                    class="textarea-input"
+                    rows="3"
+                    placeholder="Apex Manufacturing has..."
+                    required
+                  >
+Apex Manufacturing generates $50M in annual revenue and maintains $12M in cash reserves. Rachel has decision-making authority for corporate banking and investment strategies.</textarea
+                  >
+                </div>
+              </section>
 
-                        <!-- Suggested Opener Section -->
-                        <section class="form-section">
-                            <h2>Suggested Opener</h2>
-                            <div class="form-group">
-                                <label>Opener Heading</label>
-                                <input type="text" name="openerHeading" id="input-opener-heading" placeholder="Suggested Opener" value="Suggested Opener" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Opener Text</label>
-                                <textarea name="openerText" id="input-opener-text" class="textarea-input" rows="4" placeholder="Hi Rachel, I noticed your interest in..." required>Hi Rachel, given Apex Manufacturing's strong financial position and growth trajectory, I wanted to explore how our Commercial Real Estate loan options might help you expand your production facilities or modernize equipment. Would Tuesday work for a brief call to discuss your strategic priorities?</textarea>
-                            </div>
-                        </section>
+              <!-- Suggested Opener Section -->
+              <section class="form-section">
+                <h2>Suggested Opener</h2>
+                <div class="form-group">
+                  <label>Opener Heading</label>
+                  <input
+                    type="text"
+                    name="openerHeading"
+                    id="input-opener-heading"
+                    placeholder="Suggested Opener"
+                    value="Suggested Opener"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Opener Text</label>
+                  <textarea
+                    name="openerText"
+                    id="input-opener-text"
+                    class="textarea-input"
+                    rows="4"
+                    placeholder="Hi Rachel, I noticed your interest in..."
+                    required
+                  >
+Hi Rachel, given Apex Manufacturing's strong financial position and growth trajectory, I wanted to explore how our Commercial Real Estate loan options might help you expand your production facilities or modernize equipment. Would Tuesday work for a brief call to discuss your strategic priorities?</textarea
+                  >
+                </div>
+              </section>
 
-                        <!-- Button Text Section -->
-                        <section class="form-section">
-                            <h2>Action Buttons</h2>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Secondary Button Text</label>
-                                    <input type="text" name="secondaryButtonText" id="input-secondary-btn" placeholder="Send Email" value="Send Email" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Primary Button Text</label>
-                                    <input type="text" name="primaryButtonText" id="input-primary-btn" placeholder="Click to Dial" value="Click to Dial" required>
-                                </div>
-                            </div>
-                        </section>
+              <!-- Button Text Section -->
+              <section class="form-section">
+                <h2>Action Buttons</h2>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Secondary Button Text</label>
+                    <input
+                      type="text"
+                      name="secondaryButtonText"
+                      id="input-secondary-btn"
+                      placeholder="Send Email"
+                      value="Send Email"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Primary Button Text</label>
+                    <input
+                      type="text"
+                      name="primaryButtonText"
+                      id="input-primary-btn"
+                      placeholder="Click to Dial"
+                      value="Click to Dial"
+                      required
+                    />
+                  </div>
+                </div>
+              </section>
 
-                        <!-- Download Button -->
-                        <button type="submit" class="submit-btn">⚡ Download Component (ZIP)</button>
-                    </form>
-                </section>
+              <!-- Download Button -->
+              <div class="button-group">
+                <button type="submit" class="submit-btn">
+                  ⚡ Download Component (ZIP)
+                </button>
+                <button type="button" class="deploy-btn">
+                  🔐 Connect to Salesforce
+                </button>
+              </div>
+            </form>
+          </section>
 
-                <!-- Live Preview Section -->
-                <section id="agentforce-preview" class="page-section">
-                    <h2 class="section-title">Live Preview</h2>
-                    <p class="section-description">Updates in real-time as you fill out the form above</p>
+          <!-- Live Preview Section -->
+          <section id="agentforce-preview" class="page-section">
+            <h2 class="section-title">Live Preview</h2>
+            <p class="section-description">
+              Updates in real-time as you fill out the form above
+            </p>
 
-                    <div class="agentforce-preview-card" id="agentforcePreviewCard">
-                        <!-- Header -->
-                        <div class="agentforce-header">
-                            <img src="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png" alt="Agentforce Astro" class="agentforce-astro-icon" id="previewAstroIcon">
-                            <h1 class="agentforce-title" id="previewBriefTitle">Agentforce Lead Brief</h1>
-                            <span class="agentforce-timestamp" id="previewTimestamp">Generated just now</span>
-                        </div>
+            <div class="agentforce-preview-card" id="agentforcePreviewCard">
+              <!-- Header -->
+              <div class="agentforce-header">
+                <img
+                  src="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png"
+                  alt="Agentforce Astro"
+                  class="agentforce-astro-icon"
+                  id="previewAstroIcon"
+                />
+                <h1 class="agentforce-title" id="previewBriefTitle">
+                  Agentforce Lead Brief
+                </h1>
+                <span class="agentforce-timestamp" id="previewTimestamp"
+                  >Generated just now</span
+                >
+              </div>
 
-                        <div class="agentforce-divider"></div>
+              <div class="agentforce-divider"></div>
 
-                        <!-- Intent Section -->
-                        <div class="agentforce-section">
-                            <h2 class="agentforce-section-heading" id="previewIntentHeading">Intent Summary</h2>
-                            <p class="agentforce-section-text" id="previewIntentText">Rachel Adams requested information about Commercial Wealth Management solutions for mid-market manufacturers, with a focus on corporate treasury services.</p>
-                        </div>
+              <!-- Intent Section -->
+              <div class="agentforce-section">
+                <h2
+                  class="agentforce-section-heading"
+                  id="previewIntentHeading"
+                >
+                  Intent Summary
+                </h2>
+                <p class="agentforce-section-text" id="previewIntentText">
+                  Rachel Adams requested information about Commercial Wealth
+                  Management solutions for mid-market manufacturers, with a
+                  focus on corporate treasury services.
+                </p>
+              </div>
 
-                        <!-- Context Section -->
-                        <div class="agentforce-section">
-                            <h2 class="agentforce-section-heading" id="previewContextHeading">Key Context</h2>
-                            <p class="agentforce-section-text" id="previewContextText">Apex Manufacturing generates $50M in annual revenue and maintains $12M in cash reserves. Rachel has decision-making authority for corporate banking and investment strategies.</p>
-                        </div>
+              <!-- Context Section -->
+              <div class="agentforce-section">
+                <h2
+                  class="agentforce-section-heading"
+                  id="previewContextHeading"
+                >
+                  Key Context
+                </h2>
+                <p class="agentforce-section-text" id="previewContextText">
+                  Apex Manufacturing generates $50M in annual revenue and
+                  maintains $12M in cash reserves. Rachel has decision-making
+                  authority for corporate banking and investment strategies.
+                </p>
+              </div>
 
-                        <!-- Suggested Opener Section -->
-                        <div class="agentforce-section">
-                            <h2 class="agentforce-section-heading" id="previewOpenerHeading">Suggested Opener</h2>
-                            <div class="agentforce-quote-block">
-                                <p class="agentforce-quote-text" id="previewOpenerText">Hi Rachel, given Apex Manufacturing's strong financial position and growth trajectory, I wanted to explore how our Commercial Real Estate loan options might help you expand your production facilities or modernize equipment. Would Tuesday work for a brief call to discuss your strategic priorities?</p>
-                            </div>
-                        </div>
+              <!-- Suggested Opener Section -->
+              <div class="agentforce-section">
+                <h2
+                  class="agentforce-section-heading"
+                  id="previewOpenerHeading"
+                >
+                  Suggested Opener
+                </h2>
+                <div class="agentforce-quote-block">
+                  <p class="agentforce-quote-text" id="previewOpenerText">
+                    Hi Rachel, given Apex Manufacturing's strong financial
+                    position and growth trajectory, I wanted to explore how our
+                    Commercial Real Estate loan options might help you expand
+                    your production facilities or modernize equipment. Would
+                    Tuesday work for a brief call to discuss your strategic
+                    priorities?
+                  </p>
+                </div>
+              </div>
 
-                        <!-- Action Buttons -->
-                        <div class="agentforce-actions">
-                            <button class="agentforce-btn-secondary" id="previewSecondaryBtn">
-                                <svg class="btn-icon" viewBox="0 0 52 52"><path d="M42 16H10c-2.2 0-4 1.8-4 4v16c0 2.2 1.8 4 4 4h32c2.2 0 4-1.8 4-4V20c0-2.2-1.8-4-4-4zm-1.4 4L26 28.8 11.4 20h29.2zM10 36V22.7l15.5 8.8c.3.2.7.2 1 0L42 22.7V36H10z" fill="currentColor"/></svg>
-                                Send Email
-                            </button>
-                            <button class="agentforce-btn-primary" id="previewPrimaryBtn">
-                                <svg class="btn-icon" viewBox="0 0 52 52"><path d="M46.8 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L17.7 7.2c-1.6-1.6-4.2-1.6-5.8 0L8.5 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.4-5.9z" fill="currentColor"/></svg>
-                                Click to Dial
-                            </button>
-                        </div>
-                    </div>
-                </section>
+              <!-- Action Buttons -->
+              <div class="agentforce-actions">
+                <button
+                  class="agentforce-btn-secondary"
+                  id="previewSecondaryBtn"
+                >
+                  <svg class="btn-icon" viewBox="0 0 52 52">
+                    <path
+                      d="M42 16H10c-2.2 0-4 1.8-4 4v16c0 2.2 1.8 4 4 4h32c2.2 0 4-1.8 4-4V20c0-2.2-1.8-4-4-4zm-1.4 4L26 28.8 11.4 20h29.2zM10 36V22.7l15.5 8.8c.3.2.7.2 1 0L42 22.7V36H10z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Send Email
+                </button>
+                <button class="agentforce-btn-primary" id="previewPrimaryBtn">
+                  <svg class="btn-icon" viewBox="0 0 52 52">
+                    <path
+                      d="M46.8 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L17.7 7.2c-1.6-1.6-4.2-1.6-5.8 0L8.5 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.4-5.9z"
+                      fill="currentColor"
+                    />
+                  </svg>
+                  Click to Dial
+                </button>
+              </div>
             </div>
-            <!-- End Agentforce Lead Brief Container -->
+          </section>
+        </div>
+        <!-- End Agentforce Lead Brief Container -->
 
-            <!-- Next Best Actions Container -->
-            <div id="next-best-actions-container" style="display: none;">
-                <!-- Create Component Section -->
-                <section id="nba-create" class="page-section">
-                    <h2 class="section-title">Create Next Best Actions</h2>
-                    <p class="section-guidance">Configure your component details below. Watch the Live Preview update in real-time to ensure your design matches your demo story.</p>
+        <!-- Next Best Actions Container -->
+        <div id="next-best-actions-container" style="display: none">
+          <!-- Create Component Section -->
+          <section id="nba-create" class="page-section">
+            <h2 class="section-title">Create Next Best Actions</h2>
+            <p class="section-guidance">
+              Configure your component details below. Watch the Live Preview
+              update in real-time to ensure your design matches your demo story.
+            </p>
 
-                    <form id="nbaForm" method="POST" action="/generate">
-                        <!-- Header Section -->
-                        <section class="form-section">
-                            <h2>Header</h2>
-                            <div class="form-group">
-                                <label>Header Icon URL</label>
-                                <input type="text" name="headerIcon" id="input-nba-header-icon" placeholder="https://..." value="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Header Title</label>
-                                <input type="text" name="headerTitle" id="input-nba-header-title" placeholder="Cumulus Wealth Insights" value="Cumulus Wealth Insights" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Header Subtitle</label>
-                                <input type="text" name="headerSubtitle" id="input-nba-header-subtitle" placeholder="AI-driven recommendations for Rachel Adams" value="AI-driven recommendations for Rachel Adams" required>
-                            </div>
-                        </section>
+            <form id="nbaForm" method="POST" action="/generate">
+              <!-- Header Section -->
+              <section class="form-section">
+                <h2>Header</h2>
+                <div class="form-group">
+                  <label>Header Icon Image</label>
+                  <div class="image-upload-group">
+                    <input
+                      type="file"
+                      name="headerIcon"
+                      accept="image/*"
+                      class="file-upload-input"
+                      id="header-icon-file"
+                    />
+                    <span class="file-or-divider">OR</span>
+                    <input
+                      type="text"
+                      name="headerIcon_url"
+                      placeholder="https://..."
+                      value="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png"
+                      class="url-input"
+                      id="header-icon-url"
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Header Title</label>
+                  <input
+                    type="text"
+                    name="headerTitle"
+                    id="input-nba-header-title"
+                    placeholder="Cumulus Wealth Insights"
+                    value="Cumulus Wealth Insights"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Header Subtitle</label>
+                  <input
+                    type="text"
+                    name="headerSubtitle"
+                    id="input-nba-header-subtitle"
+                    placeholder="AI-driven recommendations for Rachel Adams"
+                    value="AI-driven recommendations for Rachel Adams"
+                    required
+                  />
+                </div>
+              </section>
 
-                        <!-- Card 1 Section -->
-                        <section class="form-section">
-                            <h2>Action Card 1</h2>
-                            <div class="form-group">
-                                <label>Card 1 Image URL</label>
-                                <input type="text" name="card1Image" id="input-nba-card1-image" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1661956602116-aa6865609028?w=800&q=80" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Card 1 Title</label>
-                                <input type="text" name="card1Title" id="input-nba-card1-title" placeholder="Commercial Line of Credit" value="Commercial Line of Credit" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Card 1 Text</label>
-                                <textarea name="card1Text" id="input-nba-card1-text" class="textarea-input" rows="3" placeholder="Rachel's recent inquiries suggest..." required>Rachel's recent inquiries suggest Apex Manufacturing is looking for capital expansion. Offer a pre-approved $5M line of credit.</textarea>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Card 1 Primary Button</label>
-                                    <input type="text" name="card1PrimaryBtn" id="input-nba-card1-primary" placeholder="Review Offer" value="Review Offer" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Card 1 Secondary Button</label>
-                                    <input type="text" name="card1SecondaryBtn" id="input-nba-card1-secondary" placeholder="Dismiss" value="Dismiss" required>
-                                </div>
-                            </div>
-                        </section>
+              <!-- Card 1 Section -->
+              <section class="form-section">
+                <h2>Action Card 1</h2>
+                <div class="form-group">
+                  <label>Card 1 Image</label>
+                  <div class="image-upload-group">
+                    <input
+                      type="file"
+                      name="card1Image"
+                      accept="image/*"
+                      class="file-upload-input"
+                      id="card1-image-file"
+                    />
+                    <span class="file-or-divider">OR</span>
+                    <input
+                      type="text"
+                      name="card1Image_url"
+                      placeholder="https://images.unsplash.com/..."
+                      value="https://images.unsplash.com/photo-1661956602116-aa6865609028?w=800&q=80"
+                      class="url-input"
+                      id="card1-image-url"
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Card 1 Title</label>
+                  <input
+                    type="text"
+                    name="card1Title"
+                    id="input-nba-card1-title"
+                    placeholder="Commercial Line of Credit"
+                    value="Commercial Line of Credit"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Card 1 Text</label>
+                  <textarea
+                    name="card1Text"
+                    id="input-nba-card1-text"
+                    class="textarea-input"
+                    rows="3"
+                    placeholder="Rachel's recent inquiries suggest..."
+                    required
+                  >
+Rachel's recent inquiries suggest Apex Manufacturing is looking for capital expansion. Offer a pre-approved $5M line of credit.</textarea
+                  >
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Card 1 Primary Button</label>
+                    <input
+                      type="text"
+                      name="card1PrimaryBtn"
+                      id="input-nba-card1-primary"
+                      placeholder="Review Offer"
+                      value="Review Offer"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Card 1 Secondary Button</label>
+                    <input
+                      type="text"
+                      name="card1SecondaryBtn"
+                      id="input-nba-card1-secondary"
+                      placeholder="Dismiss"
+                      value="Dismiss"
+                      required
+                    />
+                  </div>
+                </div>
+              </section>
 
-                        <!-- Card 2 Section -->
-                        <section class="form-section">
-                            <h2>Action Card 2</h2>
-                            <div class="form-group">
-                                <label>Card 2 Image URL</label>
-                                <input type="text" name="card2Image" id="input-nba-card2-image" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&q=80" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Card 2 Title</label>
-                                <input type="text" name="card2Title" id="input-nba-card2-title" placeholder="ESG Investment Portfolio" value="ESG Investment Portfolio" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Card 2 Text</label>
-                                <textarea name="card2Text" id="input-nba-card2-text" class="textarea-input" rows="3" placeholder="High engagement with our Q1 Sustainable Investing..." required>High engagement with our Q1 Sustainable Investing newsletter. Suggest a portfolio review with our ESG specialists.</textarea>
-                            </div>
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label>Card 2 Primary Button</label>
-                                    <input type="text" name="card2PrimaryBtn" id="input-nba-card2-primary" placeholder="Schedule Review" value="Schedule Review" required>
-                                </div>
-                                <div class="form-group">
-                                    <label>Card 2 Secondary Button</label>
-                                    <input type="text" name="card2SecondaryBtn" id="input-nba-card2-secondary" placeholder="Dismiss" value="Dismiss" required>
-                                </div>
-                            </div>
-                        </section>
+              <!-- Card 2 Section -->
+              <section class="form-section">
+                <h2>Action Card 2</h2>
+                <div class="form-group">
+                  <label>Card 2 Image</label>
+                  <div class="image-upload-group">
+                    <input
+                      type="file"
+                      name="card2Image"
+                      accept="image/*"
+                      class="file-upload-input"
+                      id="card2-image-file"
+                    />
+                    <span class="file-or-divider">OR</span>
+                    <input
+                      type="text"
+                      name="card2Image_url"
+                      placeholder="https://images.unsplash.com/..."
+                      value="https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&q=80"
+                      class="url-input"
+                      id="card2-image-url"
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Card 2 Title</label>
+                  <input
+                    type="text"
+                    name="card2Title"
+                    id="input-nba-card2-title"
+                    placeholder="ESG Investment Portfolio"
+                    value="ESG Investment Portfolio"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Card 2 Text</label>
+                  <textarea
+                    name="card2Text"
+                    id="input-nba-card2-text"
+                    class="textarea-input"
+                    rows="3"
+                    placeholder="High engagement with our Q1 Sustainable Investing..."
+                    required
+                  >
+High engagement with our Q1 Sustainable Investing newsletter. Suggest a portfolio review with our ESG specialists.</textarea
+                  >
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Card 2 Primary Button</label>
+                    <input
+                      type="text"
+                      name="card2PrimaryBtn"
+                      id="input-nba-card2-primary"
+                      placeholder="Schedule Review"
+                      value="Schedule Review"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Card 2 Secondary Button</label>
+                    <input
+                      type="text"
+                      name="card2SecondaryBtn"
+                      id="input-nba-card2-secondary"
+                      placeholder="Dismiss"
+                      value="Dismiss"
+                      required
+                    />
+                  </div>
+                </div>
+              </section>
 
-                        <!-- Download Button -->
-                        <button type="submit" class="submit-btn">⚡ Download Component (ZIP)</button>
-                    </form>
-                </section>
+              <!-- Download Button -->
+              <div class="button-group">
+                <button type="submit" class="submit-btn">
+                  ⚡ Download Component (ZIP)
+                </button>
+                <button type="button" class="deploy-btn">
+                  🔐 Connect to Salesforce
+                </button>
+              </div>
+            </form>
+          </section>
 
-                <!-- Live Preview Section -->
-                <section id="nba-preview" class="page-section">
-                    <h2 class="section-title">Live Preview</h2>
-                    <p class="section-description">Updates in real-time as you fill out the form above</p>
+          <!-- Live Preview Section -->
+          <section id="nba-preview" class="page-section">
+            <h2 class="section-title">Live Preview</h2>
+            <p class="section-description">
+              Updates in real-time as you fill out the form above
+            </p>
 
-                    <div class="nba-preview-container" id="nbaPreviewContainer">
-                        <!-- Header -->
-                        <div class="nba-preview-header">
-                            <img src="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png" alt="Header Icon" class="nba-preview-header-icon" id="previewNbaHeaderIcon">
-                            <div class="nba-preview-header-text">
-                                <h2 class="nba-preview-title" id="previewNbaHeaderTitle">Cumulus Wealth Insights</h2>
-                                <p class="nba-preview-subtitle" id="previewNbaHeaderSubtitle">AI-driven recommendations for Rachel Adams</p>
-                            </div>
-                        </div>
+            <div class="nba-preview-container" id="nbaPreviewContainer">
+              <!-- Header -->
+              <div class="nba-preview-header">
+                <img
+                  src="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png"
+                  alt="Header Icon"
+                  class="nba-preview-header-icon"
+                  id="previewNbaHeaderIcon"
+                />
+                <div class="nba-preview-header-text">
+                  <h2 class="nba-preview-title" id="previewNbaHeaderTitle">
+                    Cumulus Wealth Insights
+                  </h2>
+                  <p class="nba-preview-subtitle" id="previewNbaHeaderSubtitle">
+                    AI-driven recommendations for Rachel Adams
+                  </p>
+                </div>
+              </div>
 
-                        <!-- Two-Column Grid -->
-                        <div class="nba-preview-grid">
-                            <!-- Card 1 -->
-                            <div class="nba-preview-card">
-                                <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?w=800&q=80" alt="Card 1" class="nba-preview-card-image" id="previewNbaCard1Image">
-                                <div class="nba-preview-card-content">
-                                    <h3 class="nba-preview-card-title" id="previewNbaCard1Title">Commercial Line of Credit</h3>
-                                    <div class="nba-preview-suggestion">
-                                        <div class="nba-preview-suggestion-header">
-                                            <svg class="nba-preview-info-icon" viewBox="0 0 52 52">
-                                                <circle cx="26" cy="26" r="24" fill="#0176d3"/>
-                                                <path d="M26 12c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm0 8c-1.7 0-3 1.3-3 3v12c0 1.7 1.3 3 3 3s3-1.3 3-3V23c0-1.7-1.3-3-3-3z" fill="white"/>
-                                            </svg>
-                                            <p class="nba-preview-suggestion-heading">Why this suggestion?</p>
-                                        </div>
-                                        <p class="nba-preview-card-text" id="previewNbaCard1Text">Rachel's recent inquiries suggest Apex Manufacturing is looking for capital expansion. Offer a pre-approved $5M line of credit.</p>
-                                    </div>
-                                    <div class="nba-preview-button-group">
-                                        <button class="nba-preview-btn-primary" id="previewNbaCard1Primary">Review Offer</button>
-                                        <button class="nba-preview-btn-secondary" id="previewNbaCard1Secondary">Dismiss</button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Card 2 -->
-                            <div class="nba-preview-card">
-                                <img src="https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&q=80" alt="Card 2" class="nba-preview-card-image" id="previewNbaCard2Image">
-                                <div class="nba-preview-card-content">
-                                    <h3 class="nba-preview-card-title" id="previewNbaCard2Title">ESG Investment Portfolio</h3>
-                                    <div class="nba-preview-suggestion">
-                                        <div class="nba-preview-suggestion-header">
-                                            <svg class="nba-preview-info-icon" viewBox="0 0 52 52">
-                                                <circle cx="26" cy="26" r="24" fill="#0176d3"/>
-                                                <path d="M26 12c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm0 8c-1.7 0-3 1.3-3 3v12c0 1.7 1.3 3 3 3s3-1.3 3-3V23c0-1.7-1.3-3-3-3z" fill="white"/>
-                                            </svg>
-                                            <p class="nba-preview-suggestion-heading">Why this suggestion?</p>
-                                        </div>
-                                        <p class="nba-preview-card-text" id="previewNbaCard2Text">High engagement with our Q1 Sustainable Investing newsletter. Suggest a portfolio review with our ESG specialists.</p>
-                                    </div>
-                                    <div class="nba-preview-button-group">
-                                        <button class="nba-preview-btn-primary" id="previewNbaCard2Primary">Schedule Review</button>
-                                        <button class="nba-preview-btn-secondary" id="previewNbaCard2Secondary">Dismiss</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+              <!-- Two-Column Grid -->
+              <div class="nba-preview-grid">
+                <!-- Card 1 -->
+                <div class="nba-preview-card">
+                  <img
+                    src="https://images.unsplash.com/photo-1661956602116-aa6865609028?w=800&q=80"
+                    alt="Card 1"
+                    class="nba-preview-card-image"
+                    id="previewNbaCard1Image"
+                  />
+                  <div class="nba-preview-card-content">
+                    <h3
+                      class="nba-preview-card-title"
+                      id="previewNbaCard1Title"
+                    >
+                      Commercial Line of Credit
+                    </h3>
+                    <div class="nba-preview-suggestion">
+                      <div class="nba-preview-suggestion-header">
+                        <svg class="nba-preview-info-icon" viewBox="0 0 52 52">
+                          <circle cx="26" cy="26" r="24" fill="#0176d3" />
+                          <path
+                            d="M26 12c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm0 8c-1.7 0-3 1.3-3 3v12c0 1.7 1.3 3 3 3s3-1.3 3-3V23c0-1.7-1.3-3-3-3z"
+                            fill="white"
+                          />
+                        </svg>
+                        <p class="nba-preview-suggestion-heading">
+                          Why this suggestion?
+                        </p>
+                      </div>
+                      <p class="nba-preview-card-text" id="previewNbaCard1Text">
+                        Rachel's recent inquiries suggest Apex Manufacturing is
+                        looking for capital expansion. Offer a pre-approved $5M
+                        line of credit.
+                      </p>
                     </div>
-                </section>
+                    <div class="nba-preview-button-group">
+                      <button
+                        class="nba-preview-btn-primary"
+                        id="previewNbaCard1Primary"
+                      >
+                        Review Offer
+                      </button>
+                      <button
+                        class="nba-preview-btn-secondary"
+                        id="previewNbaCard1Secondary"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Card 2 -->
+                <div class="nba-preview-card">
+                  <img
+                    src="https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&q=80"
+                    alt="Card 2"
+                    class="nba-preview-card-image"
+                    id="previewNbaCard2Image"
+                  />
+                  <div class="nba-preview-card-content">
+                    <h3
+                      class="nba-preview-card-title"
+                      id="previewNbaCard2Title"
+                    >
+                      ESG Investment Portfolio
+                    </h3>
+                    <div class="nba-preview-suggestion">
+                      <div class="nba-preview-suggestion-header">
+                        <svg class="nba-preview-info-icon" viewBox="0 0 52 52">
+                          <circle cx="26" cy="26" r="24" fill="#0176d3" />
+                          <path
+                            d="M26 12c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm0 8c-1.7 0-3 1.3-3 3v12c0 1.7 1.3 3 3 3s3-1.3 3-3V23c0-1.7-1.3-3-3-3z"
+                            fill="white"
+                          />
+                        </svg>
+                        <p class="nba-preview-suggestion-heading">
+                          Why this suggestion?
+                        </p>
+                      </div>
+                      <p class="nba-preview-card-text" id="previewNbaCard2Text">
+                        High engagement with our Q1 Sustainable Investing
+                        newsletter. Suggest a portfolio review with our ESG
+                        specialists.
+                      </p>
+                    </div>
+                    <div class="nba-preview-button-group">
+                      <button
+                        class="nba-preview-btn-primary"
+                        id="previewNbaCard2Primary"
+                      >
+                        Schedule Review
+                      </button>
+                      <button
+                        class="nba-preview-btn-secondary"
+                        id="previewNbaCard2Secondary"
+                      >
+                        Dismiss
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-            <!-- End Next Best Actions Container -->
+          </section>
+        </div>
+        <!-- End Next Best Actions Container -->
 
-            <!-- Next Best Leads Container -->
-            <div id="next-best-leads-container" style="display: none;">
-                <!-- Create Component Section -->
-                <section id="nbl-create" class="page-section">
-                    <h2 class="section-title">Create Next Best Leads</h2>
-                    <p class="section-guidance">Configure your component details below. Watch the Live Preview update in real-time.</p>
+        <!-- Next Best Leads Container -->
+        <div id="next-best-leads-container" style="display: none">
+          <!-- Create Component Section -->
+          <section id="nbl-create" class="page-section">
+            <h2 class="section-title">Create Next Best Leads</h2>
+            <p class="section-guidance">
+              Configure your component details below. Watch the Live Preview
+              update in real-time.
+            </p>
 
-                    <form id="nblForm" method="POST" action="/generate">
-                        <!-- Header Section -->
-                        <section class="form-section">
-                            <h2>Header</h2>
-                            <div class="form-group">
-                                <label>Header Title</label>
-                                <input type="text" name="headerTitle" value="High-Propensity Wealth Leads" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Header Subtitle</label>
-                                <input type="text" name="headerSubtitle" value="Top matches based on recent Q1 marketing engagement and portfolio lookalike models." required>
-                            </div>
-                        </section>
+            <form id="nblForm" method="POST" action="/generate">
+              <!-- Header Section -->
+              <section class="form-section">
+                <h2>Header</h2>
+                <div class="form-group">
+                  <label>Header Title</label>
+                  <input
+                    type="text"
+                    name="headerTitle"
+                    value="High-Propensity Wealth Leads"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Header Subtitle</label>
+                  <input
+                    type="text"
+                    name="headerSubtitle"
+                    value="Top matches based on recent Q1 marketing engagement and portfolio lookalike models."
+                    required
+                  />
+                </div>
+              </section>
 
-                        <!-- Lead 1 Section -->
-                        <section class="form-section">
-                            <h2>Lead 1</h2>
-                            <div class="form-group">
-                                <label>Name</label>
-                                <input type="text" name="lead1Name" value="Marcus Thorne" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Role/Company</label>
-                                <input type="text" name="lead1Role" value="CEO, Thorne Logistics" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Match Score</label>
-                                <input type="text" name="lead1Match" value="98% Match" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Context</label>
-                                <textarea name="lead1Context" class="textarea-input" rows="2" required>Browsed Commercial Real Estate loans for 12 mins. Lookalike to your top tier clients.</textarea>
-                            </div>
-                        </section>
+              <!-- Lead 1 Section -->
+              <section class="form-section">
+                <h2>Lead 1</h2>
+                <div class="form-group">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    name="lead1Name"
+                    value="Marcus Thorne"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Role/Company</label>
+                  <input
+                    type="text"
+                    name="lead1Role"
+                    value="CEO, Thorne Logistics"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Match Score</label>
+                  <input
+                    type="text"
+                    name="lead1Match"
+                    value="98% Match"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Context</label>
+                  <textarea
+                    name="lead1Context"
+                    class="textarea-input"
+                    rows="2"
+                    required
+                  >
+Browsed Commercial Real Estate loans for 12 mins. Lookalike to your top tier clients.</textarea
+                  >
+                </div>
+              </section>
 
-                        <!-- Lead 2 Section -->
-                        <section class="form-section">
-                            <h2>Lead 2</h2>
-                            <div class="form-group">
-                                <label>Name</label>
-                                <input type="text" name="lead2Name" value="Sophia Patel" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Role/Company</label>
-                                <input type="text" name="lead2Role" value="VP Finance, Vertex Tech" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Match Score</label>
-                                <input type="text" name="lead2Match" value="94% Match" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Context</label>
-                                <textarea name="lead2Context" class="textarea-input" rows="2" required>Attended Q1 ESG Investment Webinar. High liquidity event detected.</textarea>
-                            </div>
-                        </section>
+              <!-- Lead 2 Section -->
+              <section class="form-section">
+                <h2>Lead 2</h2>
+                <div class="form-group">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    name="lead2Name"
+                    value="Sophia Patel"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Role/Company</label>
+                  <input
+                    type="text"
+                    name="lead2Role"
+                    value="VP Finance, Vertex Tech"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Match Score</label>
+                  <input
+                    type="text"
+                    name="lead2Match"
+                    value="94% Match"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Context</label>
+                  <textarea
+                    name="lead2Context"
+                    class="textarea-input"
+                    rows="2"
+                    required
+                  >
+Attended Q1 ESG Investment Webinar. High liquidity event detected.</textarea
+                  >
+                </div>
+              </section>
 
-                        <!-- Lead 3 Section -->
-                        <section class="form-section">
-                            <h2>Lead 3</h2>
-                            <div class="form-group">
-                                <label>Name</label>
-                                <input type="text" name="lead3Name" value="David Chen" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Role/Company</label>
-                                <input type="text" name="lead3Role" value="Founder, Chen Manufacturing" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Match Score</label>
-                                <input type="text" name="lead3Match" value="89% Match" required>
-                            </div>
-                            <div class="form-group">
-                                <label>Context</label>
-                                <textarea name="lead3Context" class="textarea-input" rows="2" required>Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea>
-                            </div>
-                        </section>
+              <!-- Lead 3 Section -->
+              <section class="form-section">
+                <h2>Lead 3</h2>
+                <div class="form-group">
+                  <label>Name</label>
+                  <input
+                    type="text"
+                    name="lead3Name"
+                    value="David Chen"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Role/Company</label>
+                  <input
+                    type="text"
+                    name="lead3Role"
+                    value="Founder, Chen Manufacturing"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Match Score</label>
+                  <input
+                    type="text"
+                    name="lead3Match"
+                    value="89% Match"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Context</label>
+                  <textarea
+                    name="lead3Context"
+                    class="textarea-input"
+                    rows="2"
+                    required
+                  >
+Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
+                  >
+                </div>
+              </section>
 
-                        <!-- Download Button -->
-                        <button type="submit" class="submit-btn">⚡ Download Component (ZIP)</button>
-                    </form>
-                </section>
+              <!-- Download Button -->
+              <div class="button-group">
+                <button type="submit" class="submit-btn">
+                  ⚡ Download Component (ZIP)
+                </button>
+                <button type="button" class="deploy-btn">
+                  🔐 Connect to Salesforce
+                </button>
+              </div>
+            </form>
+          </section>
 
-                <!-- Live Preview Section -->
-                <section id="nbl-preview" class="page-section">
-                    <h2 class="section-title">Live Preview</h2>
-                    <p class="section-description">Updates in real-time as you fill out the form above</p>
+          <!-- Live Preview Section -->
+          <section id="nbl-preview" class="page-section">
+            <h2 class="section-title">Live Preview</h2>
+            <p class="section-description">
+              Updates in real-time as you fill out the form above
+            </p>
 
-                    <div class="nbl-preview-container">
-                        <!-- Header -->
-                        <div class="nbl-preview-header">
-                            <div class="nbl-preview-header-icon">
-                                <svg viewBox="0 0 52 52" class="nbl-preview-icon-svg">
-                                    <circle cx="26" cy="26" r="24" fill="#fe9339"/>
-                                    <path d="M26 13l2.5 7.7h8.1l-6.6 4.8 2.5 7.7L26 28.4l-6.5 4.8 2.5-7.7-6.6-4.8h8.1z" fill="white"/>
-                                </svg>
-                            </div>
-                            <div class="nbl-preview-header-text">
-                                <h2 class="nbl-preview-title" id="previewNblHeaderTitle">High-Propensity Wealth Leads</h2>
-                                <p class="nbl-preview-subtitle" id="previewNblHeaderSubtitle">Top matches based on recent Q1 marketing engagement and portfolio lookalike models.</p>
-                            </div>
-                        </div>
+            <div class="nbl-preview-container">
+              <!-- Header -->
+              <div class="nbl-preview-header">
+                <div class="nbl-preview-header-icon">
+                  <svg viewBox="0 0 52 52" class="nbl-preview-icon-svg">
+                    <circle cx="26" cy="26" r="24" fill="#fe9339" />
+                    <path
+                      d="M26 13l2.5 7.7h8.1l-6.6 4.8 2.5 7.7L26 28.4l-6.5 4.8 2.5-7.7-6.6-4.8h8.1z"
+                      fill="white"
+                    />
+                  </svg>
+                </div>
+                <div class="nbl-preview-header-text">
+                  <h2 class="nbl-preview-title" id="previewNblHeaderTitle">
+                    High-Propensity Wealth Leads
+                  </h2>
+                  <p class="nbl-preview-subtitle" id="previewNblHeaderSubtitle">
+                    Top matches based on recent Q1 marketing engagement and
+                    portfolio lookalike models.
+                  </p>
+                </div>
+              </div>
 
-                        <!-- Lead List -->
-                        <div class="nbl-preview-list">
-                            <!-- Lead 1 -->
-                            <div class="nbl-preview-lead-item">
-                                <div class="nbl-preview-lead-avatar">
-                                    <svg viewBox="0 0 52 52" class="nbl-preview-avatar-svg">
-                                        <circle cx="26" cy="26" r="24" fill="#1b96ff"/>
-                                        <circle cx="26" cy="20" r="5" fill="white"/>
-                                        <path d="M26 27c-6 0-11 3-11 7v3h22v-3c0-4-5-7-11-7z" fill="white"/>
-                                    </svg>
-                                </div>
-                                <div class="nbl-preview-lead-content">
-                                    <div class="nbl-preview-lead-name" id="previewNblLead1Name">Marcus Thorne</div>
-                                    <div class="nbl-preview-lead-role" id="previewNblLead1Role">CEO, Thorne Logistics</div>
-                                    <div class="nbl-preview-match-badge" id="previewNblLead1Match">98% Match</div>
-                                    <p class="nbl-preview-lead-context" id="previewNblLead1Context">Browsed Commercial Real Estate loans for 12 mins. Lookalike to your top tier clients.</p>
-                                </div>
-                                <div class="nbl-preview-phone-btn">
-                                    <svg viewBox="0 0 52 52" class="nbl-preview-phone-icon">
-                                        <path d="M44 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L15 7.2c-1.6-1.6-4.2-1.6-5.8 0L6 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.1-5.9z" fill="#0176d3"/>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Lead 2 -->
-                            <div class="nbl-preview-lead-item">
-                                <div class="nbl-preview-lead-avatar">
-                                    <svg viewBox="0 0 52 52" class="nbl-preview-avatar-svg">
-                                        <circle cx="26" cy="26" r="24" fill="#1b96ff"/>
-                                        <circle cx="26" cy="20" r="5" fill="white"/>
-                                        <path d="M26 27c-6 0-11 3-11 7v3h22v-3c0-4-5-7-11-7z" fill="white"/>
-                                    </svg>
-                                </div>
-                                <div class="nbl-preview-lead-content">
-                                    <div class="nbl-preview-lead-name" id="previewNblLead2Name">Sophia Patel</div>
-                                    <div class="nbl-preview-lead-role" id="previewNblLead2Role">VP Finance, Vertex Tech</div>
-                                    <div class="nbl-preview-match-badge" id="previewNblLead2Match">94% Match</div>
-                                    <p class="nbl-preview-lead-context" id="previewNblLead2Context">Attended Q1 ESG Investment Webinar. High liquidity event detected.</p>
-                                </div>
-                                <div class="nbl-preview-phone-btn">
-                                    <svg viewBox="0 0 52 52" class="nbl-preview-phone-icon">
-                                        <path d="M44 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L15 7.2c-1.6-1.6-4.2-1.6-5.8 0L6 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.1-5.9z" fill="#0176d3"/>
-                                    </svg>
-                                </div>
-                            </div>
-
-                            <!-- Lead 3 -->
-                            <div class="nbl-preview-lead-item">
-                                <div class="nbl-preview-lead-avatar">
-                                    <svg viewBox="0 0 52 52" class="nbl-preview-avatar-svg">
-                                        <circle cx="26" cy="26" r="24" fill="#1b96ff"/>
-                                        <circle cx="26" cy="20" r="5" fill="white"/>
-                                        <path d="M26 27c-6 0-11 3-11 7v3h22v-3c0-4-5-7-11-7z" fill="white"/>
-                                    </svg>
-                                </div>
-                                <div class="nbl-preview-lead-content">
-                                    <div class="nbl-preview-lead-name" id="previewNblLead3Name">David Chen</div>
-                                    <div class="nbl-preview-lead-role" id="previewNblLead3Role">Founder, Chen Manufacturing</div>
-                                    <div class="nbl-preview-match-badge" id="previewNblLead3Match">89% Match</div>
-                                    <p class="nbl-preview-lead-context" id="previewNblLead3Context">Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</p>
-                                </div>
-                                <div class="nbl-preview-phone-btn">
-                                    <svg viewBox="0 0 52 52" class="nbl-preview-phone-icon">
-                                        <path d="M44 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L15 7.2c-1.6-1.6-4.2-1.6-5.8 0L6 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.1-5.9z" fill="#0176d3"/>
-                                    </svg>
-                                </div>
-                            </div>
-                        </div>
+              <!-- Lead List -->
+              <div class="nbl-preview-list">
+                <!-- Lead 1 -->
+                <div class="nbl-preview-lead-item">
+                  <div class="nbl-preview-lead-avatar">
+                    <svg viewBox="0 0 52 52" class="nbl-preview-avatar-svg">
+                      <circle cx="26" cy="26" r="24" fill="#1b96ff" />
+                      <circle cx="26" cy="20" r="5" fill="white" />
+                      <path
+                        d="M26 27c-6 0-11 3-11 7v3h22v-3c0-4-5-7-11-7z"
+                        fill="white"
+                      />
+                    </svg>
+                  </div>
+                  <div class="nbl-preview-lead-content">
+                    <div class="nbl-preview-lead-name" id="previewNblLead1Name">
+                      Marcus Thorne
                     </div>
-                </section>
+                    <div class="nbl-preview-lead-role" id="previewNblLead1Role">
+                      CEO, Thorne Logistics
+                    </div>
+                    <div
+                      class="nbl-preview-match-badge"
+                      id="previewNblLead1Match"
+                    >
+                      98% Match
+                    </div>
+                    <p
+                      class="nbl-preview-lead-context"
+                      id="previewNblLead1Context"
+                    >
+                      Browsed Commercial Real Estate loans for 12 mins.
+                      Lookalike to your top tier clients.
+                    </p>
+                  </div>
+                  <div class="nbl-preview-phone-btn">
+                    <svg viewBox="0 0 52 52" class="nbl-preview-phone-icon">
+                      <path
+                        d="M44 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L15 7.2c-1.6-1.6-4.2-1.6-5.8 0L6 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.1-5.9z"
+                        fill="#0176d3"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Lead 2 -->
+                <div class="nbl-preview-lead-item">
+                  <div class="nbl-preview-lead-avatar">
+                    <svg viewBox="0 0 52 52" class="nbl-preview-avatar-svg">
+                      <circle cx="26" cy="26" r="24" fill="#1b96ff" />
+                      <circle cx="26" cy="20" r="5" fill="white" />
+                      <path
+                        d="M26 27c-6 0-11 3-11 7v3h22v-3c0-4-5-7-11-7z"
+                        fill="white"
+                      />
+                    </svg>
+                  </div>
+                  <div class="nbl-preview-lead-content">
+                    <div class="nbl-preview-lead-name" id="previewNblLead2Name">
+                      Sophia Patel
+                    </div>
+                    <div class="nbl-preview-lead-role" id="previewNblLead2Role">
+                      VP Finance, Vertex Tech
+                    </div>
+                    <div
+                      class="nbl-preview-match-badge"
+                      id="previewNblLead2Match"
+                    >
+                      94% Match
+                    </div>
+                    <p
+                      class="nbl-preview-lead-context"
+                      id="previewNblLead2Context"
+                    >
+                      Attended Q1 ESG Investment Webinar. High liquidity event
+                      detected.
+                    </p>
+                  </div>
+                  <div class="nbl-preview-phone-btn">
+                    <svg viewBox="0 0 52 52" class="nbl-preview-phone-icon">
+                      <path
+                        d="M44 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L15 7.2c-1.6-1.6-4.2-1.6-5.8 0L6 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.1-5.9z"
+                        fill="#0176d3"
+                      />
+                    </svg>
+                  </div>
+                </div>
+
+                <!-- Lead 3 -->
+                <div class="nbl-preview-lead-item">
+                  <div class="nbl-preview-lead-avatar">
+                    <svg viewBox="0 0 52 52" class="nbl-preview-avatar-svg">
+                      <circle cx="26" cy="26" r="24" fill="#1b96ff" />
+                      <circle cx="26" cy="20" r="5" fill="white" />
+                      <path
+                        d="M26 27c-6 0-11 3-11 7v3h22v-3c0-4-5-7-11-7z"
+                        fill="white"
+                      />
+                    </svg>
+                  </div>
+                  <div class="nbl-preview-lead-content">
+                    <div class="nbl-preview-lead-name" id="previewNblLead3Name">
+                      David Chen
+                    </div>
+                    <div class="nbl-preview-lead-role" id="previewNblLead3Role">
+                      Founder, Chen Manufacturing
+                    </div>
+                    <div
+                      class="nbl-preview-match-badge"
+                      id="previewNblLead3Match"
+                    >
+                      89% Match
+                    </div>
+                    <p
+                      class="nbl-preview-lead-context"
+                      id="previewNblLead3Context"
+                    >
+                      Downloaded 'Scaling with Credit' whitepaper. 3x engagement
+                      increase.
+                    </p>
+                  </div>
+                  <div class="nbl-preview-phone-btn">
+                    <svg viewBox="0 0 52 52" class="nbl-preview-phone-icon">
+                      <path
+                        d="M44 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L15 7.2c-1.6-1.6-4.2-1.6-5.8 0L6 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.1-5.9z"
+                        fill="#0176d3"
+                      />
+                    </svg>
+                  </div>
+                </div>
+              </div>
             </div>
-            <!-- End Next Best Leads Container -->
+          </section>
+        </div>
+        <!-- End Next Best Leads Container -->
 
-            <section id="deploy" class="page-section deployment-section">
-                <h2 class="section-title">Deployment Instructions</h2>
-                <p class="deployment-intro">Follow these steps carefully to deploy your custom Lightning Web Component to Salesforce.</p>
+        <section id="deploy" class="page-section deployment-section">
+          <h2 class="section-title">How to Deploy Your Component</h2>
+          <p class="deployment-intro">
+            Deploy your custom Lightning Web Component directly to Salesforce
+            with just a few clicks.
+          </p>
 
-                <div class="instruction-step">
-                    <h3>Step 1: Generate & Download</h3>
-                    <ol>
-                        <li>Fill out the form above with your custom data</li>
-                        <li>Click <strong>Download Component (ZIP)</strong></li>
-                    </ol>
-                </div>
+          <div class="instruction-step">
+            <h3>Step 1: Connect to Salesforce</h3>
+            <p>
+              Click the <strong>"Connect to Salesforce"</strong> button to
+              securely authenticate with your demo org. You only need to do this
+              once per session.
+            </p>
+          </div>
 
-                <div class="instruction-step">
-                    <h3>Step 2: Extract & RENAME (Crucial!)</h3>
-                    <ol>
-                        <li>Extract the downloaded ZIP file:
-                            <ul>
-                                <li><strong>Windows:</strong> Right-click → "Extract All"</li>
-                                <li><strong>Mac:</strong> Double-click the ZIP file</li>
-                            </ul>
-                        </li>
-                    </ol>
-                    <div class="warning-box">
-                        <div class="warning-icon">⚠️</div>
-                        <div class="warning-content">
-                            <strong>STOP: Check the extracted folder name!</strong>
-                            <p>If your computer added a number to it like <code id="folderName1">unifiedProfileLwc-1</code> or <code id="folderName2">unifiedProfileLwc (1)</code>, you <strong>MUST</strong> rename the folder to exactly <code id="folderName3">unifiedProfileLwc</code>.</p>
-                            <p>Salesforce will reject the deployment if the folder name doesn't match the files inside!</p>
-                        </div>
-                    </div>
-                </div>
+          <div class="instruction-step">
+            <h3>Step 2: Customize & Deploy</h3>
+            <p>
+              Fill out the form with your desired text, colors, and upload your
+              image. Once you're ready, click
+              <strong>"Deploy to Salesforce"</strong>. The app will
+              automatically generate the code, upload your image to the cloud,
+              and push everything directly to your org.
+            </p>
+          </div>
 
-                <div class="instruction-step">
-                    <h3>Step 3: Move to VS Code</h3>
-                    <ol>
-                        <li>Open your Salesforce project in VS Code</li>
-                        <li>In the left sidebar, expand <code>force-app</code> → <code>main</code> → <code>default</code> → <code>lwc</code></li>
-                        <li>Drag and drop your renamed <code id="folderName4">unifiedProfileLwc</code> folder directly onto the <code>lwc</code> folder</li>
-                    </ol>
-                </div>
+          <div class="instruction-step">
+            <h3>Step 3: Add to Your Lightning Page</h3>
+            <ol>
+              <li>
+                Log into your Salesforce org and navigate to the page where you
+                want to add this component (e.g., a specific Account, or your
+                Home page).
+              </li>
+              <li>
+                Click the <strong>Setup Gear Icon ⚙️</strong> in the top right
+                corner and select <strong>Edit Page</strong> to open the
+                Lightning App Builder.
+              </li>
+              <li>
+                On the left side of the screen, scroll down to the
+                <strong>Custom</strong> components section.
+              </li>
+              <li>
+                Find your new component (it will match the name you gave it) and
+                drag it onto the page canvas.
+              </li>
+              <li>
+                Click <strong>Save</strong> and <strong>Activate</strong>.
+              </li>
+            </ol>
+          </div>
 
-                <div class="instruction-step">
-                    <h3>Step 4: Deploy to Salesforce</h3>
-                    <ol>
-                        <li>Right-click the <code id="folderName5">unifiedProfileLwc</code> folder you just moved</li>
-                        <li>Click <code>SFDX: Deploy Source to Org</code></li>
-                        <li>Wait for the <strong>'Deploy successful'</strong> popup in the bottom right corner</li>
-                    </ol>
-                </div>
+          <div class="instruction-step">
+            <h3>Step 4: Need to make a change? (Re-deploying)</h3>
+            <p>
+              Made a typo or want to swap the image? No problem! Just update the
+              form right here and click
+              <strong>"Deploy to Salesforce"</strong> again. As long as you keep
+              the component name exactly the same, it will automatically
+              overwrite the old version in your Salesforce org. Just refresh
+              your Lightning page to see the updates!
+            </p>
+          </div>
 
-                <div class="instruction-step">
-                    <h3>Step 5: Add to Lightning Page</h3>
-                    <ol>
-                        <li>Log into your Salesforce org</li>
-                        <li>Navigate to a Record Page, click the <strong>Gear Icon ⚙️</strong>, and select <strong>Edit Page</strong></li>
-                        <li>Look under the <strong>'Custom'</strong> list on the left for <strong id="componentLabel">Unified Profile Mock</strong> and drag it onto the page</li>
-                        <li>Click <strong>Save</strong> and <strong>Activate</strong></li>
-                    </ol>
-                </div>
-
-                <div class="instruction-step">
-                    <h3>Step 6: Fix Broken Images (Salesforce CSP)</h3>
-                    <p>Salesforce blocks external images by default. If your Avatar shows a broken image icon:</p>
-                    <ol>
-                        <li>Go to Salesforce Setup (<strong>Gear Icon ⚙️</strong> → <strong>Setup</strong>)</li>
-                        <li>Search for <code>CSP Trusted Sites</code> and click <strong>New Trusted Site</strong></li>
-                        <li>Enter the root domain of your image (e.g., <code>https://image.s4.sfmc-content.com</code>)</li>
-                        <li>Check the box for <strong>Allow site for img-src</strong></li>
-                        <li>Click <strong>Save</strong> and hard-refresh your Lightning page!</li>
-                    </ol>
-                    <div class="info-box">
-                        <div class="info-icon">💡</div>
-                        <div class="info-content">
-                            <strong>Pro Tip:</strong> Common image domains to whitelist:
-                            <ul>
-                                <li><code>https://image.s4.sfmc-content.com</code> - Cumulus Financial assets</li>
-                                <li><code>https://via.placeholder.com</code> - Placeholder images</li>
-                                <li><code>https://i.pravatar.cc</code> - Random avatar generator</li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Bottom Download Button -->
-            <div class="bottom-button-container">
-                <button type="button" id="download-btn-bottom" class="submit-btn">⚡ Download Component (ZIP)</button>
+          <div class="pro-tip-box">
+            <div class="pro-tip-icon">💡</div>
+            <div class="pro-tip-content">
+              <strong>Pro Tip: Tweak it directly in Salesforce!</strong>
+              <p>
+                You don't always need to re-deploy to make updates. Because your
+                custom component is built with dynamic properties, you can
+                change things like text and hex colors right inside Salesforce!
+                Just click on your component while in the Lightning App Builder,
+                and use the properties panel on the right side of your screen to
+                make instant adjustments.
+              </p>
             </div>
-        </main>
+          </div>
+        </section>
+
+        <!-- Bottom Download Button -->
+        <div class="bottom-button-container button-group">
+          <button type="button" id="download-btn-bottom" class="submit-btn">
+            ⚡ Download Component (ZIP)
+          </button>
+          <button type="button" id="deploy-btn-bottom" class="deploy-btn">
+            🔐 Connect to Salesforce
+          </button>
+        </div>
+      </main>
     </div>
 
     <script src="script.js"></script>
-</body>
-</html>
-        </main>
-    </div>
-
-    <script src="script.js"></script>
-</body>
+  </body>
 </html>
