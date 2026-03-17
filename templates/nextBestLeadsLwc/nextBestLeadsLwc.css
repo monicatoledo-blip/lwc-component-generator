@@ -1,0 +1,108 @@
+.nbl-container {
+    background: #ffffff;
+    border-radius: 4px;
+}
+
+/* Header Styling */
+.nbl-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.nbl-header-icon {
+    background-color: #fe9339;
+}
+
+.nbl-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #080707;
+    line-height: 1.5;
+}
+
+.nbl-subtitle {
+    font-size: 0.875rem;
+    color: #706e6b;
+    margin-top: 0.25rem;
+}
+
+/* List Styling */
+.nbl-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.nbl-lead-item {
+    padding: 1.25rem 1.5rem;
+    align-items: flex-start;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.nbl-lead-item:last-child {
+    border-bottom: none;
+}
+
+/* Avatar Icon */
+.nbl-avatar-icon {
+    background-color: #1b96ff;
+}
+
+.nbl-avatar-icon svg {
+    fill: #ffffff;
+}
+
+/* Lead Content */
+.nbl-lead-content {
+    flex: 1;
+}
+
+.nbl-lead-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0176d3;
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+}
+
+.nbl-lead-name:hover {
+    text-decoration: underline;
+}
+
+.nbl-lead-role {
+    font-size: 0.875rem;
+    color: #3e3e3c;
+    margin-bottom: 0.5rem;
+}
+
+.nbl-match-badge {
+    display: inline-block;
+    background-color: #e0e0e0;
+    color: #3e3e3c;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.25rem 0.625rem;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+}
+
+.nbl-lead-context {
+    font-size: 0.875rem;
+    color: #706e6b;
+    line-height: 1.5;
+    margin-top: 0.5rem;
+}
+
+/* Phone Button */
+.nbl-phone-btn {
+    border-radius: 50%;
+    border: 1px solid #0176d3;
+}
+
+.nbl-phone-btn svg {
+    fill: #0176d3;
+}
+
+.nbl-phone-btn:hover {
+    background-color: #f3f3f3;
+}

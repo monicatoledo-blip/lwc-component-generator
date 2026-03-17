@@ -896,6 +896,143 @@ header p {
     background-color: #f3f2f2;
 }
 
+/* Next Best Leads Preview Styles */
+.nbl-preview-container {
+    background: white;
+    border-radius: 8px;
+    border: 1px solid #e5e5e5;
+    overflow: hidden;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+.nbl-preview-header {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid #e5e5e5;
+    gap: 1rem;
+}
+
+.nbl-preview-header-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.nbl-preview-icon-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.nbl-preview-header-text {
+    flex: 1;
+}
+
+.nbl-preview-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: #080707;
+    margin: 0 0 0.25rem 0;
+    line-height: 1.5;
+}
+
+.nbl-preview-subtitle {
+    font-size: 0.875rem;
+    color: #706e6b;
+    margin: 0;
+}
+
+.nbl-preview-list {
+    padding: 0;
+}
+
+.nbl-preview-lead-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e5e5e5;
+    gap: 1rem;
+}
+
+.nbl-preview-lead-item:last-child {
+    border-bottom: none;
+}
+
+.nbl-preview-lead-avatar {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+}
+
+.nbl-preview-avatar-svg {
+    width: 100%;
+    height: 100%;
+}
+
+.nbl-preview-lead-content {
+    flex: 1;
+}
+
+.nbl-preview-lead-name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #0176d3;
+    margin-bottom: 0.25rem;
+    cursor: pointer;
+}
+
+.nbl-preview-lead-name:hover {
+    text-decoration: underline;
+}
+
+.nbl-preview-lead-role {
+    font-size: 0.875rem;
+    color: #3e3e3c;
+    margin-bottom: 0.5rem;
+}
+
+.nbl-preview-match-badge {
+    display: inline-block;
+    background-color: #e0e0e0;
+    color: #3e3e3c;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.25rem 0.625rem;
+    border-radius: 12px;
+    margin-bottom: 0.5rem;
+}
+
+.nbl-preview-lead-context {
+    font-size: 0.875rem;
+    color: #706e6b;
+    line-height: 1.5;
+    margin: 0.5rem 0 0 0;
+}
+
+.nbl-preview-phone-btn {
+    width: 40px;
+    height: 40px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    border: 1px solid #0176d3;
+    background: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.nbl-preview-phone-btn:hover {
+    background-color: #f3f3f3;
+}
+
+.nbl-preview-phone-icon {
+    width: 20px;
+    height: 20px;
+}
+
 /* Preview Section */
 .preview-section {
     display: flex;
@@ -1325,6 +1462,48 @@ header p {
     .nba-preview-btn-primary,
     .nba-preview-btn-secondary {
         width: 100%;
+    }
+
+    .nbl-preview-header {
+        padding: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .nbl-preview-header-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .nbl-preview-title {
+        font-size: 1rem;
+    }
+
+    .nbl-preview-subtitle {
+        font-size: 0.8125rem;
+    }
+
+    .nbl-preview-lead-item {
+        padding: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .nbl-preview-lead-avatar {
+        width: 40px;
+        height: 40px;
+    }
+
+    .nbl-preview-lead-name {
+        font-size: 0.9375rem;
+    }
+
+    .nbl-preview-phone-btn {
+        width: 36px;
+        height: 36px;
+    }
+
+    .nbl-preview-phone-icon {
+        width: 18px;
+        height: 18px;
     }
 
     .side-nav {

@@ -33,6 +33,7 @@
                     <option value="unifiedProfileLwc">Unified Profile</option>
                     <option value="agentforceLeadBriefLwc">Agentforce Lead Brief</option>
                     <option value="nextBestActionsLwc">Next Best Actions</option>
+                    <option value="nextBestLeadsLwc">Next Best Leads</option>
                 </select>
             </section>
 
@@ -743,6 +744,188 @@
                 </section>
             </div>
             <!-- End Next Best Actions Container -->
+
+            <!-- Next Best Leads Container -->
+            <div id="next-best-leads-container" style="display: none;">
+                <!-- Create Component Section -->
+                <section id="nbl-create" class="page-section">
+                    <h2 class="section-title">Create Next Best Leads</h2>
+                    <p class="section-guidance">Configure your component details below. Watch the Live Preview update in real-time.</p>
+
+                    <form id="nblForm" method="POST" action="/generate">
+                        <!-- Header Section -->
+                        <section class="form-section">
+                            <h2>Header</h2>
+                            <div class="form-group">
+                                <label>Header Title</label>
+                                <input type="text" name="headerTitle" value="High-Propensity Wealth Leads" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Header Subtitle</label>
+                                <input type="text" name="headerSubtitle" value="Top matches based on recent Q1 marketing engagement and portfolio lookalike models." required>
+                            </div>
+                        </section>
+
+                        <!-- Lead 1 Section -->
+                        <section class="form-section">
+                            <h2>Lead 1</h2>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" name="lead1Name" value="Marcus Thorne" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Role/Company</label>
+                                <input type="text" name="lead1Role" value="CEO, Thorne Logistics" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Match Score</label>
+                                <input type="text" name="lead1Match" value="98% Match" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Context</label>
+                                <textarea name="lead1Context" class="textarea-input" rows="2" required>Browsed Commercial Real Estate loans for 12 mins. Lookalike to your top tier clients.</textarea>
+                            </div>
+                        </section>
+
+                        <!-- Lead 2 Section -->
+                        <section class="form-section">
+                            <h2>Lead 2</h2>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" name="lead2Name" value="Sophia Patel" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Role/Company</label>
+                                <input type="text" name="lead2Role" value="VP Finance, Vertex Tech" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Match Score</label>
+                                <input type="text" name="lead2Match" value="94% Match" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Context</label>
+                                <textarea name="lead2Context" class="textarea-input" rows="2" required>Attended Q1 ESG Investment Webinar. High liquidity event detected.</textarea>
+                            </div>
+                        </section>
+
+                        <!-- Lead 3 Section -->
+                        <section class="form-section">
+                            <h2>Lead 3</h2>
+                            <div class="form-group">
+                                <label>Name</label>
+                                <input type="text" name="lead3Name" value="David Chen" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Role/Company</label>
+                                <input type="text" name="lead3Role" value="Founder, Chen Manufacturing" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Match Score</label>
+                                <input type="text" name="lead3Match" value="89% Match" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Context</label>
+                                <textarea name="lead3Context" class="textarea-input" rows="2" required>Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea>
+                            </div>
+                        </section>
+
+                        <!-- Download Button -->
+                        <button type="submit" class="submit-btn">⚡ Download Component (ZIP)</button>
+                    </form>
+                </section>
+
+                <!-- Live Preview Section -->
+                <section id="nbl-preview" class="page-section">
+                    <h2 class="section-title">Live Preview</h2>
+                    <p class="section-description">Updates in real-time as you fill out the form above</p>
+
+                    <div class="nbl-preview-container">
+                        <!-- Header -->
+                        <div class="nbl-preview-header">
+                            <div class="nbl-preview-header-icon">
+                                <svg viewBox="0 0 52 52" class="nbl-preview-icon-svg">
+                                    <circle cx="26" cy="26" r="24" fill="#fe9339"/>
+                                    <path d="M26 13l2.5 7.7h8.1l-6.6 4.8 2.5 7.7L26 28.4l-6.5 4.8 2.5-7.7-6.6-4.8h8.1z" fill="white"/>
+                                </svg>
+                            </div>
+                            <div class="nbl-preview-header-text">
+                                <h2 class="nbl-preview-title" id="previewNblHeaderTitle">High-Propensity Wealth Leads</h2>
+                                <p class="nbl-preview-subtitle" id="previewNblHeaderSubtitle">Top matches based on recent Q1 marketing engagement and portfolio lookalike models.</p>
+                            </div>
+                        </div>
+
+                        <!-- Lead List -->
+                        <div class="nbl-preview-list">
+                            <!-- Lead 1 -->
+                            <div class="nbl-preview-lead-item">
+                                <div class="nbl-preview-lead-avatar">
+                                    <svg viewBox="0 0 52 52" class="nbl-preview-avatar-svg">
+                                        <circle cx="26" cy="26" r="24" fill="#1b96ff"/>
+                                        <circle cx="26" cy="20" r="5" fill="white"/>
+                                        <path d="M26 27c-6 0-11 3-11 7v3h22v-3c0-4-5-7-11-7z" fill="white"/>
+                                    </svg>
+                                </div>
+                                <div class="nbl-preview-lead-content">
+                                    <div class="nbl-preview-lead-name" id="previewNblLead1Name">Marcus Thorne</div>
+                                    <div class="nbl-preview-lead-role" id="previewNblLead1Role">CEO, Thorne Logistics</div>
+                                    <div class="nbl-preview-match-badge" id="previewNblLead1Match">98% Match</div>
+                                    <p class="nbl-preview-lead-context" id="previewNblLead1Context">Browsed Commercial Real Estate loans for 12 mins. Lookalike to your top tier clients.</p>
+                                </div>
+                                <div class="nbl-preview-phone-btn">
+                                    <svg viewBox="0 0 52 52" class="nbl-preview-phone-icon">
+                                        <path d="M44 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L15 7.2c-1.6-1.6-4.2-1.6-5.8 0L6 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.1-5.9z" fill="#0176d3"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Lead 2 -->
+                            <div class="nbl-preview-lead-item">
+                                <div class="nbl-preview-lead-avatar">
+                                    <svg viewBox="0 0 52 52" class="nbl-preview-avatar-svg">
+                                        <circle cx="26" cy="26" r="24" fill="#1b96ff"/>
+                                        <circle cx="26" cy="20" r="5" fill="white"/>
+                                        <path d="M26 27c-6 0-11 3-11 7v3h22v-3c0-4-5-7-11-7z" fill="white"/>
+                                    </svg>
+                                </div>
+                                <div class="nbl-preview-lead-content">
+                                    <div class="nbl-preview-lead-name" id="previewNblLead2Name">Sophia Patel</div>
+                                    <div class="nbl-preview-lead-role" id="previewNblLead2Role">VP Finance, Vertex Tech</div>
+                                    <div class="nbl-preview-match-badge" id="previewNblLead2Match">94% Match</div>
+                                    <p class="nbl-preview-lead-context" id="previewNblLead2Context">Attended Q1 ESG Investment Webinar. High liquidity event detected.</p>
+                                </div>
+                                <div class="nbl-preview-phone-btn">
+                                    <svg viewBox="0 0 52 52" class="nbl-preview-phone-icon">
+                                        <path d="M44 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L15 7.2c-1.6-1.6-4.2-1.6-5.8 0L6 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.1-5.9z" fill="#0176d3"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            <!-- Lead 3 -->
+                            <div class="nbl-preview-lead-item">
+                                <div class="nbl-preview-lead-avatar">
+                                    <svg viewBox="0 0 52 52" class="nbl-preview-avatar-svg">
+                                        <circle cx="26" cy="26" r="24" fill="#1b96ff"/>
+                                        <circle cx="26" cy="20" r="5" fill="white"/>
+                                        <path d="M26 27c-6 0-11 3-11 7v3h22v-3c0-4-5-7-11-7z" fill="white"/>
+                                    </svg>
+                                </div>
+                                <div class="nbl-preview-lead-content">
+                                    <div class="nbl-preview-lead-name" id="previewNblLead3Name">David Chen</div>
+                                    <div class="nbl-preview-lead-role" id="previewNblLead3Role">Founder, Chen Manufacturing</div>
+                                    <div class="nbl-preview-match-badge" id="previewNblLead3Match">89% Match</div>
+                                    <p class="nbl-preview-lead-context" id="previewNblLead3Context">Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</p>
+                                </div>
+                                <div class="nbl-preview-phone-btn">
+                                    <svg viewBox="0 0 52 52" class="nbl-preview-phone-icon">
+                                        <path d="M44 36.3l-6.7-6.7c-1.6-1.6-4.2-1.6-5.8 0l-2.7 2.7c-.4.4-1 .3-1.4 0l-8.5-8.5c-.3-.3-.4-1 0-1.4l2.7-2.7c1.6-1.6 1.6-4.2 0-5.8L15 7.2c-1.6-1.6-4.2-1.6-5.8 0L6 10.6c-3.7 3.7-3.4 10.2 1.2 17.2 3.6 5.6 8.5 10.5 14.1 14.1 7 4.6 13.5 4.9 17.2 1.2l3.4-3.4c1.6-1.6 1.6-4.3.1-5.9z" fill="#0176d3"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- End Next Best Leads Container -->
 
             <section id="deploy" class="page-section deployment-section">
                 <h2 class="section-title">Deployment Instructions</h2>

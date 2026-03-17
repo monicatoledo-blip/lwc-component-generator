@@ -26,7 +26,10 @@
       "Bash(grep -n \"^/\\\\* Tabs \\\\*/$\\\\|^.tabs-\\\\|^.tab-\" \"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/public/styles.css\")",
       "Bash(echo \"✅ Single-page layout complete!:*)",
       "Bash(/tmp/refactored_index.html:*)",
-      "Bash(/tmp/fixed_index.html:*)"
+      "Bash(/tmp/fixed_index.html:*)",
+      "Bash(\"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/nextBestLeadsLwc/nextBestLeadsLwc.js-meta.xml\":*)",
+      "Bash(\"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/nextBestLeadsLwc/nextBestLeadsLwc.html\":*)",
+      "Bash(\"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/nextBestLeadsLwc/nextBestLeadsLwc.css\":*)"
     ]
   }
 }

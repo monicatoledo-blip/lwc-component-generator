@@ -33,24 +33,25 @@ app.get('/', (req, res) => {
 app.post('/generate', async (req, res) => {
     try {
         const formData = req.body;
+        const componentType = formData.componentType || 'unifiedProfileLwc';
 
-        // Calculate ring dash offset (circumference = 2 * π * r = 2 * 3.14159 * 40 ≈ 251.2)
-        const ringPercentage = parseFloat(formData.ringPercentage) || 0;
-        const circumference = 251.2;
-        const ringDashOffset = circumference - (circumference * ringPercentage / 100);
+        // Prepare template data based on component type
+        let templateData = { ...formData };
 
-        // Add calculated values to form data
-        const templateData = {
-            ...formData,
-            ringDashOffset: ringDashOffset.toFixed(2)
-        };
+        // For Unified Profile, calculate ring dash offset
+        if (componentType === 'unifiedProfileLwc') {
+            const ringPercentage = parseFloat(formData.ringPercentage) || 0;
+            const circumference = 251.2;
+            const ringDashOffset = circumference - (circumference * ringPercentage / 100);
+            templateData.ringDashOffset = ringDashOffset.toFixed(2);
+        }
 
         // Read template files
-        const templatesDir = path.join(__dirname, 'templates', 'unifiedProfileLwc');
-        const htmlTemplate = await fs.readFile(path.join(templatesDir, 'unifiedProfileLwc.html'), 'utf-8');
-        const jsTemplate = await fs.readFile(path.join(templatesDir, 'unifiedProfileLwc.js'), 'utf-8');
-        const cssTemplate = await fs.readFile(path.join(templatesDir, 'unifiedProfileLwc.css'), 'utf-8');
-        const metaTemplate = await fs.readFile(path.join(templatesDir, 'unifiedProfileLwc.js-meta.xml'), 'utf-8');
+        const templatesDir = path.join(__dirname, 'templates', componentType);
+        const htmlTemplate = await fs.readFile(path.join(templatesDir, `${componentType}.html`), 'utf-8');
+        const jsTemplate = await fs.readFile(path.join(templatesDir, `${componentType}.js`), 'utf-8');
+        const cssTemplate = await fs.readFile(path.join(templatesDir, `${componentType}.css`), 'utf-8');
+        const metaTemplate = await fs.readFile(path.join(templatesDir, `${componentType}.js-meta.xml`), 'utf-8');
 
         // Compile templates with Handlebars
         const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
@@ -60,19 +61,19 @@ app.post('/generate', async (req, res) => {
 
         // Create ZIP file
         const zip = new JSZip();
-        const lwcFolder = zip.folder('unifiedProfileLwc');
+        const lwcFolder = zip.folder(componentType);
 
-        lwcFolder.file('unifiedProfileLwc.html', htmlCompiled);
-        lwcFolder.file('unifiedProfileLwc.js', jsCompiled);
-        lwcFolder.file('unifiedProfileLwc.css', cssCompiled);
-        lwcFolder.file('unifiedProfileLwc.js-meta.xml', metaCompiled);
+        lwcFolder.file(`${componentType}.html`, htmlCompiled);
+        lwcFolder.file(`${componentType}.js`, jsCompiled);
+        lwcFolder.file(`${componentType}.css`, cssCompiled);
+        lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
 
         // Generate ZIP
         const zipBuffer = await zip.generateAsync({ type: 'nodebuffer' });
 
         // Send ZIP file
         res.setHeader('Content-Type', 'application/zip');
-        res.setHeader('Content-Disposition', 'attachment; filename=unifiedProfileLwc.zip');
+        res.setHeader('Content-Disposition', `attachment; filename=${componentType}.zip`);
         res.send(zipBuffer);
 
     } catch (error) {

@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const unifiedProfileContainer = document.getElementById('unified-profile-container');
     const agentforceBriefContainer = document.getElementById('agentforce-brief-container');
     const nextBestActionsContainer = document.getElementById('next-best-actions-container');
+    const nextBestLeadsContainer = document.getElementById('next-best-leads-container');
 
     // Update deployment instructions based on selected component
     function updateDeploymentInstructions(componentType) {
@@ -20,6 +21,10 @@ document.addEventListener('DOMContentLoaded', () => {
             'nextBestActionsLwc': {
                 folder: 'nextBestActionsLwc',
                 label: 'Next Best Actions (Custom)'
+            },
+            'nextBestLeadsLwc': {
+                folder: 'nextBestLeadsLwc',
+                label: 'Next Best Leads (Custom)'
             }
         };
 
@@ -43,14 +48,22 @@ document.addEventListener('DOMContentLoaded', () => {
             unifiedProfileContainer.style.display = 'block';
             agentforceBriefContainer.style.display = 'none';
             nextBestActionsContainer.style.display = 'none';
+            nextBestLeadsContainer.style.display = 'none';
         } else if (selectedComponent === 'agentforceLeadBriefLwc') {
             unifiedProfileContainer.style.display = 'none';
             agentforceBriefContainer.style.display = 'block';
             nextBestActionsContainer.style.display = 'none';
+            nextBestLeadsContainer.style.display = 'none';
         } else if (selectedComponent === 'nextBestActionsLwc') {
             unifiedProfileContainer.style.display = 'none';
             agentforceBriefContainer.style.display = 'none';
             nextBestActionsContainer.style.display = 'block';
+            nextBestLeadsContainer.style.display = 'none';
+        } else if (selectedComponent === 'nextBestLeadsLwc') {
+            unifiedProfileContainer.style.display = 'none';
+            agentforceBriefContainer.style.display = 'none';
+            nextBestActionsContainer.style.display = 'none';
+            nextBestLeadsContainer.style.display = 'block';
         }
 
         // Update deployment instructions
@@ -71,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Determine which component is active
             const isAgentforceActive = agentforceBriefContainer.style.display !== 'none';
             const isNbaActive = nextBestActionsContainer.style.display !== 'none';
+            const isNblActive = nextBestLeadsContainer.style.display !== 'none';
 
             // Map base IDs to component-specific IDs
             let actualTargetId = targetId;
@@ -85,6 +99,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     actualTargetId = 'nba-create';
                 } else if (targetId === 'preview') {
                     actualTargetId = 'nba-preview';
+                }
+            } else if (isNblActive) {
+                if (targetId === 'create') {
+                    actualTargetId = 'nbl-create';
+                } else if (targetId === 'preview') {
+                    actualTargetId = 'nbl-preview';
                 }
             }
 
@@ -101,6 +121,7 @@ document.addEventListener('DOMContentLoaded', () => {
         let current = '';
         const isAgentforceActive = agentforceBriefContainer.style.display !== 'none';
         const isNbaActive = nextBestActionsContainer.style.display !== 'none';
+        const isNblActive = nextBestLeadsContainer.style.display !== 'none';
 
         // Get visible sections only
         const visibleSections = Array.from(document.querySelectorAll('.page-section'))
@@ -124,6 +145,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (sectionId === 'nba-create') {
                         current = 'create';
                     } else if (sectionId === 'nba-preview') {
+                        current = 'preview';
+                    } else {
+                        current = sectionId;
+                    }
+                } else if (isNblActive) {
+                    if (sectionId === 'nbl-create') {
+                        current = 'create';
+                    } else if (sectionId === 'nbl-preview') {
                         current = 'preview';
                     } else {
                         current = sectionId;
@@ -248,6 +277,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial NBA preview update
     updateNbaPreview();
+
+    // Setup NBL preview updates
+    const nblForm = document.getElementById('nblForm');
+    const nblInputs = nblForm.querySelectorAll('input, textarea');
+
+    nblInputs.forEach(input => {
+        input.addEventListener('input', updateNblPreview);
+
+        // Prevent Enter key from submitting the form
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && input.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Prevent Enter key from submitting NBL form at form level
+    nblForm.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+        }
+    });
+
+    // Initial NBL preview update
+    updateNblPreview();
 });
 
 function updatePreview() {
@@ -481,6 +535,80 @@ function updateNbaPreview() {
     }
 }
 
+// Update NBL Preview
+function updateNblPreview() {
+    const form = document.getElementById('nblForm');
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    // Update header title and subtitle
+    const previewHeaderTitle = document.getElementById('previewNblHeaderTitle');
+    const previewHeaderSubtitle = document.getElementById('previewNblHeaderSubtitle');
+    if (data.headerTitle && previewHeaderTitle) {
+        previewHeaderTitle.textContent = data.headerTitle;
+    }
+    if (data.headerSubtitle && previewHeaderSubtitle) {
+        previewHeaderSubtitle.textContent = data.headerSubtitle;
+    }
+
+    // Update Lead 1
+    const previewLead1Name = document.getElementById('previewNblLead1Name');
+    const previewLead1Role = document.getElementById('previewNblLead1Role');
+    const previewLead1Match = document.getElementById('previewNblLead1Match');
+    const previewLead1Context = document.getElementById('previewNblLead1Context');
+
+    if (data.lead1Name && previewLead1Name) {
+        previewLead1Name.textContent = data.lead1Name;
+    }
+    if (data.lead1Role && previewLead1Role) {
+        previewLead1Role.textContent = data.lead1Role;
+    }
+    if (data.lead1Match && previewLead1Match) {
+        previewLead1Match.textContent = data.lead1Match;
+    }
+    if (data.lead1Context && previewLead1Context) {
+        previewLead1Context.textContent = data.lead1Context;
+    }
+
+    // Update Lead 2
+    const previewLead2Name = document.getElementById('previewNblLead2Name');
+    const previewLead2Role = document.getElementById('previewNblLead2Role');
+    const previewLead2Match = document.getElementById('previewNblLead2Match');
+    const previewLead2Context = document.getElementById('previewNblLead2Context');
+
+    if (data.lead2Name && previewLead2Name) {
+        previewLead2Name.textContent = data.lead2Name;
+    }
+    if (data.lead2Role && previewLead2Role) {
+        previewLead2Role.textContent = data.lead2Role;
+    }
+    if (data.lead2Match && previewLead2Match) {
+        previewLead2Match.textContent = data.lead2Match;
+    }
+    if (data.lead2Context && previewLead2Context) {
+        previewLead2Context.textContent = data.lead2Context;
+    }
+
+    // Update Lead 3
+    const previewLead3Name = document.getElementById('previewNblLead3Name');
+    const previewLead3Role = document.getElementById('previewNblLead3Role');
+    const previewLead3Match = document.getElementById('previewNblLead3Match');
+    const previewLead3Context = document.getElementById('previewNblLead3Context');
+
+    if (data.lead3Name && previewLead3Name) {
+        previewLead3Name.textContent = data.lead3Name;
+    }
+    if (data.lead3Role && previewLead3Role) {
+        previewLead3Role.textContent = data.lead3Role;
+    }
+    if (data.lead3Match && previewLead3Match) {
+        previewLead3Match.textContent = data.lead3Match;
+    }
+    if (data.lead3Context && previewLead3Context) {
+        previewLead3Context.textContent = data.lead3Context;
+    }
+}
+
 // Download handler function
 async function handleDownload(buttonElement) {
     const originalText = buttonElement.textContent;
@@ -500,6 +628,8 @@ async function handleDownload(buttonElement) {
             form = document.getElementById('agentforceForm');
         } else if (selectedComponent === 'nextBestActionsLwc') {
             form = document.getElementById('nbaForm');
+        } else if (selectedComponent === 'nextBestLeadsLwc') {
+            form = document.getElementById('nblForm');
         }
 
         const formData = new FormData(form);
@@ -566,6 +696,13 @@ document.getElementById('agentforceForm').addEventListener('submit', async (e) =
 
 // NBA form submission handler
 document.getElementById('nbaForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('.submit-btn');
+    await handleDownload(submitBtn);
+});
+
+// NBL form submission handler
+document.getElementById('nblForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = e.target.querySelector('.submit-btn');
     await handleDownload(submitBtn);
