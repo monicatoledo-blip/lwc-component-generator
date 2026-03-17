@@ -1099,12 +1099,19 @@ function processFormData(form, componentType) {
           "bytes"
         );
         formData.delete(`${fieldName}_url`);
-      } else if (urlInput.value) {
+        // Also ensure URL field is completely cleared
+        urlInput.value = "";
+      } else if (urlInput.value && urlInput.value.trim() !== "") {
         // No file uploaded, use URL instead
         console.log(`🔗 Using URL for ${fieldName}:`, urlInput.value);
         formData.delete(fieldName); // Remove empty file field
         formData.set(fieldName, urlInput.value); // Add URL as the field value
         formData.delete(`${fieldName}_url`); // Remove the _url suffix field
+      } else {
+        // Neither file nor URL provided - remove both
+        console.log(`⚠️ No file or URL for ${fieldName}`);
+        formData.delete(fieldName);
+        formData.delete(`${fieldName}_url`);
       }
     }
   });
