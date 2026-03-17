@@ -56,23 +56,54 @@ document.addEventListener('DOMContentLoaded', () => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = link.getAttribute('href').substring(1);
-            const targetSection = document.getElementById(targetId);
 
-            if (targetSection) {
+            // Determine which component is active
+            const isAgentforceActive = agentforceBriefContainer.style.display !== 'none';
+
+            // Map base IDs to component-specific IDs
+            let actualTargetId = targetId;
+            if (isAgentforceActive) {
+                if (targetId === 'create') {
+                    actualTargetId = 'agentforce-create';
+                } else if (targetId === 'preview') {
+                    actualTargetId = 'agentforce-preview';
+                }
+            }
+
+            const targetSection = document.getElementById(actualTargetId);
+
+            if (targetSection && targetSection.offsetParent !== null) {
                 targetSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
         });
     });
 
     // Update active nav link on scroll
-    const sections = document.querySelectorAll('.page-section');
-
     window.addEventListener('scroll', () => {
         let current = '';
-        sections.forEach(section => {
+        const isAgentforceActive = agentforceBriefContainer.style.display !== 'none';
+
+        // Get visible sections only
+        const visibleSections = Array.from(document.querySelectorAll('.page-section'))
+            .filter(section => section.offsetParent !== null);
+
+        visibleSections.forEach(section => {
             const sectionTop = section.offsetTop;
             if (scrollY >= (sectionTop - 200)) {
-                current = section.getAttribute('id');
+                let sectionId = section.getAttribute('id');
+
+                // Map agentforce IDs back to base IDs for navigation highlighting
+                if (isAgentforceActive) {
+                    if (sectionId === 'agentforce-create') {
+                        current = 'create';
+                    } else if (sectionId === 'agentforce-preview') {
+                        current = 'preview';
+                    } else {
+                        current = sectionId;
+                    }
+                } else {
+                    current = sectionId;
+                }
             }
         });
 
