@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const componentSelect = document.getElementById('componentSelect');
     const unifiedProfileContainer = document.getElementById('unified-profile-container');
     const agentforceBriefContainer = document.getElementById('agentforce-brief-container');
+    const nextBestActionsContainer = document.getElementById('next-best-actions-container');
 
     // Update deployment instructions based on selected component
     function updateDeploymentInstructions(componentType) {
@@ -15,6 +16,10 @@ document.addEventListener('DOMContentLoaded', () => {
             'agentforceLeadBriefLwc': {
                 folder: 'agentforceLeadBriefLwc',
                 label: 'Agentforce Lead Brief (Custom)'
+            },
+            'nextBestActionsLwc': {
+                folder: 'nextBestActionsLwc',
+                label: 'Next Best Actions (Custom)'
             }
         };
 
@@ -37,9 +42,15 @@ document.addEventListener('DOMContentLoaded', () => {
         if (selectedComponent === 'unifiedProfileLwc') {
             unifiedProfileContainer.style.display = 'block';
             agentforceBriefContainer.style.display = 'none';
+            nextBestActionsContainer.style.display = 'none';
         } else if (selectedComponent === 'agentforceLeadBriefLwc') {
             unifiedProfileContainer.style.display = 'none';
             agentforceBriefContainer.style.display = 'block';
+            nextBestActionsContainer.style.display = 'none';
+        } else if (selectedComponent === 'nextBestActionsLwc') {
+            unifiedProfileContainer.style.display = 'none';
+            agentforceBriefContainer.style.display = 'none';
+            nextBestActionsContainer.style.display = 'block';
         }
 
         // Update deployment instructions
@@ -59,6 +70,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Determine which component is active
             const isAgentforceActive = agentforceBriefContainer.style.display !== 'none';
+            const isNbaActive = nextBestActionsContainer.style.display !== 'none';
 
             // Map base IDs to component-specific IDs
             let actualTargetId = targetId;
@@ -67,6 +79,12 @@ document.addEventListener('DOMContentLoaded', () => {
                     actualTargetId = 'agentforce-create';
                 } else if (targetId === 'preview') {
                     actualTargetId = 'agentforce-preview';
+                }
+            } else if (isNbaActive) {
+                if (targetId === 'create') {
+                    actualTargetId = 'nba-create';
+                } else if (targetId === 'preview') {
+                    actualTargetId = 'nba-preview';
                 }
             }
 
@@ -82,6 +100,7 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('scroll', () => {
         let current = '';
         const isAgentforceActive = agentforceBriefContainer.style.display !== 'none';
+        const isNbaActive = nextBestActionsContainer.style.display !== 'none';
 
         // Get visible sections only
         const visibleSections = Array.from(document.querySelectorAll('.page-section'))
@@ -92,11 +111,19 @@ document.addEventListener('DOMContentLoaded', () => {
             if (scrollY >= (sectionTop - 200)) {
                 let sectionId = section.getAttribute('id');
 
-                // Map agentforce IDs back to base IDs for navigation highlighting
+                // Map component-specific IDs back to base IDs for navigation highlighting
                 if (isAgentforceActive) {
                     if (sectionId === 'agentforce-create') {
                         current = 'create';
                     } else if (sectionId === 'agentforce-preview') {
+                        current = 'preview';
+                    } else {
+                        current = sectionId;
+                    }
+                } else if (isNbaActive) {
+                    if (sectionId === 'nba-create') {
+                        current = 'create';
+                    } else if (sectionId === 'nba-preview') {
                         current = 'preview';
                     } else {
                         current = sectionId;
@@ -196,6 +223,31 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initial Agentforce preview update
     updateAgentforcePreview();
+
+    // Setup NBA preview updates
+    const nbaForm = document.getElementById('nbaForm');
+    const nbaInputs = nbaForm.querySelectorAll('input, textarea');
+
+    nbaInputs.forEach(input => {
+        input.addEventListener('input', updateNbaPreview);
+
+        // Prevent Enter key from submitting the form
+        input.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && input.tagName !== 'TEXTAREA') {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Prevent Enter key from submitting NBA form at form level
+    nbaForm.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' && e.target.tagName !== 'TEXTAREA') {
+            e.preventDefault();
+        }
+    });
+
+    // Initial NBA preview update
+    updateNbaPreview();
 });
 
 function updatePreview() {
@@ -360,6 +412,75 @@ function updateAgentforcePreview() {
     }
 }
 
+// Update NBA Preview
+function updateNbaPreview() {
+    const form = document.getElementById('nbaForm');
+    const formData = new FormData(form);
+    const data = Object.fromEntries(formData.entries());
+
+    // Update header icon
+    const previewHeaderIcon = document.getElementById('previewNbaHeaderIcon');
+    if (data.headerIcon && previewHeaderIcon) {
+        previewHeaderIcon.src = data.headerIcon;
+    }
+
+    // Update header title and subtitle
+    const previewHeaderTitle = document.getElementById('previewNbaHeaderTitle');
+    const previewHeaderSubtitle = document.getElementById('previewNbaHeaderSubtitle');
+    if (data.headerTitle && previewHeaderTitle) {
+        previewHeaderTitle.textContent = data.headerTitle;
+    }
+    if (data.headerSubtitle && previewHeaderSubtitle) {
+        previewHeaderSubtitle.textContent = data.headerSubtitle;
+    }
+
+    // Update Card 1
+    const previewCard1Image = document.getElementById('previewNbaCard1Image');
+    const previewCard1Title = document.getElementById('previewNbaCard1Title');
+    const previewCard1Text = document.getElementById('previewNbaCard1Text');
+    const previewCard1Primary = document.getElementById('previewNbaCard1Primary');
+    const previewCard1Secondary = document.getElementById('previewNbaCard1Secondary');
+
+    if (data.card1Image && previewCard1Image) {
+        previewCard1Image.src = data.card1Image;
+    }
+    if (data.card1Title && previewCard1Title) {
+        previewCard1Title.textContent = data.card1Title;
+    }
+    if (data.card1Text && previewCard1Text) {
+        previewCard1Text.textContent = data.card1Text;
+    }
+    if (data.card1PrimaryBtn && previewCard1Primary) {
+        previewCard1Primary.textContent = data.card1PrimaryBtn;
+    }
+    if (data.card1SecondaryBtn && previewCard1Secondary) {
+        previewCard1Secondary.textContent = data.card1SecondaryBtn;
+    }
+
+    // Update Card 2
+    const previewCard2Image = document.getElementById('previewNbaCard2Image');
+    const previewCard2Title = document.getElementById('previewNbaCard2Title');
+    const previewCard2Text = document.getElementById('previewNbaCard2Text');
+    const previewCard2Primary = document.getElementById('previewNbaCard2Primary');
+    const previewCard2Secondary = document.getElementById('previewNbaCard2Secondary');
+
+    if (data.card2Image && previewCard2Image) {
+        previewCard2Image.src = data.card2Image;
+    }
+    if (data.card2Title && previewCard2Title) {
+        previewCard2Title.textContent = data.card2Title;
+    }
+    if (data.card2Text && previewCard2Text) {
+        previewCard2Text.textContent = data.card2Text;
+    }
+    if (data.card2PrimaryBtn && previewCard2Primary) {
+        previewCard2Primary.textContent = data.card2PrimaryBtn;
+    }
+    if (data.card2SecondaryBtn && previewCard2Secondary) {
+        previewCard2Secondary.textContent = data.card2SecondaryBtn;
+    }
+}
+
 // Download handler function
 async function handleDownload(buttonElement) {
     const originalText = buttonElement.textContent;
@@ -372,9 +493,14 @@ async function handleDownload(buttonElement) {
         const componentSelect = document.getElementById('componentSelect');
         const selectedComponent = componentSelect.value;
 
-        const form = selectedComponent === 'unifiedProfileLwc'
-            ? document.getElementById('lwcForm')
-            : document.getElementById('agentforceForm');
+        let form;
+        if (selectedComponent === 'unifiedProfileLwc') {
+            form = document.getElementById('lwcForm');
+        } else if (selectedComponent === 'agentforceLeadBriefLwc') {
+            form = document.getElementById('agentforceForm');
+        } else if (selectedComponent === 'nextBestActionsLwc') {
+            form = document.getElementById('nbaForm');
+        }
 
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
@@ -433,6 +559,13 @@ document.getElementById('download-btn-bottom').addEventListener('click', async (
 
 // Agentforce form submission handler
 document.getElementById('agentforceForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const submitBtn = e.target.querySelector('.submit-btn');
+    await handleDownload(submitBtn);
+});
+
+// NBA form submission handler
+document.getElementById('nbaForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const submitBtn = e.target.querySelector('.submit-btn');
     await handleDownload(submitBtn);

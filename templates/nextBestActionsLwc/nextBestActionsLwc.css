@@ -1,0 +1,183 @@
+/* Container */
+.nba-container {
+    background: white;
+    border-radius: 8px;
+    padding: 0;
+}
+
+/* Header Section */
+.nba-header {
+    padding: 24px 24px 16px 24px;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.nba-header-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+}
+
+.nba-header-title {
+    font-size: 24px;
+    font-weight: 700;
+    color: #181818;
+    margin: 0;
+    line-height: 1.3;
+}
+
+.nba-header-subtitle {
+    font-size: 14px;
+    color: #706e6b;
+    margin: 4px 0 0 0;
+}
+
+/* Action Cards */
+.nba-action-card {
+    background: white;
+    border: 1px solid #dddbda;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08);
+    transition: box-shadow 0.2s ease;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.nba-action-card:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+}
+
+.nba-card-image {
+    width: 100%;
+    height: 180px;
+    object-fit: cover;
+    display: block;
+}
+
+.nba-card-content {
+    padding: 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.nba-card-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: #032d60;
+    margin: 0 0 16px 0;
+    line-height: 1.4;
+}
+
+/* Suggestion Section */
+.nba-suggestion-section {
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+.nba-info-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    background-color: #0176d3;
+    border-radius: 50%;
+    padding: 2px;
+}
+
+.nba-info-icon svg {
+    fill: white;
+}
+
+.nba-suggestion-heading {
+    font-size: 13px;
+    font-weight: 600;
+    color: #032d60;
+    margin: 0;
+}
+
+.nba-card-text {
+    font-size: 14px;
+    line-height: 1.6;
+    color: #3e3e3c;
+    margin: 8px 0 0 0;
+}
+
+/* Button Group */
+.nba-button-group {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.nba-primary-btn,
+.nba-secondary-btn {
+    flex: 1;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 10px 16px;
+    border-radius: 4px;
+}
+
+.nba-primary-btn {
+    background-color: #0176d3;
+    border-color: #0176d3;
+}
+
+.nba-primary-btn:hover {
+    background-color: #014486;
+    border-color: #014486;
+}
+
+.nba-secondary-btn {
+    border: 1px solid #0176d3;
+    color: #0176d3;
+    background-color: white;
+}
+
+.nba-secondary-btn:hover {
+    background-color: #f3f2f2;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .nba-header {
+        padding: 20px 16px 12px 16px;
+    }
+
+    .nba-header-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .nba-header-title {
+        font-size: 20px;
+    }
+
+    .nba-header-subtitle {
+        font-size: 13px;
+    }
+
+    .nba-card-image {
+        height: 160px;
+    }
+
+    .nba-card-content {
+        padding: 16px;
+    }
+
+    .nba-card-title {
+        font-size: 16px;
+    }
+
+    .nba-button-group {
+        flex-direction: column;
+    }
+
+    .nba-primary-btn,
+    .nba-secondary-btn {
+        width: 100%;
+    }
+}

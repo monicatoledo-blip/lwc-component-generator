@@ -32,6 +32,7 @@
                 <select id="componentSelect" class="component-select-dropdown">
                     <option value="unifiedProfileLwc">Unified Profile</option>
                     <option value="agentforceLeadBriefLwc">Agentforce Lead Brief</option>
+                    <option value="nextBestActionsLwc">Next Best Actions</option>
                 </select>
             </section>
 
@@ -592,6 +593,156 @@
                 </section>
             </div>
             <!-- End Agentforce Lead Brief Container -->
+
+            <!-- Next Best Actions Container -->
+            <div id="next-best-actions-container" style="display: none;">
+                <!-- Create Component Section -->
+                <section id="nba-create" class="page-section">
+                    <h2 class="section-title">Create Next Best Actions</h2>
+                    <p class="section-guidance">Configure your component details below. Watch the Live Preview update in real-time to ensure your design matches your demo story.</p>
+
+                    <form id="nbaForm" method="POST" action="/generate">
+                        <!-- Header Section -->
+                        <section class="form-section">
+                            <h2>Header</h2>
+                            <div class="form-group">
+                                <label>Header Icon URL</label>
+                                <input type="text" name="headerIcon" id="input-nba-header-icon" placeholder="https://..." value="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Header Title</label>
+                                <input type="text" name="headerTitle" id="input-nba-header-title" placeholder="Cumulus Wealth Insights" value="Cumulus Wealth Insights" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Header Subtitle</label>
+                                <input type="text" name="headerSubtitle" id="input-nba-header-subtitle" placeholder="AI-driven recommendations for Rachel Adams" value="AI-driven recommendations for Rachel Adams" required>
+                            </div>
+                        </section>
+
+                        <!-- Card 1 Section -->
+                        <section class="form-section">
+                            <h2>Action Card 1</h2>
+                            <div class="form-group">
+                                <label>Card 1 Image URL</label>
+                                <input type="text" name="card1Image" id="input-nba-card1-image" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1661956602116-aa6865609028?w=800&q=80" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Card 1 Title</label>
+                                <input type="text" name="card1Title" id="input-nba-card1-title" placeholder="Commercial Line of Credit" value="Commercial Line of Credit" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Card 1 Text</label>
+                                <textarea name="card1Text" id="input-nba-card1-text" class="textarea-input" rows="3" placeholder="Rachel's recent inquiries suggest..." required>Rachel's recent inquiries suggest Apex Manufacturing is looking for capital expansion. Offer a pre-approved $5M line of credit.</textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Card 1 Primary Button</label>
+                                    <input type="text" name="card1PrimaryBtn" id="input-nba-card1-primary" placeholder="Review Offer" value="Review Offer" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Card 1 Secondary Button</label>
+                                    <input type="text" name="card1SecondaryBtn" id="input-nba-card1-secondary" placeholder="Dismiss" value="Dismiss" required>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Card 2 Section -->
+                        <section class="form-section">
+                            <h2>Action Card 2</h2>
+                            <div class="form-group">
+                                <label>Card 2 Image URL</label>
+                                <input type="text" name="card2Image" id="input-nba-card2-image" placeholder="https://images.unsplash.com/..." value="https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&q=80" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Card 2 Title</label>
+                                <input type="text" name="card2Title" id="input-nba-card2-title" placeholder="ESG Investment Portfolio" value="ESG Investment Portfolio" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Card 2 Text</label>
+                                <textarea name="card2Text" id="input-nba-card2-text" class="textarea-input" rows="3" placeholder="High engagement with our Q1 Sustainable Investing..." required>High engagement with our Q1 Sustainable Investing newsletter. Suggest a portfolio review with our ESG specialists.</textarea>
+                            </div>
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Card 2 Primary Button</label>
+                                    <input type="text" name="card2PrimaryBtn" id="input-nba-card2-primary" placeholder="Schedule Review" value="Schedule Review" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Card 2 Secondary Button</label>
+                                    <input type="text" name="card2SecondaryBtn" id="input-nba-card2-secondary" placeholder="Dismiss" value="Dismiss" required>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Download Button -->
+                        <button type="submit" class="submit-btn">⚡ Download Component (ZIP)</button>
+                    </form>
+                </section>
+
+                <!-- Live Preview Section -->
+                <section id="nba-preview" class="page-section">
+                    <h2 class="section-title">Live Preview</h2>
+                    <p class="section-description">Updates in real-time as you fill out the form above</p>
+
+                    <div class="nba-preview-container" id="nbaPreviewContainer">
+                        <!-- Header -->
+                        <div class="nba-preview-header">
+                            <img src="https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png" alt="Header Icon" class="nba-preview-header-icon" id="previewNbaHeaderIcon">
+                            <div class="nba-preview-header-text">
+                                <h2 class="nba-preview-title" id="previewNbaHeaderTitle">Cumulus Wealth Insights</h2>
+                                <p class="nba-preview-subtitle" id="previewNbaHeaderSubtitle">AI-driven recommendations for Rachel Adams</p>
+                            </div>
+                        </div>
+
+                        <!-- Two-Column Grid -->
+                        <div class="nba-preview-grid">
+                            <!-- Card 1 -->
+                            <div class="nba-preview-card">
+                                <img src="https://images.unsplash.com/photo-1661956602116-aa6865609028?w=800&q=80" alt="Card 1" class="nba-preview-card-image" id="previewNbaCard1Image">
+                                <div class="nba-preview-card-content">
+                                    <h3 class="nba-preview-card-title" id="previewNbaCard1Title">Commercial Line of Credit</h3>
+                                    <div class="nba-preview-suggestion">
+                                        <div class="nba-preview-suggestion-header">
+                                            <svg class="nba-preview-info-icon" viewBox="0 0 52 52">
+                                                <circle cx="26" cy="26" r="24" fill="#0176d3"/>
+                                                <path d="M26 12c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm0 8c-1.7 0-3 1.3-3 3v12c0 1.7 1.3 3 3 3s3-1.3 3-3V23c0-1.7-1.3-3-3-3z" fill="white"/>
+                                            </svg>
+                                            <p class="nba-preview-suggestion-heading">Why this suggestion?</p>
+                                        </div>
+                                        <p class="nba-preview-card-text" id="previewNbaCard1Text">Rachel's recent inquiries suggest Apex Manufacturing is looking for capital expansion. Offer a pre-approved $5M line of credit.</p>
+                                    </div>
+                                    <div class="nba-preview-button-group">
+                                        <button class="nba-preview-btn-primary" id="previewNbaCard1Primary">Review Offer</button>
+                                        <button class="nba-preview-btn-secondary" id="previewNbaCard1Secondary">Dismiss</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Card 2 -->
+                            <div class="nba-preview-card">
+                                <img src="https://images.unsplash.com/photo-1579532537598-459ecdaf39cc?w=800&q=80" alt="Card 2" class="nba-preview-card-image" id="previewNbaCard2Image">
+                                <div class="nba-preview-card-content">
+                                    <h3 class="nba-preview-card-title" id="previewNbaCard2Title">ESG Investment Portfolio</h3>
+                                    <div class="nba-preview-suggestion">
+                                        <div class="nba-preview-suggestion-header">
+                                            <svg class="nba-preview-info-icon" viewBox="0 0 52 52">
+                                                <circle cx="26" cy="26" r="24" fill="#0176d3"/>
+                                                <path d="M26 12c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3zm0 8c-1.7 0-3 1.3-3 3v12c0 1.7 1.3 3 3 3s3-1.3 3-3V23c0-1.7-1.3-3-3-3z" fill="white"/>
+                                            </svg>
+                                            <p class="nba-preview-suggestion-heading">Why this suggestion?</p>
+                                        </div>
+                                        <p class="nba-preview-card-text" id="previewNbaCard2Text">High engagement with our Q1 Sustainable Investing newsletter. Suggest a portfolio review with our ESG specialists.</p>
+                                    </div>
+                                    <div class="nba-preview-button-group">
+                                        <button class="nba-preview-btn-primary" id="previewNbaCard2Primary">Schedule Review</button>
+                                        <button class="nba-preview-btn-secondary" id="previewNbaCard2Secondary">Dismiss</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+            <!-- End Next Best Actions Container -->
 
             <section id="deploy" class="page-section deployment-section">
                 <h2 class="section-title">Deployment Instructions</h2>
