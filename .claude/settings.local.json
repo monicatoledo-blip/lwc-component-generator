@@ -39,7 +39,8 @@
       "Bash(curl -s http://localhost:3000/script.js)",
       "Bash(kill 41573)",
       "Bash(node -c script.js)",
-      "Bash(heroku logs:*)"
+      "Bash(heroku logs:*)",
+      "Bash(grep -n \"masterLabel\" \"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/\"*/*.js-meta.xml)"
     ]
   }
 }
