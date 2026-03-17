@@ -71,4 +71,37 @@ export default class UnifiedProfileLwc extends LightningElement {
   // Engagement Text
   @api engagementTitle = "{{{engagementTitle}}}";
   @api engagementDescription = "{{{engagementDescription}}}";
+
+  // Computed style getters
+  get containerStyle() {
+    return `background: ${this.bgColor || "#6B46C1"}; color: ${this.textColor || "#FFFFFF"};`;
+  }
+
+  get badgeStyle() {
+    return `background: ${this.badgeBgColor || "#FFD700"}; color: ${this.badgeTextColor || "#000000"};`;
+  }
+
+  get sliderBarStyle() {
+    return `background-color: ${this.sliderBgColor || "#E0E0E0"};`;
+  }
+
+  get sliderFillStyle() {
+    return `width: ${this.sliderPercentage || 85}%; background-color: ${this.sliderFillColor || "#00AC5B"};`;
+  }
+
+  get sliderKnobStyle() {
+    return `left: ${this.sliderPercentage || 85}%; background-color: ${this.sliderKnobColor || "#FFFFFF"};`;
+  }
+
+  get ringBackgroundStyle() {
+    return `stroke: ${this.ringBgColor || "#E0E0E0"};`;
+  }
+
+  get ringProgressStyle() {
+    return `stroke: ${this.ringProgressColor || "#2A94D6"}; stroke-dasharray: 251.2; stroke-dashoffset: ${this.ringDashOffset || 40};`;
+  }
+
+  get ringTextStyle() {
+    return `color: ${this.ringTextColor || "#2A94D6"};`;
+  }
 }

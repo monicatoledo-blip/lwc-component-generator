@@ -1,8 +1,5 @@
 <template>
-  <div
-    class="profile-card"
-    style="background-color: {bgColor}; color: {textColor};"
-  >
+  <div class="profile-card" style="{containerStyle}">
     <!-- Header Section -->
     <div class="header-section">
       <div class="avatar-container">
@@ -11,12 +8,7 @@
       <div class="header-info">
         <h1 class="contact-name">{contactName}</h1>
         <p class="contact-title">{contactTitle}</p>
-        <span
-          class="badge"
-          style="background-color: {badgeBgColor}; color: {badgeTextColor};"
-        >
-          {badgeText}
-        </span>
+        <span class="badge" style="{badgeStyle}"> {badgeText} </span>
       </div>
     </div>
 
@@ -114,15 +106,9 @@
 
     <!-- Propensity Slider -->
     <div class="propensity-section">
-      <div class="slider-bar" style="background-color: {sliderBgColor};">
-        <div
-          class="slider-fill"
-          style="width: {sliderPercentage}%; background-color: {sliderFillColor};"
-        ></div>
-        <div
-          class="slider-knob"
-          style="left: {sliderPercentage}%; background-color: {sliderKnobColor};"
-        ></div>
+      <div class="slider-bar" style="{sliderBarStyle}">
+        <div class="slider-fill" style="{sliderFillStyle}"></div>
+        <div class="slider-knob" style="{sliderKnobStyle}"></div>
       </div>
     </div>
 
@@ -135,17 +121,17 @@
             cx="50"
             cy="50"
             r="40"
-            style="stroke: {ringBgColor};"
+            style="{ringBackgroundStyle}"
           ></circle>
           <circle
             class="ring-progress"
             cx="50"
             cy="50"
             r="40"
-            style="stroke: {ringProgressColor}; stroke-dasharray: 251.2; stroke-dashoffset: {ringDashOffset};"
+            style="{ringProgressStyle}"
           ></circle>
         </svg>
-        <div class="ring-percentage" style="color: {ringTextColor};">
+        <div class="ring-percentage" style="{ringTextStyle}">
           {ringPercentage}%
         </div>
       </div>
