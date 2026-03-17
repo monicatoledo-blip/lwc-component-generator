@@ -219,7 +219,10 @@ async function handleDeploy(buttonElement) {
     saveFormState();
     sessionStorage.setItem(AUTH_PENDING_KEY, "true");
 
-    showNotification("Redirecting to Salesforce for authentication...", "info");
+    showNotification(
+      "Redirecting to Salesforce for authentication... Note: Any uploaded images will need to be re-selected after authentication.",
+      "info"
+    );
 
     // Small delay to ensure storage is written
     setTimeout(() => {

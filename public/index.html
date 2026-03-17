@@ -2108,12 +2108,24 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
               the component name exactly the same, it will automatically
               overwrite the old version in your Salesforce org.
             </p>
-            <p style="margin-top: 12px; font-weight: 600; color: #667eea">
-              ⚠️ Important: After re-deploying, go to your Lightning page in
-              Salesforce and do a hard refresh (Cmd+Shift+R on Mac or
-              Ctrl+Shift+R on Windows) to see your changes. You do NOT need to
-              remove and re-add the component - it updates automatically!
+            <p style="margin-top: 12px; font-weight: 600; color: #d9534f">
+              ⚠️ Important: After re-deploying, you MUST remove the old
+              component and re-add it:
             </p>
+            <ol style="margin-top: 8px; margin-left: 20px">
+              <li>Go to your Lightning page in Salesforce</li>
+              <li>
+                Click the <strong>Setup Gear ⚙️</strong> →
+                <strong>Edit Page</strong>
+              </li>
+              <li><strong>Remove the old component</strong> from the page</li>
+              <li>Click <strong>Save</strong></li>
+              <li>
+                <strong>Edit the page again</strong> and re-add the component
+                from Custom section
+              </li>
+              <li>Click <strong>Save</strong> and <strong>Activate</strong></li>
+            </ol>
           </div>
 
           <div class="pro-tip-box">
