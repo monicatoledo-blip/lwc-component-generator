@@ -38,7 +38,8 @@
       "Bash(kill 30576 30573)",
       "Bash(curl -s http://localhost:3000/script.js)",
       "Bash(kill 41573)",
-      "Bash(node -c script.js)"
+      "Bash(node -c script.js)",
+      "Bash(heroku logs:*)"
     ]
   }
 }

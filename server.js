@@ -208,12 +208,7 @@ function createCspTrustedSiteXml() {
     <description>Cloudinary CDN for LWC Generator images</description>
     <endpointUrl>https://res.cloudinary.com</endpointUrl>
     <isActive>true</isActive>
-    <isApplicableToConnect>false</isApplicableToConnect>
-    <isApplicableToFontSrc>false</isApplicableToFontSrc>
-    <isApplicableToFrameSrc>false</isApplicableToFrameSrc>
     <isApplicableToImgSrc>true</isApplicableToImgSrc>
-    <isApplicableToMediaSrc>false</isApplicableToMediaSrc>
-    <isApplicableToStyleSrc>false</isApplicableToStyleSrc>
 </CspTrustedSite>`;
 }
 
