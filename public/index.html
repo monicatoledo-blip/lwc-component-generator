@@ -24,6 +24,38 @@
       </div>
     </header>
 
+    <!-- Component Selector Control Bar -->
+    <section class="component-control-bar">
+      <div class="control-bar-content">
+        <div class="control-bar-left">
+          <label for="componentSelect" class="component-select-label">
+            Select Component to Build
+          </label>
+          <select id="componentSelect" class="component-select-dropdown">
+            <option value="unifiedProfileLwc">Unified Profile</option>
+            <option value="agentforceLeadBriefLwc">
+              Agentforce Lead Brief
+            </option>
+            <option value="nextBestActionsLwc">Next Best Actions</option>
+            <option value="nextBestLeadsLwc">Next Best Leads</option>
+          </select>
+        </div>
+        <div class="control-bar-right">
+          <div id="auth-status-indicator" class="auth-status-indicator">
+            <span class="auth-status-dot"></span>
+            <span class="auth-status-text">Checking connection...</span>
+          </div>
+          <button
+            type="button"
+            class="auth-connect-btn deploy-btn"
+            id="auth-connect-btn-top"
+          >
+            🔐 Connect
+          </button>
+        </div>
+      </div>
+    </section>
+
     <div class="container">
       <!-- Sticky Side Navigation -->
       <nav class="side-nav">
@@ -33,36 +65,6 @@
       </nav>
 
       <main class="main-content">
-        <!-- Component Selector Control Bar -->
-        <section class="component-control-bar">
-          <div class="control-bar-left">
-            <label for="componentSelect" class="component-select-label">
-              Select Component to Build
-            </label>
-            <select id="componentSelect" class="component-select-dropdown">
-              <option value="unifiedProfileLwc">Unified Profile</option>
-              <option value="agentforceLeadBriefLwc">
-                Agentforce Lead Brief
-              </option>
-              <option value="nextBestActionsLwc">Next Best Actions</option>
-              <option value="nextBestLeadsLwc">Next Best Leads</option>
-            </select>
-          </div>
-          <div class="control-bar-right">
-            <div id="auth-status-indicator" class="auth-status-indicator">
-              <span class="auth-status-dot"></span>
-              <span class="auth-status-text">Checking connection...</span>
-            </div>
-            <button
-              type="button"
-              class="auth-connect-btn deploy-btn"
-              id="auth-connect-btn-top"
-            >
-              🔐 Connect
-            </button>
-          </div>
-        </section>
-
         <!-- Unified Profile Container -->
         <div id="unified-profile-container">
           <!-- Section 1: Create Component -->

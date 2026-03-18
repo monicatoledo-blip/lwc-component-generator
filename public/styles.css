@@ -772,12 +772,18 @@ header p {
 .component-control-bar {
   background: #efefef;
   padding: 20px 40px;
+  border-bottom: 3px solid #2a94d6;
+  margin: 0;
+  width: 100%;
+}
+
+.control-bar-content {
+  max-width: 1400px;
+  margin: 0 auto;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  border-bottom: 3px solid #2a94d6;
-  margin: 0;
 }
 
 .control-bar-left {
@@ -1554,6 +1560,10 @@ header p {
     padding: 16px 24px;
   }
 
+  .control-bar-content {
+    gap: 16px;
+  }
+
   .header-logo {
     height: 55px;
   }
@@ -1626,9 +1636,12 @@ header p {
   }
 
   .component-control-bar {
+    padding: 16px 20px;
+  }
+
+  .control-bar-content {
     flex-direction: column;
     align-items: stretch;
-    padding: 16px 20px;
     gap: 12px;
   }
 
@@ -1666,6 +1679,9 @@ header p {
 
   .component-control-bar {
     padding: 16px 20px;
+  }
+
+  .control-bar-content {
     flex-direction: column;
     align-items: stretch;
     gap: 12px;
