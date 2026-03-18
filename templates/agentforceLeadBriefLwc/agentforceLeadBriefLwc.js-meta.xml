@@ -89,6 +89,20 @@
         label="Secondary Button Text"
         description="Text for secondary action button"
       />
+            <property
+        name="bgColor"
+        type="String"
+        default="{{{bgColor}}}"
+        label="Background Color"
+        description="Card background color (hex)"
+      />
+            <property
+        name="textColor"
+        type="String"
+        default="{{{textColor}}}"
+        label="Text Color"
+        description="Card text color (hex)"
+      />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>
