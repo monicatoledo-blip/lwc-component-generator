@@ -355,11 +355,15 @@ function getCallbackUrl(req) {
 // 3. Add the member name to the package.xml (search "CspTrustedSite")
 // 4. Add the cspFolder.file() call in the /deploy endpoint
 //
-// Current trusted domains:
+// Current trusted domains (always included):
 // - res.cloudinary.com (uploaded images)
 // - cdn.prod.website-files.com (Webflow CDN - Agentforce Astro icon)
 // - image.s4.sfmc-content.com (Salesforce Marketing Cloud - Cumulus logos)
 // - images.unsplash.com (Unsplash - Next Best Actions card images)
+//
+// DYNAMIC WHITELISTING:
+// The deployment logic automatically detects image URLs in form data and
+// adds their domains to CSP Trusted Sites. Users can paste ANY image URL!
 // =====================================================================
 
 // Helper function to create Cloudinary CSP Trusted Site
@@ -400,6 +404,58 @@ function createUnsplashCspXml() {
     <endpointUrl>https://images.unsplash.com</endpointUrl>
     <isActive>true</isActive>
 </CspTrustedSite>`;
+}
+
+// Helper function to create dynamic CSP Trusted Site for any URL
+function createDynamicCspXml(url) {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
+    <context>All</context>
+    <endpointUrl>${url}</endpointUrl>
+    <isActive>true</isActive>
+</CspTrustedSite>`;
+}
+
+// Helper function to extract unique image domains from form data
+function extractImageDomains(templateData) {
+  const domains = new Set();
+  const urlPattern = /^https?:\/\/([^\/]+)/i;
+
+  // List of known image field patterns
+  const imageFields = [
+    "avatarUrl",
+    "astroIconUrl",
+    "headerIcon",
+    "card1Image",
+    "card2Image",
+    "lead1Avatar",
+    "lead2Avatar",
+    "lead3Avatar"
+  ];
+
+  Object.keys(templateData).forEach((key) => {
+    // Check if it's a potential image field (contains common image field names or ends with Url/Icon/Image/Avatar)
+    const isImageField =
+      imageFields.some((field) =>
+        key.toLowerCase().includes(field.toLowerCase())
+      ) ||
+      key.toLowerCase().endsWith("url") ||
+      key.toLowerCase().endsWith("icon") ||
+      key.toLowerCase().endsWith("image") ||
+      key.toLowerCase().endsWith("avatar");
+
+    if (isImageField && typeof templateData[key] === "string") {
+      const match = templateData[key].match(urlPattern);
+      if (match) {
+        const protocol = match[0].split("//")[0]; // http: or https:
+        const domain = match[1];
+        const baseUrl = `${protocol}//${domain}`;
+        domains.add(baseUrl);
+      }
+    }
+  });
+
+  return Array.from(domains);
 }
 
 // Check authentication status
@@ -702,8 +758,40 @@ app.post(
       const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
       const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
 
-      // Create package.xml for Metadata API - HARDCODED EXACT XML
-      // NOTE: If adding new CSP domains, add them here AND create helper functions above
+      // Extract image domains from templateData for dynamic CSP whitelisting
+      const imageDomains = extractImageDomains(templateData);
+      console.log("🔍 Detected image domains:", imageDomains);
+
+      // Build CSP members list (known domains + dynamic domains)
+      const knownDomains = {
+        "https://res.cloudinary.com": "Cloudinary_CDN",
+        "https://cdn.prod.website-files.com": "Webflow_CDN",
+        "https://image.s4.sfmc-content.com": "SFMC_CDN",
+        "https://images.unsplash.com": "Unsplash_CDN"
+      };
+
+      const cspMembers = [...Object.values(knownDomains)]; // Always include known domains
+      const dynamicDomains = [];
+
+      // Add dynamic domains (skip if already in known domains)
+      imageDomains.forEach((domain) => {
+        if (!knownDomains[domain]) {
+          const safeName = domain.replace(/[^a-zA-Z0-9]/g, "_"); // Replace special chars with underscore
+          cspMembers.push(safeName);
+          dynamicDomains.push({ url: domain, name: safeName });
+        }
+      });
+
+      console.log("📋 CSP members to include:", cspMembers);
+      console.log(
+        "✨ Dynamic domains:",
+        dynamicDomains.map((d) => d.url)
+      );
+
+      // Build package.xml dynamically
+      const cspMemberTags = cspMembers
+        .map((member) => `        <members>${member}</members>`)
+        .join("\n");
       const packageXml = `<?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
@@ -711,10 +799,7 @@ app.post(
         <name>LightningComponentBundle</name>
     </types>
     <types>
-        <members>Cloudinary_CDN</members>
-        <members>Webflow_CDN</members>
-        <members>SFMC_CDN</members>
-        <members>Unsplash_CDN</members>
+${cspMemberTags}
         <name>CspTrustedSite</name>
     </types>
     <version>60.0</version>
@@ -733,8 +818,7 @@ app.post(
       lwcFolder.file(`${componentType}.css`, cssCompiled);
       lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
 
-      // Add CspTrustedSite metadata - ALWAYS INCLUDED
-      // NOTE: If adding new CSP domains, add them here AND update package.xml above
+      // Add CspTrustedSite metadata - KNOWN DOMAINS
       const cspFolder = zip.folder("cspTrustedSites");
       cspFolder.file(
         "Cloudinary_CDN.cspTrustedSite-meta.xml",
@@ -749,8 +833,18 @@ app.post(
         "Unsplash_CDN.cspTrustedSite-meta.xml",
         createUnsplashCspXml()
       );
+
+      // Add DYNAMIC CSP domains from user URLs
+      dynamicDomains.forEach(({ url, name }) => {
+        cspFolder.file(
+          `${name}.cspTrustedSite-meta.xml`,
+          createDynamicCspXml(url)
+        );
+        console.log(`✅ Added dynamic CSP: ${url} as ${name}`);
+      });
+
       console.log(
-        "📋 Added CSP Trusted Sites (Cloudinary + Webflow + SFMC + Unsplash) to deployment package"
+        `📋 Added ${cspMembers.length} CSP Trusted Sites (${Object.keys(knownDomains).length} known + ${dynamicDomains.length} dynamic)`
       );
 
       // Generate ZIP as base64

@@ -486,9 +486,22 @@ The generator automatically adds these domains to every deployment:
 | `https://image.s4.sfmc-content.com`  | Salesforce Marketing Cloud (Cumulus logos) | `https://image.s4.sfmc-content.com/lib/fe3111727664047b741079/m/1/ccb17401-00ab-42c3-b141-7a1b93f23360.png`    |
 | `https://images.unsplash.com`        | Unsplash (Next Best Actions card images)   | `https://images.unsplash.com/photo-1661956602116-aa6865609028?w=800&q=80`                                      |
 
-### Adding a New CDN Domain
+**✨ AUTOMATIC WHITELISTING:** The generator now **automatically detects** all image domains from the form data and adds them to the CSP Trusted Sites during deployment. Users can paste image URLs from **any domain** and they will work in Salesforce!
 
-If you're adding a new component with images from a **new external CDN**, follow these steps:
+### Dynamic Whitelisting (Automatic)
+
+**Good news!** You don't need to manually add new CDN domains anymore. The deployment logic automatically:
+
+1. **Scans all image fields** in the form data (fields ending with `Url`, `Icon`, `Image`, or `Avatar`)
+2. **Extracts the domain** from each image URL
+3. **Generates CSP Trusted Sites** dynamically for any new domains
+4. **Adds them to the deployment package** automatically
+
+This means users can paste image URLs from **any domain** and they'll work in Salesforce!
+
+### Adding a Pre-Configured CDN Domain (Optional)
+
+If a specific CDN will be used frequently across multiple components, you can optionally add it to the "known domains" list for cleaner naming. Follow these steps:
 
 #### 1. Create a CSP Helper Function in `server.js`
 
