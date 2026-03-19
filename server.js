@@ -42,7 +42,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 15 * 1024 * 1024 // 15MB limit (supports high-res images)
+    fileSize: 10 * 1024 * 1024 // 10MB limit (Cloudinary constraint)
   },
   fileFilter: (req, file, cb) => {
     // Accept images only
@@ -103,7 +103,7 @@ app.post(
             success: false,
             error: "File too large",
             message:
-              "Image file must be smaller than 15MB. Please compress your image or use a smaller file."
+              "Image file must be smaller than 10MB. Please compress your image or use a smaller file."
           });
         }
         if (err.name === "MulterError") {
@@ -519,7 +519,7 @@ app.post(
             success: false,
             error: "File too large",
             message:
-              "Image file must be smaller than 15MB. Please compress your image or use a smaller file."
+              "Image file must be smaller than 10MB. Please compress your image or use a smaller file."
           });
         }
         if (err.name === "MulterError") {

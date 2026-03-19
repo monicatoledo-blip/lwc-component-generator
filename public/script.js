@@ -409,10 +409,36 @@ function setupImagePreviewHandlers() {
   });
 }
 
+// Validate file size on upload (10MB limit)
+function setupFileSizeValidation() {
+  const maxSize = 10 * 1024 * 1024; // 10MB in bytes
+  const fileInputs = document.querySelectorAll(
+    'input[type="file"][accept="image/*"]'
+  );
+
+  fileInputs.forEach((input) => {
+    input.addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (file && file.size > maxSize) {
+        const sizeMB = (file.size / (1024 * 1024)).toFixed(2);
+        showNotification(
+          `❌ File "${file.name}" is ${sizeMB}MB. Please select an image under 10MB or use a URL instead.`,
+          "error"
+        );
+        // Clear the file input
+        e.target.value = "";
+      }
+    });
+  });
+}
+
 // Sync color pickers with hex inputs
 document.addEventListener("DOMContentLoaded", () => {
   // Setup image preview handlers
   setupImagePreviewHandlers();
+
+  // Setup file size validation
+  setupFileSizeValidation();
 
   // Check auth status on page load
   checkAuthStatus();
