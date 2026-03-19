@@ -499,6 +499,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Initialize deployment instructions on page load
   updateDeploymentInstructions("unifiedProfileLwc");
 
+  // Trigger component display on page load based on dropdown value
+  componentSelect.dispatchEvent(new Event("change"));
+
   // Smooth scroll for navigation links
   const navLinks = document.querySelectorAll(".nav-link");
 
