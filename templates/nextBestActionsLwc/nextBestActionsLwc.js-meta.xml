@@ -103,6 +103,20 @@
         label="Card 2 Secondary Button"
         description="Secondary button text for second card"
       />
+            <property
+        name="bgColor"
+        type="String"
+        default="{{{bgColor}}}"
+        label="Background Color"
+        description="Card background color (hex)"
+      />
+            <property
+        name="textColor"
+        type="String"
+        default="{{{textColor}}}"
+        label="Text Color"
+        description="Card text color (hex)"
+      />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

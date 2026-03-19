@@ -16,4 +16,12 @@ export default class NextBestActionsLwc extends LightningElement {
   @api card2Text = "{{{card2Text}}}";
   @api card2PrimaryBtn = "{{{card2PrimaryBtn}}}";
   @api card2SecondaryBtn = "{{{card2SecondaryBtn}}}";
+
+  // Colors
+  @api bgColor = "{{{bgColor}}}";
+  @api textColor = "{{{textColor}}}";
+
+  get containerStyle() {
+    return `background-color: ${this.bgColor}; color: ${this.textColor};`;
+  }
 }

@@ -125,6 +125,18 @@ app.post("/generate", upload.any(), async (req, res) => {
       }
     }
 
+    // Merge URL fields for any image fields that weren't uploaded
+    // Pattern: if fieldName_url exists and fieldName is empty, use the URL
+    Object.keys(formData).forEach((key) => {
+      if (key.endsWith("_url")) {
+        const baseFieldName = key.replace("_url", "");
+        if (!templateData[baseFieldName] && formData[key]) {
+          templateData[baseFieldName] = formData[key];
+          console.log(`📎 Using URL for ${baseFieldName}: ${formData[key]}`);
+        }
+      }
+    });
+
     // For Unified Profile, calculate ring dash offset
     if (componentType === "unifiedProfileLwc") {
       const ringPercentage = parseFloat(formData.ringPercentage) || 0;
@@ -425,6 +437,18 @@ app.post("/deploy", upload.any(), async (req, res) => {
         }
       }
     }
+
+    // Merge URL fields for any image fields that weren't uploaded
+    // Pattern: if fieldName_url exists and fieldName is empty, use the URL
+    Object.keys(formData).forEach((key) => {
+      if (key.endsWith("_url")) {
+        const baseFieldName = key.replace("_url", "");
+        if (!templateData[baseFieldName] && formData[key]) {
+          templateData[baseFieldName] = formData[key];
+          console.log(`📎 Using URL for ${baseFieldName}: ${formData[key]}`);
+        }
+      }
+    });
 
     // For Unified Profile, calculate ring dash offset
     if (componentType === "unifiedProfileLwc") {

@@ -110,6 +110,20 @@
         label="Lead 3 Context"
         description="Context text for third lead"
       />
+            <property
+        name="bgColor"
+        type="String"
+        default="{{{bgColor}}}"
+        label="Background Color"
+        description="Card background color (hex)"
+      />
+            <property
+        name="textColor"
+        type="String"
+        default="{{{textColor}}}"
+        label="Text Color"
+        description="Card text color (hex)"
+      />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

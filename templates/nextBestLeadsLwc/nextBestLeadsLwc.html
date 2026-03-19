@@ -1,124 +1,169 @@
 <template>
-    <div class="slds-card nbl-container">
-        <!-- Header Section -->
-        <div class="slds-card__header slds-media nbl-header">
-            <div class="slds-media__figure">
-                <span class="slds-avatar slds-avatar_circle slds-avatar_medium nbl-header-icon">
-                    <span class="slds-icon_container">
-                        <svg class="slds-icon slds-icon-text-default" aria-hidden="true">
-                            <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#lead"></use>
-                        </svg>
-                    </span>
-                </span>
-            </div>
-            <div class="slds-media__body">
-                <h2 class="slds-card__header-title nbl-title">
-                    {{{headerTitle}}}
-                </h2>
-                <p class="slds-text-body_small slds-text-color_weak nbl-subtitle">
-                    {{{headerSubtitle}}}
-                </p>
-            </div>
-        </div>
-
-        <!-- List Body -->
-        <div class="slds-card__body slds-card__body_inner">
-            <ul class="slds-has-dividers_bottom-space nbl-list">
-
-                <!-- Lead 1 -->
-                <li class="slds-item slds-media nbl-lead-item">
-                    <div class="slds-media__figure">
-                        <span class="slds-avatar slds-avatar_circle slds-avatar_medium nbl-avatar-icon">
-                            <span class="slds-icon_container">
-                                <svg class="slds-icon slds-icon-text-default" aria-hidden="true">
-                                    <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#avatar"></use>
-                                </svg>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="slds-media__body nbl-lead-content">
-                        <div class="nbl-lead-name">{{{lead1Name}}}</div>
-                        <div class="slds-text-body_small slds-text-color_weak nbl-lead-role">
-                            {{{lead1Role}}}
-                        </div>
-                        <div class="nbl-match-badge">{{{lead1Match}}}</div>
-                        <p class="slds-text-body_small slds-text-color_weak nbl-lead-context">
-                            {{{lead1Context}}}
-                        </p>
-                    </div>
-                    <div class="slds-media__figure slds-media__figure_reverse">
-                        <button class="slds-button slds-button_icon slds-button_icon-border-filled nbl-phone-btn">
-                            <svg class="slds-button__icon" aria-hidden="true">
-                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#call"></use>
-                            </svg>
-                            <span class="slds-assistive-text">Call</span>
-                        </button>
-                    </div>
-                </li>
-
-                <!-- Lead 2 -->
-                <li class="slds-item slds-media nbl-lead-item">
-                    <div class="slds-media__figure">
-                        <span class="slds-avatar slds-avatar_circle slds-avatar_medium nbl-avatar-icon">
-                            <span class="slds-icon_container">
-                                <svg class="slds-icon slds-icon-text-default" aria-hidden="true">
-                                    <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#avatar"></use>
-                                </svg>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="slds-media__body nbl-lead-content">
-                        <div class="nbl-lead-name">{{{lead2Name}}}</div>
-                        <div class="slds-text-body_small slds-text-color_weak nbl-lead-role">
-                            {{{lead2Role}}}
-                        </div>
-                        <div class="nbl-match-badge">{{{lead2Match}}}</div>
-                        <p class="slds-text-body_small slds-text-color_weak nbl-lead-context">
-                            {{{lead2Context}}}
-                        </p>
-                    </div>
-                    <div class="slds-media__figure slds-media__figure_reverse">
-                        <button class="slds-button slds-button_icon slds-button_icon-border-filled nbl-phone-btn">
-                            <svg class="slds-button__icon" aria-hidden="true">
-                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#call"></use>
-                            </svg>
-                            <span class="slds-assistive-text">Call</span>
-                        </button>
-                    </div>
-                </li>
-
-                <!-- Lead 3 -->
-                <li class="slds-item slds-media nbl-lead-item">
-                    <div class="slds-media__figure">
-                        <span class="slds-avatar slds-avatar_circle slds-avatar_medium nbl-avatar-icon">
-                            <span class="slds-icon_container">
-                                <svg class="slds-icon slds-icon-text-default" aria-hidden="true">
-                                    <use xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#avatar"></use>
-                                </svg>
-                            </span>
-                        </span>
-                    </div>
-                    <div class="slds-media__body nbl-lead-content">
-                        <div class="nbl-lead-name">{{{lead3Name}}}</div>
-                        <div class="slds-text-body_small slds-text-color_weak nbl-lead-role">
-                            {{{lead3Role}}}
-                        </div>
-                        <div class="nbl-match-badge">{{{lead3Match}}}</div>
-                        <p class="slds-text-body_small slds-text-color_weak nbl-lead-context">
-                            {{{lead3Context}}}
-                        </p>
-                    </div>
-                    <div class="slds-media__figure slds-media__figure_reverse">
-                        <button class="slds-button slds-button_icon slds-button_icon-border-filled nbl-phone-btn">
-                            <svg class="slds-button__icon" aria-hidden="true">
-                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#call"></use>
-                            </svg>
-                            <span class="slds-assistive-text">Call</span>
-                        </button>
-                    </div>
-                </li>
-
-            </ul>
-        </div>
+  <div class="slds-card nbl-container" style="{containerStyle}">
+    <!-- Header Section -->
+    <div class="slds-card__header slds-media nbl-header">
+      <div class="slds-media__figure">
+        <span
+          class="slds-avatar slds-avatar_circle slds-avatar_medium nbl-header-icon"
+        >
+          <span class="slds-icon_container">
+            <svg class="slds-icon slds-icon-text-default" aria-hidden="true">
+              <use
+                xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#lead"
+              ></use>
+            </svg>
+          </span>
+        </span>
+      </div>
+      <div class="slds-media__body">
+        <h2 class="slds-card__header-title nbl-title">{headerTitle}</h2>
+        <p class="slds-text-body_small slds-text-color_weak nbl-subtitle">
+          {headerSubtitle}
+        </p>
+      </div>
     </div>
+
+    <!-- List Body -->
+    <div class="slds-card__body slds-card__body_inner">
+      <ul class="slds-has-dividers_bottom-space nbl-list">
+        <!-- Lead 1 -->
+        <li class="slds-item slds-media nbl-lead-item">
+          <div class="slds-media__figure">
+            <span
+              class="slds-avatar slds-avatar_circle slds-avatar_medium nbl-avatar-icon"
+            >
+              <span class="slds-icon_container">
+                <svg
+                  class="slds-icon slds-icon-text-default"
+                  aria-hidden="true"
+                >
+                  <use
+                    xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#avatar"
+                  ></use>
+                </svg>
+              </span>
+            </span>
+          </div>
+          <div class="slds-media__body nbl-lead-content">
+            <div class="nbl-lead-name">{lead1Name}</div>
+            <div
+              class="slds-text-body_small slds-text-color_weak nbl-lead-role"
+            >
+              {lead1Role}
+            </div>
+            <div class="nbl-match-badge">{lead1Match}</div>
+            <p
+              class="slds-text-body_small slds-text-color_weak nbl-lead-context"
+            >
+              {lead1Context}
+            </p>
+          </div>
+          <div class="slds-media__figure slds-media__figure_reverse">
+            <button
+              class="slds-button slds-button_icon slds-button_icon-border-filled nbl-phone-btn"
+            >
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use
+                  xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#call"
+                ></use>
+              </svg>
+              <span class="slds-assistive-text">Call</span>
+            </button>
+          </div>
+        </li>
+
+        <!-- Lead 2 -->
+        <li class="slds-item slds-media nbl-lead-item">
+          <div class="slds-media__figure">
+            <span
+              class="slds-avatar slds-avatar_circle slds-avatar_medium nbl-avatar-icon"
+            >
+              <span class="slds-icon_container">
+                <svg
+                  class="slds-icon slds-icon-text-default"
+                  aria-hidden="true"
+                >
+                  <use
+                    xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#avatar"
+                  ></use>
+                </svg>
+              </span>
+            </span>
+          </div>
+          <div class="slds-media__body nbl-lead-content">
+            <div class="nbl-lead-name">{lead2Name}</div>
+            <div
+              class="slds-text-body_small slds-text-color_weak nbl-lead-role"
+            >
+              {lead2Role}
+            </div>
+            <div class="nbl-match-badge">{lead2Match}</div>
+            <p
+              class="slds-text-body_small slds-text-color_weak nbl-lead-context"
+            >
+              {lead2Context}
+            </p>
+          </div>
+          <div class="slds-media__figure slds-media__figure_reverse">
+            <button
+              class="slds-button slds-button_icon slds-button_icon-border-filled nbl-phone-btn"
+            >
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use
+                  xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#call"
+                ></use>
+              </svg>
+              <span class="slds-assistive-text">Call</span>
+            </button>
+          </div>
+        </li>
+
+        <!-- Lead 3 -->
+        <li class="slds-item slds-media nbl-lead-item">
+          <div class="slds-media__figure">
+            <span
+              class="slds-avatar slds-avatar_circle slds-avatar_medium nbl-avatar-icon"
+            >
+              <span class="slds-icon_container">
+                <svg
+                  class="slds-icon slds-icon-text-default"
+                  aria-hidden="true"
+                >
+                  <use
+                    xlink:href="/assets/icons/standard-sprite/svg/symbols.svg#avatar"
+                  ></use>
+                </svg>
+              </span>
+            </span>
+          </div>
+          <div class="slds-media__body nbl-lead-content">
+            <div class="nbl-lead-name">{lead3Name}</div>
+            <div
+              class="slds-text-body_small slds-text-color_weak nbl-lead-role"
+            >
+              {lead3Role}
+            </div>
+            <div class="nbl-match-badge">{lead3Match}</div>
+            <p
+              class="slds-text-body_small slds-text-color_weak nbl-lead-context"
+            >
+              {lead3Context}
+            </p>
+          </div>
+          <div class="slds-media__figure slds-media__figure_reverse">
+            <button
+              class="slds-button slds-button_icon slds-button_icon-border-filled nbl-phone-btn"
+            >
+              <svg class="slds-button__icon" aria-hidden="true">
+                <use
+                  xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#call"
+                ></use>
+              </svg>
+              <span class="slds-assistive-text">Call</span>
+            </button>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
 </template>

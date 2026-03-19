@@ -22,4 +22,12 @@ export default class NextBestLeadsLwc extends LightningElement {
   @api lead3Role = "{{{lead3Role}}}";
   @api lead3Match = "{{{lead3Match}}}";
   @api lead3Context = "{{{lead3Context}}}";
+
+  // Colors
+  @api bgColor = "{{{bgColor}}}";
+  @api textColor = "{{{textColor}}}";
+
+  get containerStyle() {
+    return `background-color: ${this.bgColor}; color: ${this.textColor};`;
+  }
 }

@@ -1,81 +1,111 @@
 <template>
-    <div class="slds-card nba-container">
-        <!-- Header Section -->
-        <div class="slds-card__header slds-m-bottom_medium nba-header">
-            <div class="slds-media slds-media_center">
-                <div class="slds-media__figure">
-                    <img src={headerIcon} alt="Header Icon" class="nba-header-icon" />
-                </div>
-                <div class="slds-media__body">
-                    <h2 class="slds-card__header-title nba-header-title">
-                        {{{headerTitle}}}
-                    </h2>
-                    <p class="nba-header-subtitle">{{{headerSubtitle}}}</p>
-                </div>
-            </div>
+  <div class="slds-card nba-container" style="{containerStyle}">
+    <!-- Header Section -->
+    <div class="slds-card__header slds-m-bottom_medium nba-header">
+      <div class="slds-media slds-media_center">
+        <div class="slds-media__figure">
+          <img src="{headerIcon}" alt="Header Icon" class="nba-header-icon" />
         </div>
-
-        <!-- Two-Column Grid -->
-        <div class="slds-card__body slds-card__body_inner">
-            <div class="slds-grid slds-gutters slds-wrap">
-                <!-- Card 1 (Left Column) -->
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
-                    <div class="nba-action-card">
-                        <img src={card1Image} alt="Action Card 1" class="nba-card-image" />
-                        <div class="nba-card-content">
-                            <h3 class="nba-card-title">{{{card1Title}}}</h3>
-                            <div class="nba-suggestion-section">
-                                <div class="slds-media slds-media_center slds-m-bottom_x-small">
-                                    <div class="slds-media__figure">
-                                        <span class="nba-info-icon">
-                                            <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true">
-                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="slds-media__body">
-                                        <p class="nba-suggestion-heading">Why this suggestion?</p>
-                                    </div>
-                                </div>
-                                <p class="nba-card-text">{{{card1Text}}}</p>
-                            </div>
-                            <div class="nba-button-group">
-                                <button class="slds-button slds-button_brand nba-primary-btn">{{{card1PrimaryBtn}}}</button>
-                                <button class="slds-button slds-button_outline-brand nba-secondary-btn">{{{card1SecondaryBtn}}}</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Card 2 (Right Column) -->
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
-                    <div class="nba-action-card">
-                        <img src={card2Image} alt="Action Card 2" class="nba-card-image" />
-                        <div class="nba-card-content">
-                            <h3 class="nba-card-title">{{{card2Title}}}</h3>
-                            <div class="nba-suggestion-section">
-                                <div class="slds-media slds-media_center slds-m-bottom_x-small">
-                                    <div class="slds-media__figure">
-                                        <span class="nba-info-icon">
-                                            <svg class="slds-icon slds-icon-text-default slds-icon_x-small" aria-hidden="true">
-                                                <use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"></use>
-                                            </svg>
-                                        </span>
-                                    </div>
-                                    <div class="slds-media__body">
-                                        <p class="nba-suggestion-heading">Why this suggestion?</p>
-                                    </div>
-                                </div>
-                                <p class="nba-card-text">{{{card2Text}}}</p>
-                            </div>
-                            <div class="nba-button-group">
-                                <button class="slds-button slds-button_brand nba-primary-btn">{{{card2PrimaryBtn}}}</button>
-                                <button class="slds-button slds-button_outline-brand nba-secondary-btn">{{{card2SecondaryBtn}}}</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+        <div class="slds-media__body">
+          <h2 class="slds-card__header-title nba-header-title">
+            {headerTitle}
+          </h2>
+          <p class="nba-header-subtitle">{headerSubtitle}</p>
         </div>
+      </div>
     </div>
+
+    <!-- Two-Column Grid -->
+    <div class="slds-card__body slds-card__body_inner">
+      <div class="slds-grid slds-gutters slds-wrap">
+        <!-- Card 1 (Left Column) -->
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+          <div class="nba-action-card">
+            <img
+              src="{card1Image}"
+              alt="Action Card 1"
+              class="nba-card-image"
+            />
+            <div class="nba-card-content">
+              <h3 class="nba-card-title">{card1Title}</h3>
+              <div class="nba-suggestion-section">
+                <div class="slds-media slds-media_center slds-m-bottom_x-small">
+                  <div class="slds-media__figure">
+                    <span class="nba-info-icon">
+                      <svg
+                        class="slds-icon slds-icon-text-default slds-icon_x-small"
+                        aria-hidden="true"
+                      >
+                        <use
+                          xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"
+                        ></use>
+                      </svg>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <p class="nba-suggestion-heading">Why this suggestion?</p>
+                  </div>
+                </div>
+                <p class="nba-card-text">{card1Text}</p>
+              </div>
+              <div class="nba-button-group">
+                <button class="slds-button slds-button_brand nba-primary-btn">
+                  {card1PrimaryBtn}
+                </button>
+                <button
+                  class="slds-button slds-button_outline-brand nba-secondary-btn"
+                >
+                  {card1SecondaryBtn}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 (Right Column) -->
+        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+          <div class="nba-action-card">
+            <img
+              src="{card2Image}"
+              alt="Action Card 2"
+              class="nba-card-image"
+            />
+            <div class="nba-card-content">
+              <h3 class="nba-card-title">{card2Title}</h3>
+              <div class="nba-suggestion-section">
+                <div class="slds-media slds-media_center slds-m-bottom_x-small">
+                  <div class="slds-media__figure">
+                    <span class="nba-info-icon">
+                      <svg
+                        class="slds-icon slds-icon-text-default slds-icon_x-small"
+                        aria-hidden="true"
+                      >
+                        <use
+                          xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#info"
+                        ></use>
+                      </svg>
+                    </span>
+                  </div>
+                  <div class="slds-media__body">
+                    <p class="nba-suggestion-heading">Why this suggestion?</p>
+                  </div>
+                </div>
+                <p class="nba-card-text">{card2Text}</p>
+              </div>
+              <div class="nba-button-group">
+                <button class="slds-button slds-button_brand nba-primary-btn">
+                  {card2PrimaryBtn}
+                </button>
+                <button
+                  class="slds-button slds-button_outline-brand nba-secondary-btn"
+                >
+                  {card2SecondaryBtn}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
