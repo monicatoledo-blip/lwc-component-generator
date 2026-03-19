@@ -262,15 +262,33 @@ app.post(
           .replace(/'/g, "&apos;");
       }
 
+      // Helper function to escape JavaScript string literals
+      function escapeJs(str) {
+        if (typeof str !== "string") return str;
+        return str
+          .replace(/\\/g, "\\\\") // Backslash must be first
+          .replace(/'/g, "\\'") // Escape single quotes
+          .replace(/"/g, '\\"') // Escape double quotes
+          .replace(/\n/g, "\\n") // Escape newlines
+          .replace(/\r/g, "\\r") // Escape carriage returns
+          .replace(/\t/g, "\\t"); // Escape tabs
+      }
+
       // Create XML-safe version of templateData for meta.xml (escape all string values)
       const templateDataXmlSafe = {};
       Object.keys(templateData).forEach((key) => {
         templateDataXmlSafe[key] = escapeXml(templateData[key]);
       });
 
+      // Create JS-safe version of templateData for .js file (escape string literals)
+      const templateDataJsSafe = {};
+      Object.keys(templateData).forEach((key) => {
+        templateDataJsSafe[key] = escapeJs(templateData[key]);
+      });
+
       // Compile templates with Handlebars
       const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
-      const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
+      const jsCompiled = Handlebars.compile(jsTemplate)(templateDataJsSafe); // Use JS-safe data for .js
       const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
       const metaCompiled =
         Handlebars.compile(metaTemplate)(templateDataXmlSafe); // Use XML-safe data for meta.xml
@@ -781,15 +799,33 @@ app.post(
           .replace(/'/g, "&apos;");
       }
 
+      // Helper function to escape JavaScript string literals
+      function escapeJs(str) {
+        if (typeof str !== "string") return str;
+        return str
+          .replace(/\\/g, "\\\\") // Backslash must be first
+          .replace(/'/g, "\\'") // Escape single quotes
+          .replace(/"/g, '\\"') // Escape double quotes
+          .replace(/\n/g, "\\n") // Escape newlines
+          .replace(/\r/g, "\\r") // Escape carriage returns
+          .replace(/\t/g, "\\t"); // Escape tabs
+      }
+
       // Create XML-safe version of templateData for meta.xml (escape all string values)
       const templateDataXmlSafe = {};
       Object.keys(templateData).forEach((key) => {
         templateDataXmlSafe[key] = escapeXml(templateData[key]);
       });
 
+      // Create JS-safe version of templateData for .js file (escape string literals)
+      const templateDataJsSafe = {};
+      Object.keys(templateData).forEach((key) => {
+        templateDataJsSafe[key] = escapeJs(templateData[key]);
+      });
+
       // Compile templates with Handlebars
       const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
-      const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
+      const jsCompiled = Handlebars.compile(jsTemplate)(templateDataJsSafe); // Use JS-safe data for .js
       const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
       const metaCompiled =
         Handlebars.compile(metaTemplate)(templateDataXmlSafe); // Use XML-safe data for meta.xml
