@@ -251,11 +251,29 @@ app.post(
       // Debug: Log avatarUrl being used for template compilation
       console.log(`🖼️  Avatar URL for deployment: ${templateData.avatarUrl}`);
 
+      // Helper function to escape XML entities
+      function escapeXml(str) {
+        if (typeof str !== "string") return str;
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&apos;");
+      }
+
+      // Create XML-safe version of templateData for meta.xml (escape all string values)
+      const templateDataXmlSafe = {};
+      Object.keys(templateData).forEach((key) => {
+        templateDataXmlSafe[key] = escapeXml(templateData[key]);
+      });
+
       // Compile templates with Handlebars
       const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
       const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
       const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
-      const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
+      const metaCompiled =
+        Handlebars.compile(metaTemplate)(templateDataXmlSafe); // Use XML-safe data for meta.xml
 
       // Create ZIP file
       const zip = new JSZip();
@@ -752,11 +770,29 @@ app.post(
       // Debug: Log avatarUrl being used for template compilation
       console.log(`🖼️  Avatar URL for deployment: ${templateData.avatarUrl}`);
 
+      // Helper function to escape XML entities
+      function escapeXml(str) {
+        if (typeof str !== "string") return str;
+        return str
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&apos;");
+      }
+
+      // Create XML-safe version of templateData for meta.xml (escape all string values)
+      const templateDataXmlSafe = {};
+      Object.keys(templateData).forEach((key) => {
+        templateDataXmlSafe[key] = escapeXml(templateData[key]);
+      });
+
       // Compile templates with Handlebars
       const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
       const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
       const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
-      const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
+      const metaCompiled =
+        Handlebars.compile(metaTemplate)(templateDataXmlSafe); // Use XML-safe data for meta.xml
 
       // Extract image domains from templateData for dynamic CSP whitelisting
       const imageDomains = extractImageDomains(templateData);
