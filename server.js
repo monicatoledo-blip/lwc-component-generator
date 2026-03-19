@@ -42,7 +42,7 @@ const storage = multer.diskStorage({
 const upload = multer({
   storage: storage,
   limits: {
-    fileSize: 5 * 1024 * 1024 // 5MB limit
+    fileSize: 15 * 1024 * 1024 // 15MB limit (supports high-res images)
   },
   fileFilter: (req, file, cb) => {
     // Accept images only
@@ -93,167 +93,197 @@ app.get("/", (req, res) => {
 });
 
 // Generate LWC endpoint with file upload support
-app.post("/generate", upload.any(), async (req, res) => {
-  try {
-    const formData = req.body;
-    const componentType = formData.componentType || "unifiedProfileLwc";
-
-    // Prepare template data based on component type
-    let templateData = { ...formData };
-
-    // =====================================================================
-    // IMAGE UPLOAD PATTERN - TESTED & WORKING (DO NOT MODIFY)
-    // =====================================================================
-    // This pattern has been battle-tested with the Unified Profile component.
-    //
-    // HTML FORM STRUCTURE:
-    //   <input type="file" name="avatarUrl" />      ← File upload
-    //   <input type="text" name="avatarUrl_url" />  ← URL fallback
-    //
-    // BACKEND LOGIC:
-    //   1. Process all uploaded files first (this loop)
-    //   2. Skip empty file inputs (user left blank)
-    //   3. Upload non-empty files to Cloudinary
-    //   4. After loop: merge *_url fields for fields without uploaded files
-    //
-    // RESULT: User can mix & match uploads and URLs in the same form
-    // =====================================================================
-
-    // Process uploaded images and upload to Cloudinary
-    if (req.files && req.files.length > 0) {
-      console.log(`📸 Processing ${req.files.length} uploaded image(s)...`);
-
-      for (const file of req.files) {
-        // Skip empty files (user left file input blank, will use URL instead)
-        // IMPORTANT: Multer creates entries with size=0 for blank file inputs
-        if (!file.path || file.size === 0) {
-          console.log(
-            `⏭️  Skipping empty file input for ${file.fieldname}, will use URL if provided`
-          );
-          continue; // Skip to next file
+app.post(
+  "/generate",
+  (req, res, next) => {
+    upload.any()(req, res, (err) => {
+      if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(413).json({
+            success: false,
+            error: "File too large",
+            message:
+              "Image file must be smaller than 15MB. Please compress your image or use a smaller file."
+          });
         }
-
-        try {
-          const cloudinaryUrl = await uploadToCloudinary(
-            file.path,
-            file.originalname
-          );
-          console.log(`✅ Uploaded ${file.fieldname}: ${cloudinaryUrl}`);
-
-          // Replace the field value with the Cloudinary URL
-          templateData[file.fieldname] = cloudinaryUrl;
-        } catch (uploadError) {
-          console.error(
-            `❌ Failed to upload ${file.fieldname}:`,
-            uploadError.message
-          );
-          // Keep the original value if upload fails
+        if (err.name === "MulterError") {
+          return res.status(400).json({
+            success: false,
+            error: "Upload error",
+            message: err.message
+          });
         }
+        return res.status(500).json({
+          success: false,
+          error: "Upload failed",
+          message: err.message
+        });
       }
-    }
-
-    // =====================================================================
-    // URL FALLBACK PATTERN - TESTED & WORKING (DO NOT MODIFY)
-    // =====================================================================
-    // After processing file uploads, merge URL fields for images that weren't uploaded.
-    //
-    // LOGIC:
-    //   - Look for fields ending with "_url" (e.g., "avatarUrl_url")
-    //   - Extract base field name (e.g., "avatarUrl")
-    //   - If base field is empty AND URL field has value → use the URL
-    //   - If base field has value (file was uploaded) → skip (file takes priority)
-    //
-    // EXAMPLE:
-    //   User uploads card1Image → uses Cloudinary URL
-    //   User leaves card2Image blank but provides card2Image_url → uses that URL
-    //
-    // This is why Unified Profile works perfectly with mixed uploads!
-    // =====================================================================
-
-    // Merge URL fields for any image fields that weren't uploaded
-    console.log("🔍 Checking for URL fields...");
-    console.log("📋 Form data keys:", Object.keys(formData));
-    Object.keys(formData).forEach((key) => {
-      if (key.endsWith("_url")) {
-        const baseFieldName = key.replace("_url", "");
-        console.log(`   Found ${key} = ${formData[key]}`);
-        console.log(
-          `   Current ${baseFieldName} value = ${templateData[baseFieldName]}`
-        );
-        if (!templateData[baseFieldName] && formData[key]) {
-          templateData[baseFieldName] = formData[key];
-          console.log(`✅ Using URL for ${baseFieldName}: ${formData[key]}`);
-        } else if (templateData[baseFieldName]) {
-          console.log(
-            `⏭️  Skipping ${baseFieldName} - already has value (file uploaded)`
-          );
-        }
-      }
+      next();
     });
+  },
+  async (req, res) => {
+    try {
+      const formData = req.body;
+      const componentType = formData.componentType || "unifiedProfileLwc";
 
-    // For Unified Profile, calculate ring dash offset
-    if (componentType === "unifiedProfileLwc") {
-      const ringPercentage = parseFloat(formData.ringPercentage) || 0;
-      const circumference = 251.2;
-      const ringDashOffset =
-        circumference - (circumference * ringPercentage) / 100;
-      templateData.ringDashOffset = ringDashOffset.toFixed(2);
+      // Prepare template data based on component type
+      let templateData = { ...formData };
+
+      // =====================================================================
+      // IMAGE UPLOAD PATTERN - TESTED & WORKING (DO NOT MODIFY)
+      // =====================================================================
+      // This pattern has been battle-tested with the Unified Profile component.
+      //
+      // HTML FORM STRUCTURE:
+      //   <input type="file" name="avatarUrl" />      ← File upload
+      //   <input type="text" name="avatarUrl_url" />  ← URL fallback
+      //
+      // BACKEND LOGIC:
+      //   1. Process all uploaded files first (this loop)
+      //   2. Skip empty file inputs (user left blank)
+      //   3. Upload non-empty files to Cloudinary
+      //   4. After loop: merge *_url fields for fields without uploaded files
+      //
+      // RESULT: User can mix & match uploads and URLs in the same form
+      // =====================================================================
+
+      // Process uploaded images and upload to Cloudinary
+      if (req.files && req.files.length > 0) {
+        console.log(`📸 Processing ${req.files.length} uploaded image(s)...`);
+
+        for (const file of req.files) {
+          // Skip empty files (user left file input blank, will use URL instead)
+          // IMPORTANT: Multer creates entries with size=0 for blank file inputs
+          if (!file.path || file.size === 0) {
+            console.log(
+              `⏭️  Skipping empty file input for ${file.fieldname}, will use URL if provided`
+            );
+            continue; // Skip to next file
+          }
+
+          try {
+            const cloudinaryUrl = await uploadToCloudinary(
+              file.path,
+              file.originalname
+            );
+            console.log(`✅ Uploaded ${file.fieldname}: ${cloudinaryUrl}`);
+
+            // Replace the field value with the Cloudinary URL
+            templateData[file.fieldname] = cloudinaryUrl;
+          } catch (uploadError) {
+            console.error(
+              `❌ Failed to upload ${file.fieldname}:`,
+              uploadError.message
+            );
+            // Keep the original value if upload fails
+          }
+        }
+      }
+
+      // =====================================================================
+      // URL FALLBACK PATTERN - TESTED & WORKING (DO NOT MODIFY)
+      // =====================================================================
+      // After processing file uploads, merge URL fields for images that weren't uploaded.
+      //
+      // LOGIC:
+      //   - Look for fields ending with "_url" (e.g., "avatarUrl_url")
+      //   - Extract base field name (e.g., "avatarUrl")
+      //   - If base field is empty AND URL field has value → use the URL
+      //   - If base field has value (file was uploaded) → skip (file takes priority)
+      //
+      // EXAMPLE:
+      //   User uploads card1Image → uses Cloudinary URL
+      //   User leaves card2Image blank but provides card2Image_url → uses that URL
+      //
+      // This is why Unified Profile works perfectly with mixed uploads!
+      // =====================================================================
+
+      // Merge URL fields for any image fields that weren't uploaded
+      console.log("🔍 Checking for URL fields...");
+      console.log("📋 Form data keys:", Object.keys(formData));
+      Object.keys(formData).forEach((key) => {
+        if (key.endsWith("_url")) {
+          const baseFieldName = key.replace("_url", "");
+          console.log(`   Found ${key} = ${formData[key]}`);
+          console.log(
+            `   Current ${baseFieldName} value = ${templateData[baseFieldName]}`
+          );
+          if (!templateData[baseFieldName] && formData[key]) {
+            templateData[baseFieldName] = formData[key];
+            console.log(`✅ Using URL for ${baseFieldName}: ${formData[key]}`);
+          } else if (templateData[baseFieldName]) {
+            console.log(
+              `⏭️  Skipping ${baseFieldName} - already has value (file uploaded)`
+            );
+          }
+        }
+      });
+
+      // For Unified Profile, calculate ring dash offset
+      if (componentType === "unifiedProfileLwc") {
+        const ringPercentage = parseFloat(formData.ringPercentage) || 0;
+        const circumference = 251.2;
+        const ringDashOffset =
+          circumference - (circumference * ringPercentage) / 100;
+        templateData.ringDashOffset = ringDashOffset.toFixed(2);
+      }
+
+      // Read template files
+      const templatesDir = path.join(__dirname, "templates", componentType);
+      const htmlTemplate = await fs.readFile(
+        path.join(templatesDir, `${componentType}.html`),
+        "utf-8"
+      );
+      const jsTemplate = await fs.readFile(
+        path.join(templatesDir, `${componentType}.js`),
+        "utf-8"
+      );
+      const cssTemplate = await fs.readFile(
+        path.join(templatesDir, `${componentType}.css`),
+        "utf-8"
+      );
+      const metaTemplate = await fs.readFile(
+        path.join(templatesDir, `${componentType}.js-meta.xml`),
+        "utf-8"
+      );
+
+      // Debug: Log avatarUrl being used for template compilation
+      console.log(`🖼️  Avatar URL for deployment: ${templateData.avatarUrl}`);
+
+      // Compile templates with Handlebars
+      const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
+      const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
+      const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
+      const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
+
+      // Create ZIP file
+      const zip = new JSZip();
+      const lwcFolder = zip.folder(componentType);
+
+      lwcFolder.file(`${componentType}.html`, htmlCompiled);
+      lwcFolder.file(`${componentType}.js`, jsCompiled);
+      lwcFolder.file(`${componentType}.css`, cssCompiled);
+      lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
+
+      // Generate ZIP
+      const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
+
+      // Send ZIP file
+      res.setHeader("Content-Type", "application/zip");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename=${componentType}.zip`
+      );
+      res.send(zipBuffer);
+    } catch (error) {
+      console.error("Error generating LWC:", error);
+      res
+        .status(500)
+        .json({ error: "Failed to generate LWC", details: error.message });
     }
-
-    // Read template files
-    const templatesDir = path.join(__dirname, "templates", componentType);
-    const htmlTemplate = await fs.readFile(
-      path.join(templatesDir, `${componentType}.html`),
-      "utf-8"
-    );
-    const jsTemplate = await fs.readFile(
-      path.join(templatesDir, `${componentType}.js`),
-      "utf-8"
-    );
-    const cssTemplate = await fs.readFile(
-      path.join(templatesDir, `${componentType}.css`),
-      "utf-8"
-    );
-    const metaTemplate = await fs.readFile(
-      path.join(templatesDir, `${componentType}.js-meta.xml`),
-      "utf-8"
-    );
-
-    // Debug: Log avatarUrl being used for template compilation
-    console.log(`🖼️  Avatar URL for deployment: ${templateData.avatarUrl}`);
-
-    // Compile templates with Handlebars
-    const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
-    const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
-    const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
-    const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
-
-    // Create ZIP file
-    const zip = new JSZip();
-    const lwcFolder = zip.folder(componentType);
-
-    lwcFolder.file(`${componentType}.html`, htmlCompiled);
-    lwcFolder.file(`${componentType}.js`, jsCompiled);
-    lwcFolder.file(`${componentType}.css`, cssCompiled);
-    lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
-
-    // Generate ZIP
-    const zipBuffer = await zip.generateAsync({ type: "nodebuffer" });
-
-    // Send ZIP file
-    res.setHeader("Content-Type", "application/zip");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename=${componentType}.zip`
-    );
-    res.send(zipBuffer);
-  } catch (error) {
-    console.error("Error generating LWC:", error);
-    res
-      .status(500)
-      .json({ error: "Failed to generate LWC", details: error.message });
   }
-});
+);
 
 // Helper function to upload image to Cloudinary using disk-based upload
 async function uploadToCloudinary(filePath, originalName) {
@@ -479,170 +509,202 @@ app.get("/auth/logout", (req, res) => {
 });
 
 // Deploy to Salesforce endpoint with file upload support
-app.post("/deploy", upload.any(), async (req, res) => {
-  console.log("\n" + "=".repeat(60));
-  console.log("🚀 DEPLOY REQUEST RECEIVED");
-  console.log("=".repeat(60));
-  console.log("Component Type:", req.body.componentType);
-  console.log("Has Session:", !!req.session);
-  console.log("Has Access Token:", !!req.session?.accessToken);
-  console.log("=".repeat(60) + "\n");
-
-  try {
-    // Check authentication
-    if (!req.session.accessToken) {
-      return res.status(401).json({
-        error: "Not authenticated",
-        message: "Please authenticate with Salesforce first"
-      });
-    }
-
-    const formData = req.body;
-    const componentType = formData.componentType || "unifiedProfileLwc";
-
-    // Prepare template data based on component type
-    let templateData = { ...formData };
-
-    // =====================================================================
-    // IMAGE UPLOAD PATTERN - TESTED & WORKING (DO NOT MODIFY)
-    // =====================================================================
-    // This pattern has been battle-tested with the Unified Profile component.
-    //
-    // HTML FORM STRUCTURE:
-    //   <input type="file" name="avatarUrl" />      ← File upload
-    //   <input type="text" name="avatarUrl_url" />  ← URL fallback
-    //
-    // BACKEND LOGIC:
-    //   1. Process all uploaded files first (this loop)
-    //   2. Skip empty file inputs (user left blank)
-    //   3. Upload non-empty files to Cloudinary
-    //   4. After loop: merge *_url fields for fields without uploaded files
-    //
-    // RESULT: User can mix & match uploads and URLs in the same form
-    // =====================================================================
-
-    // Process uploaded images and upload to Cloudinary
-    let hasUploadedImages = false;
-    if (req.files && req.files.length > 0) {
-      console.log(
-        `📸 Processing ${req.files.length} uploaded image(s) for deployment...`
-      );
-
-      for (const file of req.files) {
-        console.log(
-          `   File: ${file.fieldname}, Size: ${file.size} bytes, Type: ${file.mimetype}`
-        );
-
-        // Skip empty files (user left file input blank, will use URL instead)
-        // IMPORTANT: Multer creates entries with size=0 for blank file inputs
-        if (!file.path || file.size === 0) {
-          console.log(
-            `⏭️  Skipping empty file input for ${file.fieldname}, will use URL if provided`
-          );
-          continue; // Skip to next file
-        }
-
-        try {
-          const cloudinaryUrl = await uploadToCloudinary(
-            file.path,
-            file.originalname
-          );
-          console.log(`✅ Uploaded ${file.fieldname}: ${cloudinaryUrl}`);
-
-          // Replace the field value with the Cloudinary URL
-          templateData[file.fieldname] = cloudinaryUrl;
-          hasUploadedImages = true;
-        } catch (uploadError) {
-          const errorMessage = uploadError.message || String(uploadError);
-          console.error(`❌ Failed to upload ${file.fieldname}:`, uploadError);
-          return res.status(500).json({
+app.post(
+  "/deploy",
+  (req, res, next) => {
+    upload.any()(req, res, (err) => {
+      if (err) {
+        if (err.code === "LIMIT_FILE_SIZE") {
+          return res.status(413).json({
             success: false,
-            error: "Image upload failed",
-            message: `Failed to upload ${file.fieldname}: ${errorMessage}`
+            error: "File too large",
+            message:
+              "Image file must be smaller than 15MB. Please compress your image or use a smaller file."
           });
         }
+        if (err.name === "MulterError") {
+          return res.status(400).json({
+            success: false,
+            error: "Upload error",
+            message: err.message
+          });
+        }
+        return res.status(500).json({
+          success: false,
+          error: "Upload failed",
+          message: err.message
+        });
       }
-    }
+      next();
+    });
+  },
+  async (req, res) => {
+    console.log("\n" + "=".repeat(60));
+    console.log("🚀 DEPLOY REQUEST RECEIVED");
+    console.log("=".repeat(60));
+    console.log("Component Type:", req.body.componentType);
+    console.log("Has Session:", !!req.session);
+    console.log("Has Access Token:", !!req.session?.accessToken);
+    console.log("=".repeat(60) + "\n");
 
-    // =====================================================================
-    // URL FALLBACK PATTERN - TESTED & WORKING (DO NOT MODIFY)
-    // =====================================================================
-    // After processing file uploads, merge URL fields for images that weren't uploaded.
-    //
-    // LOGIC:
-    //   - Look for fields ending with "_url" (e.g., "avatarUrl_url")
-    //   - Extract base field name (e.g., "avatarUrl")
-    //   - If base field is empty AND URL field has value → use the URL
-    //   - If base field has value (file was uploaded) → skip (file takes priority)
-    //
-    // EXAMPLE:
-    //   User uploads card1Image → uses Cloudinary URL
-    //   User leaves card2Image blank but provides card2Image_url → uses that URL
-    //
-    // This is why Unified Profile works perfectly with mixed uploads!
-    // =====================================================================
+    try {
+      // Check authentication
+      if (!req.session.accessToken) {
+        return res.status(401).json({
+          error: "Not authenticated",
+          message: "Please authenticate with Salesforce first"
+        });
+      }
 
-    // Merge URL fields for any image fields that weren't uploaded
-    console.log("🔍 Checking for URL fields...");
-    console.log("📋 Form data keys:", Object.keys(formData));
-    Object.keys(formData).forEach((key) => {
-      if (key.endsWith("_url")) {
-        const baseFieldName = key.replace("_url", "");
-        console.log(`   Found ${key} = ${formData[key]}`);
+      const formData = req.body;
+      const componentType = formData.componentType || "unifiedProfileLwc";
+
+      // Prepare template data based on component type
+      let templateData = { ...formData };
+
+      // =====================================================================
+      // IMAGE UPLOAD PATTERN - TESTED & WORKING (DO NOT MODIFY)
+      // =====================================================================
+      // This pattern has been battle-tested with the Unified Profile component.
+      //
+      // HTML FORM STRUCTURE:
+      //   <input type="file" name="avatarUrl" />      ← File upload
+      //   <input type="text" name="avatarUrl_url" />  ← URL fallback
+      //
+      // BACKEND LOGIC:
+      //   1. Process all uploaded files first (this loop)
+      //   2. Skip empty file inputs (user left blank)
+      //   3. Upload non-empty files to Cloudinary
+      //   4. After loop: merge *_url fields for fields without uploaded files
+      //
+      // RESULT: User can mix & match uploads and URLs in the same form
+      // =====================================================================
+
+      // Process uploaded images and upload to Cloudinary
+      let hasUploadedImages = false;
+      if (req.files && req.files.length > 0) {
         console.log(
-          `   Current ${baseFieldName} value = ${templateData[baseFieldName]}`
+          `📸 Processing ${req.files.length} uploaded image(s) for deployment...`
         );
-        if (!templateData[baseFieldName] && formData[key]) {
-          templateData[baseFieldName] = formData[key];
-          console.log(`✅ Using URL for ${baseFieldName}: ${formData[key]}`);
-        } else if (templateData[baseFieldName]) {
+
+        for (const file of req.files) {
           console.log(
-            `⏭️  Skipping ${baseFieldName} - already has value (file uploaded)`
+            `   File: ${file.fieldname}, Size: ${file.size} bytes, Type: ${file.mimetype}`
           );
+
+          // Skip empty files (user left file input blank, will use URL instead)
+          // IMPORTANT: Multer creates entries with size=0 for blank file inputs
+          if (!file.path || file.size === 0) {
+            console.log(
+              `⏭️  Skipping empty file input for ${file.fieldname}, will use URL if provided`
+            );
+            continue; // Skip to next file
+          }
+
+          try {
+            const cloudinaryUrl = await uploadToCloudinary(
+              file.path,
+              file.originalname
+            );
+            console.log(`✅ Uploaded ${file.fieldname}: ${cloudinaryUrl}`);
+
+            // Replace the field value with the Cloudinary URL
+            templateData[file.fieldname] = cloudinaryUrl;
+            hasUploadedImages = true;
+          } catch (uploadError) {
+            const errorMessage = uploadError.message || String(uploadError);
+            console.error(
+              `❌ Failed to upload ${file.fieldname}:`,
+              uploadError
+            );
+            return res.status(500).json({
+              success: false,
+              error: "Image upload failed",
+              message: `Failed to upload ${file.fieldname}: ${errorMessage}`
+            });
+          }
         }
       }
-    });
 
-    // For Unified Profile, calculate ring dash offset
-    if (componentType === "unifiedProfileLwc") {
-      const ringPercentage = parseFloat(formData.ringPercentage) || 0;
-      const circumference = 251.2;
-      const ringDashOffset =
-        circumference - (circumference * ringPercentage) / 100;
-      templateData.ringDashOffset = ringDashOffset.toFixed(2);
-    }
+      // =====================================================================
+      // URL FALLBACK PATTERN - TESTED & WORKING (DO NOT MODIFY)
+      // =====================================================================
+      // After processing file uploads, merge URL fields for images that weren't uploaded.
+      //
+      // LOGIC:
+      //   - Look for fields ending with "_url" (e.g., "avatarUrl_url")
+      //   - Extract base field name (e.g., "avatarUrl")
+      //   - If base field is empty AND URL field has value → use the URL
+      //   - If base field has value (file was uploaded) → skip (file takes priority)
+      //
+      // EXAMPLE:
+      //   User uploads card1Image → uses Cloudinary URL
+      //   User leaves card2Image blank but provides card2Image_url → uses that URL
+      //
+      // This is why Unified Profile works perfectly with mixed uploads!
+      // =====================================================================
 
-    // Read template files
-    const templatesDir = path.join(__dirname, "templates", componentType);
-    const htmlTemplate = await fs.readFile(
-      path.join(templatesDir, `${componentType}.html`),
-      "utf-8"
-    );
-    const jsTemplate = await fs.readFile(
-      path.join(templatesDir, `${componentType}.js`),
-      "utf-8"
-    );
-    const cssTemplate = await fs.readFile(
-      path.join(templatesDir, `${componentType}.css`),
-      "utf-8"
-    );
-    const metaTemplate = await fs.readFile(
-      path.join(templatesDir, `${componentType}.js-meta.xml`),
-      "utf-8"
-    );
+      // Merge URL fields for any image fields that weren't uploaded
+      console.log("🔍 Checking for URL fields...");
+      console.log("📋 Form data keys:", Object.keys(formData));
+      Object.keys(formData).forEach((key) => {
+        if (key.endsWith("_url")) {
+          const baseFieldName = key.replace("_url", "");
+          console.log(`   Found ${key} = ${formData[key]}`);
+          console.log(
+            `   Current ${baseFieldName} value = ${templateData[baseFieldName]}`
+          );
+          if (!templateData[baseFieldName] && formData[key]) {
+            templateData[baseFieldName] = formData[key];
+            console.log(`✅ Using URL for ${baseFieldName}: ${formData[key]}`);
+          } else if (templateData[baseFieldName]) {
+            console.log(
+              `⏭️  Skipping ${baseFieldName} - already has value (file uploaded)`
+            );
+          }
+        }
+      });
 
-    // Debug: Log avatarUrl being used for template compilation
-    console.log(`🖼️  Avatar URL for deployment: ${templateData.avatarUrl}`);
+      // For Unified Profile, calculate ring dash offset
+      if (componentType === "unifiedProfileLwc") {
+        const ringPercentage = parseFloat(formData.ringPercentage) || 0;
+        const circumference = 251.2;
+        const ringDashOffset =
+          circumference - (circumference * ringPercentage) / 100;
+        templateData.ringDashOffset = ringDashOffset.toFixed(2);
+      }
 
-    // Compile templates with Handlebars
-    const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
-    const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
-    const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
-    const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
+      // Read template files
+      const templatesDir = path.join(__dirname, "templates", componentType);
+      const htmlTemplate = await fs.readFile(
+        path.join(templatesDir, `${componentType}.html`),
+        "utf-8"
+      );
+      const jsTemplate = await fs.readFile(
+        path.join(templatesDir, `${componentType}.js`),
+        "utf-8"
+      );
+      const cssTemplate = await fs.readFile(
+        path.join(templatesDir, `${componentType}.css`),
+        "utf-8"
+      );
+      const metaTemplate = await fs.readFile(
+        path.join(templatesDir, `${componentType}.js-meta.xml`),
+        "utf-8"
+      );
 
-    // Create package.xml for Metadata API - HARDCODED EXACT XML
-    // NOTE: If adding new CSP domains, add them here AND create helper functions above
-    const packageXml = `<?xml version="1.0" encoding="UTF-8"?>
+      // Debug: Log avatarUrl being used for template compilation
+      console.log(`🖼️  Avatar URL for deployment: ${templateData.avatarUrl}`);
+
+      // Compile templates with Handlebars
+      const htmlCompiled = Handlebars.compile(htmlTemplate)(templateData);
+      const jsCompiled = Handlebars.compile(jsTemplate)(templateData);
+      const cssCompiled = Handlebars.compile(cssTemplate)(templateData);
+      const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
+
+      // Create package.xml for Metadata API - HARDCODED EXACT XML
+      // NOTE: If adding new CSP domains, add them here AND create helper functions above
+      const packageXml = `<?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
         <members>*</members>
@@ -658,190 +720,193 @@ app.post("/deploy", upload.any(), async (req, res) => {
     <version>60.0</version>
 </Package>`;
 
-    // Create ZIP for Metadata API deployment
-    const zip = new JSZip();
+      // Create ZIP for Metadata API deployment
+      const zip = new JSZip();
 
-    // Add package.xml at root
-    zip.file("package.xml", packageXml);
+      // Add package.xml at root
+      zip.file("package.xml", packageXml);
 
-    // Add LWC files in proper structure
-    const lwcFolder = zip.folder("lwc").folder(componentType);
-    lwcFolder.file(`${componentType}.html`, htmlCompiled);
-    lwcFolder.file(`${componentType}.js`, jsCompiled);
-    lwcFolder.file(`${componentType}.css`, cssCompiled);
-    lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
+      // Add LWC files in proper structure
+      const lwcFolder = zip.folder("lwc").folder(componentType);
+      lwcFolder.file(`${componentType}.html`, htmlCompiled);
+      lwcFolder.file(`${componentType}.js`, jsCompiled);
+      lwcFolder.file(`${componentType}.css`, cssCompiled);
+      lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
 
-    // Add CspTrustedSite metadata - ALWAYS INCLUDED
-    // NOTE: If adding new CSP domains, add them here AND update package.xml above
-    const cspFolder = zip.folder("cspTrustedSites");
-    cspFolder.file(
-      "Cloudinary_CDN.cspTrustedSite-meta.xml",
-      createCloudinaryCspXml()
-    );
-    cspFolder.file(
-      "Webflow_CDN.cspTrustedSite-meta.xml",
-      createWebflowCspXml()
-    );
-    cspFolder.file("SFMC_CDN.cspTrustedSite-meta.xml", createSfmcCspXml());
-    cspFolder.file(
-      "Unsplash_CDN.cspTrustedSite-meta.xml",
-      createUnsplashCspXml()
-    );
-    console.log(
-      "📋 Added CSP Trusted Sites (Cloudinary + Webflow + SFMC + Unsplash) to deployment package"
-    );
+      // Add CspTrustedSite metadata - ALWAYS INCLUDED
+      // NOTE: If adding new CSP domains, add them here AND update package.xml above
+      const cspFolder = zip.folder("cspTrustedSites");
+      cspFolder.file(
+        "Cloudinary_CDN.cspTrustedSite-meta.xml",
+        createCloudinaryCspXml()
+      );
+      cspFolder.file(
+        "Webflow_CDN.cspTrustedSite-meta.xml",
+        createWebflowCspXml()
+      );
+      cspFolder.file("SFMC_CDN.cspTrustedSite-meta.xml", createSfmcCspXml());
+      cspFolder.file(
+        "Unsplash_CDN.cspTrustedSite-meta.xml",
+        createUnsplashCspXml()
+      );
+      console.log(
+        "📋 Added CSP Trusted Sites (Cloudinary + Webflow + SFMC + Unsplash) to deployment package"
+      );
 
-    // Generate ZIP as base64
-    const zipBuffer = await zip.generateAsync({
-      type: "nodebuffer",
-      compression: "DEFLATE",
-      compressionOptions: { level: 9 }
-    });
-    const zipBase64 = zipBuffer.toString("base64");
-
-    // Get dynamic callback URL for this request
-    const callbackUrl = getCallbackUrl(req);
-
-    // Create OAuth2 instance with dynamic callback URL
-    const oauth2 = new jsforce.OAuth2({
-      loginUrl:
-        process.env.SALESFORCE_LOGIN_URL || "https://login.salesforce.com",
-      clientId: process.env.SALESFORCE_CLIENT_ID,
-      clientSecret: process.env.SALESFORCE_CLIENT_SECRET,
-      redirectUri: callbackUrl
-    });
-
-    // Connect to Salesforce with stored credentials
-    console.log("🔗 Connecting to Salesforce...");
-    console.log("   Instance URL:", req.session.instanceUrl);
-    console.log("   Access Token exists:", !!req.session.accessToken);
-    console.log("   Refresh Token exists:", !!req.session.refreshToken);
-
-    const conn = new jsforce.Connection({
-      oauth2,
-      instanceUrl: req.session.instanceUrl,
-      accessToken: req.session.accessToken,
-      refreshToken: req.session.refreshToken,
-      version: "60.0"
-    });
-
-    // Test the connection before deploying
-    try {
-      const identity = await conn.identity();
-      console.log("✅ Connection verified, user:", identity.username);
-    } catch (identityError) {
-      console.error("❌ Connection test failed:", identityError);
-      return res.status(401).json({
-        error: "Authentication failed",
-        message: "Your Salesforce session may have expired. Please reconnect."
+      // Generate ZIP as base64
+      const zipBuffer = await zip.generateAsync({
+        type: "nodebuffer",
+        compression: "DEFLATE",
+        compressionOptions: { level: 9 }
       });
-    }
+      const zipBase64 = zipBuffer.toString("base64");
 
-    // Deploy using Metadata API
-    console.log("🚀 Starting deployment to Salesforce...");
+      // Get dynamic callback URL for this request
+      const callbackUrl = getCallbackUrl(req);
 
-    let deployResult;
-    try {
-      deployResult = await conn.metadata.deploy(zipBase64, {
-        rollbackOnError: true,
-        singlePackage: true
+      // Create OAuth2 instance with dynamic callback URL
+      const oauth2 = new jsforce.OAuth2({
+        loginUrl:
+          process.env.SALESFORCE_LOGIN_URL || "https://login.salesforce.com",
+        clientId: process.env.SALESFORCE_CLIENT_ID,
+        clientSecret: process.env.SALESFORCE_CLIENT_SECRET,
+        redirectUri: callbackUrl
       });
-      console.log("✅ Deploy call succeeded, deploy ID:", deployResult.id);
-    } catch (deployError) {
-      console.error("❌ Deploy call failed:", deployError);
-      throw new Error(`Failed to initiate deployment: ${deployError.message}`);
-    }
 
-    // Poll for deployment status
-    const deployId = deployResult.id;
-    let deployStatus;
-    let maxPolls = 60; // Max 5 minutes (60 * 5 seconds)
-    let pollCount = 0;
+      // Connect to Salesforce with stored credentials
+      console.log("🔗 Connecting to Salesforce...");
+      console.log("   Instance URL:", req.session.instanceUrl);
+      console.log("   Access Token exists:", !!req.session.accessToken);
+      console.log("   Refresh Token exists:", !!req.session.refreshToken);
 
-    while (pollCount < maxPolls) {
-      await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
+      const conn = new jsforce.Connection({
+        oauth2,
+        instanceUrl: req.session.instanceUrl,
+        accessToken: req.session.accessToken,
+        refreshToken: req.session.refreshToken,
+        version: "60.0"
+      });
 
+      // Test the connection before deploying
       try {
-        deployStatus = await conn.metadata.checkDeployStatus(deployId, true);
-        console.log(
-          `📊 Poll ${pollCount + 1}: Status = ${deployStatus.status}, Done = ${deployStatus.done}`
-        );
-      } catch (statusError) {
-        console.error(
-          `❌ Status check failed on poll ${pollCount + 1}:`,
-          statusError
-        );
-        throw new Error(
-          `Failed to check deployment status: ${statusError.message}`
-        );
-      }
-
-      if (deployStatus.done === "true" || deployStatus.done === true) {
-        break;
-      }
-
-      pollCount++;
-    }
-
-    // Check deployment result
-    if (deployStatus.success === "true" || deployStatus.success === true) {
-      console.log("✅ Deployment successful!");
-      res.json({
-        success: true,
-        message: "Component deployed successfully to Salesforce!",
-        componentName: componentType,
-        deployId: deployId
-      });
-    } else {
-      // Collect error messages
-      const errors = [];
-      if (deployStatus.details?.componentFailures) {
-        const failures = Array.isArray(deployStatus.details.componentFailures)
-          ? deployStatus.details.componentFailures
-          : [deployStatus.details.componentFailures];
-
-        failures.forEach((failure) => {
-          errors.push(`${failure.fileName}: ${failure.problem}`);
+        const identity = await conn.identity();
+        console.log("✅ Connection verified, user:", identity.username);
+      } catch (identityError) {
+        console.error("❌ Connection test failed:", identityError);
+        return res.status(401).json({
+          error: "Authentication failed",
+          message: "Your Salesforce session may have expired. Please reconnect."
         });
       }
 
-      console.error("❌ Deployment failed:", errors);
-      res.status(400).json({
-        success: false,
+      // Deploy using Metadata API
+      console.log("🚀 Starting deployment to Salesforce...");
+
+      let deployResult;
+      try {
+        deployResult = await conn.metadata.deploy(zipBase64, {
+          rollbackOnError: true,
+          singlePackage: true
+        });
+        console.log("✅ Deploy call succeeded, deploy ID:", deployResult.id);
+      } catch (deployError) {
+        console.error("❌ Deploy call failed:", deployError);
+        throw new Error(
+          `Failed to initiate deployment: ${deployError.message}`
+        );
+      }
+
+      // Poll for deployment status
+      const deployId = deployResult.id;
+      let deployStatus;
+      let maxPolls = 60; // Max 5 minutes (60 * 5 seconds)
+      let pollCount = 0;
+
+      while (pollCount < maxPolls) {
+        await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
+
+        try {
+          deployStatus = await conn.metadata.checkDeployStatus(deployId, true);
+          console.log(
+            `📊 Poll ${pollCount + 1}: Status = ${deployStatus.status}, Done = ${deployStatus.done}`
+          );
+        } catch (statusError) {
+          console.error(
+            `❌ Status check failed on poll ${pollCount + 1}:`,
+            statusError
+          );
+          throw new Error(
+            `Failed to check deployment status: ${statusError.message}`
+          );
+        }
+
+        if (deployStatus.done === "true" || deployStatus.done === true) {
+          break;
+        }
+
+        pollCount++;
+      }
+
+      // Check deployment result
+      if (deployStatus.success === "true" || deployStatus.success === true) {
+        console.log("✅ Deployment successful!");
+        res.json({
+          success: true,
+          message: "Component deployed successfully to Salesforce!",
+          componentName: componentType,
+          deployId: deployId
+        });
+      } else {
+        // Collect error messages
+        const errors = [];
+        if (deployStatus.details?.componentFailures) {
+          const failures = Array.isArray(deployStatus.details.componentFailures)
+            ? deployStatus.details.componentFailures
+            : [deployStatus.details.componentFailures];
+
+          failures.forEach((failure) => {
+            errors.push(`${failure.fileName}: ${failure.problem}`);
+          });
+        }
+
+        console.error("❌ Deployment failed:", errors);
+        res.status(400).json({
+          success: false,
+          error: "Deployment failed",
+          message: errors.join("; ") || "Unknown deployment error"
+        });
+      }
+    } catch (error) {
+      console.error("❌ Deployment error:", error);
+      console.error("   Error name:", error.name);
+      console.error("   Error code:", error.errorCode);
+      console.error("   Error stack:", error.stack);
+
+      // Don't send response if already sent
+      if (res.headersSent) {
+        console.error("⚠️  Headers already sent, cannot send error response");
+        return;
+      }
+
+      // Check if it's an auth error
+      if (
+        error.name === "INVALID_SESSION_ID" ||
+        error.errorCode === "INVALID_SESSION_ID"
+      ) {
+        req.session.destroy();
+        return res.status(401).json({
+          error: "Session expired",
+          message: "Please authenticate again"
+        });
+      }
+
+      res.status(500).json({
         error: "Deployment failed",
-        message: errors.join("; ") || "Unknown deployment error"
+        message: error.message || "An error occurred during deployment"
       });
     }
-  } catch (error) {
-    console.error("❌ Deployment error:", error);
-    console.error("   Error name:", error.name);
-    console.error("   Error code:", error.errorCode);
-    console.error("   Error stack:", error.stack);
-
-    // Don't send response if already sent
-    if (res.headersSent) {
-      console.error("⚠️  Headers already sent, cannot send error response");
-      return;
-    }
-
-    // Check if it's an auth error
-    if (
-      error.name === "INVALID_SESSION_ID" ||
-      error.errorCode === "INVALID_SESSION_ID"
-    ) {
-      req.session.destroy();
-      return res.status(401).json({
-        error: "Session expired",
-        message: "Please authenticate again"
-      });
-    }
-
-    res.status(500).json({
-      error: "Deployment failed",
-      message: error.message || "An error occurred during deployment"
-    });
   }
-});
+);
 
 // Start server
 (async () => {
