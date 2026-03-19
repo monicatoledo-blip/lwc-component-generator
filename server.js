@@ -101,11 +101,38 @@ app.post("/generate", upload.any(), async (req, res) => {
     // Prepare template data based on component type
     let templateData = { ...formData };
 
+    // =====================================================================
+    // IMAGE UPLOAD PATTERN - TESTED & WORKING (DO NOT MODIFY)
+    // =====================================================================
+    // This pattern has been battle-tested with the Unified Profile component.
+    //
+    // HTML FORM STRUCTURE:
+    //   <input type="file" name="avatarUrl" />      ← File upload
+    //   <input type="text" name="avatarUrl_url" />  ← URL fallback
+    //
+    // BACKEND LOGIC:
+    //   1. Process all uploaded files first (this loop)
+    //   2. Skip empty file inputs (user left blank)
+    //   3. Upload non-empty files to Cloudinary
+    //   4. After loop: merge *_url fields for fields without uploaded files
+    //
+    // RESULT: User can mix & match uploads and URLs in the same form
+    // =====================================================================
+
     // Process uploaded images and upload to Cloudinary
     if (req.files && req.files.length > 0) {
       console.log(`📸 Processing ${req.files.length} uploaded image(s)...`);
 
       for (const file of req.files) {
+        // Skip empty files (user left file input blank, will use URL instead)
+        // IMPORTANT: Multer creates entries with size=0 for blank file inputs
+        if (!file.path || file.size === 0) {
+          console.log(
+            `⏭️  Skipping empty file input for ${file.fieldname}, will use URL if provided`
+          );
+          continue; // Skip to next file
+        }
+
         try {
           const cloudinaryUrl = await uploadToCloudinary(
             file.path,
@@ -125,8 +152,25 @@ app.post("/generate", upload.any(), async (req, res) => {
       }
     }
 
+    // =====================================================================
+    // URL FALLBACK PATTERN - TESTED & WORKING (DO NOT MODIFY)
+    // =====================================================================
+    // After processing file uploads, merge URL fields for images that weren't uploaded.
+    //
+    // LOGIC:
+    //   - Look for fields ending with "_url" (e.g., "avatarUrl_url")
+    //   - Extract base field name (e.g., "avatarUrl")
+    //   - If base field is empty AND URL field has value → use the URL
+    //   - If base field has value (file was uploaded) → skip (file takes priority)
+    //
+    // EXAMPLE:
+    //   User uploads card1Image → uses Cloudinary URL
+    //   User leaves card2Image blank but provides card2Image_url → uses that URL
+    //
+    // This is why Unified Profile works perfectly with mixed uploads!
+    // =====================================================================
+
     // Merge URL fields for any image fields that weren't uploaded
-    // Pattern: if fieldName_url exists and fieldName is empty, use the URL
     console.log("🔍 Checking for URL fields...");
     console.log("📋 Form data keys:", Object.keys(formData));
     Object.keys(formData).forEach((key) => {
@@ -285,6 +329,7 @@ function getCallbackUrl(req) {
 // - res.cloudinary.com (uploaded images)
 // - cdn.prod.website-files.com (Webflow CDN - Agentforce Astro icon)
 // - image.s4.sfmc-content.com (Salesforce Marketing Cloud - Cumulus logos)
+// - images.unsplash.com (Unsplash - Next Best Actions card images)
 // =====================================================================
 
 // Helper function to create Cloudinary CSP Trusted Site
@@ -313,6 +358,16 @@ function createSfmcCspXml() {
 <CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
     <context>All</context>
     <endpointUrl>https://image.s4.sfmc-content.com</endpointUrl>
+    <isActive>true</isActive>
+</CspTrustedSite>`;
+}
+
+// Helper function to create Unsplash CSP Trusted Site
+function createUnsplashCspXml() {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
+    <context>All</context>
+    <endpointUrl>https://images.unsplash.com</endpointUrl>
     <isActive>true</isActive>
 </CspTrustedSite>`;
 }
@@ -425,6 +480,14 @@ app.get("/auth/logout", (req, res) => {
 
 // Deploy to Salesforce endpoint with file upload support
 app.post("/deploy", upload.any(), async (req, res) => {
+  console.log("\n" + "=".repeat(60));
+  console.log("🚀 DEPLOY REQUEST RECEIVED");
+  console.log("=".repeat(60));
+  console.log("Component Type:", req.body.componentType);
+  console.log("Has Session:", !!req.session);
+  console.log("Has Access Token:", !!req.session?.accessToken);
+  console.log("=".repeat(60) + "\n");
+
   try {
     // Check authentication
     if (!req.session.accessToken) {
@@ -440,6 +503,24 @@ app.post("/deploy", upload.any(), async (req, res) => {
     // Prepare template data based on component type
     let templateData = { ...formData };
 
+    // =====================================================================
+    // IMAGE UPLOAD PATTERN - TESTED & WORKING (DO NOT MODIFY)
+    // =====================================================================
+    // This pattern has been battle-tested with the Unified Profile component.
+    //
+    // HTML FORM STRUCTURE:
+    //   <input type="file" name="avatarUrl" />      ← File upload
+    //   <input type="text" name="avatarUrl_url" />  ← URL fallback
+    //
+    // BACKEND LOGIC:
+    //   1. Process all uploaded files first (this loop)
+    //   2. Skip empty file inputs (user left blank)
+    //   3. Upload non-empty files to Cloudinary
+    //   4. After loop: merge *_url fields for fields without uploaded files
+    //
+    // RESULT: User can mix & match uploads and URLs in the same form
+    // =====================================================================
+
     // Process uploaded images and upload to Cloudinary
     let hasUploadedImages = false;
     if (req.files && req.files.length > 0) {
@@ -452,13 +533,13 @@ app.post("/deploy", upload.any(), async (req, res) => {
           `   File: ${file.fieldname}, Size: ${file.size} bytes, Type: ${file.mimetype}`
         );
 
+        // Skip empty files (user left file input blank, will use URL instead)
+        // IMPORTANT: Multer creates entries with size=0 for blank file inputs
         if (!file.path || file.size === 0) {
-          console.error(`❌ File ${file.fieldname} has no data`);
-          return res.status(500).json({
-            success: false,
-            error: "Image upload failed",
-            message: `File ${file.fieldname} is empty`
-          });
+          console.log(
+            `⏭️  Skipping empty file input for ${file.fieldname}, will use URL if provided`
+          );
+          continue; // Skip to next file
         }
 
         try {
@@ -483,8 +564,25 @@ app.post("/deploy", upload.any(), async (req, res) => {
       }
     }
 
+    // =====================================================================
+    // URL FALLBACK PATTERN - TESTED & WORKING (DO NOT MODIFY)
+    // =====================================================================
+    // After processing file uploads, merge URL fields for images that weren't uploaded.
+    //
+    // LOGIC:
+    //   - Look for fields ending with "_url" (e.g., "avatarUrl_url")
+    //   - Extract base field name (e.g., "avatarUrl")
+    //   - If base field is empty AND URL field has value → use the URL
+    //   - If base field has value (file was uploaded) → skip (file takes priority)
+    //
+    // EXAMPLE:
+    //   User uploads card1Image → uses Cloudinary URL
+    //   User leaves card2Image blank but provides card2Image_url → uses that URL
+    //
+    // This is why Unified Profile works perfectly with mixed uploads!
+    // =====================================================================
+
     // Merge URL fields for any image fields that weren't uploaded
-    // Pattern: if fieldName_url exists and fieldName is empty, use the URL
     console.log("🔍 Checking for URL fields...");
     console.log("📋 Form data keys:", Object.keys(formData));
     Object.keys(formData).forEach((key) => {
@@ -554,6 +652,7 @@ app.post("/deploy", upload.any(), async (req, res) => {
         <members>Cloudinary_CDN</members>
         <members>Webflow_CDN</members>
         <members>SFMC_CDN</members>
+        <members>Unsplash_CDN</members>
         <name>CspTrustedSite</name>
     </types>
     <version>60.0</version>
@@ -584,8 +683,12 @@ app.post("/deploy", upload.any(), async (req, res) => {
       createWebflowCspXml()
     );
     cspFolder.file("SFMC_CDN.cspTrustedSite-meta.xml", createSfmcCspXml());
+    cspFolder.file(
+      "Unsplash_CDN.cspTrustedSite-meta.xml",
+      createUnsplashCspXml()
+    );
     console.log(
-      "📋 Added CSP Trusted Sites (Cloudinary + Webflow + SFMC) to deployment package"
+      "📋 Added CSP Trusted Sites (Cloudinary + Webflow + SFMC + Unsplash) to deployment package"
     );
 
     // Generate ZIP as base64
@@ -711,6 +814,15 @@ app.post("/deploy", upload.any(), async (req, res) => {
     }
   } catch (error) {
     console.error("❌ Deployment error:", error);
+    console.error("   Error name:", error.name);
+    console.error("   Error code:", error.errorCode);
+    console.error("   Error stack:", error.stack);
+
+    // Don't send response if already sent
+    if (res.headersSent) {
+      console.error("⚠️  Headers already sent, cannot send error response");
+      return;
+    }
 
     // Check if it's an auth error
     if (

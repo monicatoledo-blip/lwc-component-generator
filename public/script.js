@@ -273,7 +273,20 @@ async function handleDeploy(buttonElement) {
       body: formData // Send as multipart/form-data
     });
 
-    const result = await response.json();
+    // Check if response is JSON before parsing
+    const contentType = response.headers.get("content-type");
+    let result;
+
+    if (contentType && contentType.includes("application/json")) {
+      result = await response.json();
+    } else {
+      // Server returned HTML or other non-JSON response
+      const textResponse = await response.text();
+      console.error("Server returned non-JSON response:", textResponse);
+      throw new Error(
+        "Server returned an unexpected response. Please check the server logs."
+      );
+    }
 
     if (response.ok && result.success) {
       buttonElement.innerHTML = "✅ Deployed!";

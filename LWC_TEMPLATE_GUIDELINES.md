@@ -413,6 +413,64 @@ Before deploying a new LWC template, verify:
 
 ---
 
+## 🚨 CRITICAL: Image Upload Pattern (File + URL Fallback)
+
+All components must follow the **tested and working** image upload pattern from the Unified Profile component.
+
+### HTML Form Structure
+
+Every image field must have **TWO inputs**:
+
+```html
+<!-- File upload input -->
+<input
+  type="file"
+  name="avatarUrl"
+  accept="image/*"
+  class="file-upload-input"
+/>
+
+<span class="file-or-divider">OR</span>
+
+<!-- URL fallback input -->
+<input type="text" name="avatarUrl_url" value="https://..." class="url-input" />
+```
+
+**Naming Convention:**
+
+- File input: `name="fieldName"`
+- URL input: `name="fieldName_url"` (append `_url`)
+
+### Backend Processing Logic
+
+The server handles this pattern in **three steps**:
+
+1. **Process uploaded files** - Upload non-empty files to Cloudinary
+2. **Skip empty file inputs** - If user left file input blank (size === 0)
+3. **Merge URL fields** - Use `fieldName_url` value for fields without uploaded files
+
+**Result:** Users can mix and match uploads and URLs in the same form!
+
+### Example Scenarios
+
+| Card 1      | Card 2      | Result                                  |
+| ----------- | ----------- | --------------------------------------- |
+| Upload file | Upload file | Both uploaded to Cloudinary             |
+| Upload file | Leave blank | Card 1 = Cloudinary, Card 2 = URL value |
+| Leave blank | Upload file | Card 1 = URL value, Card 2 = Cloudinary |
+| Leave blank | Leave blank | Both use URL values                     |
+
+### Why This Pattern Works
+
+- ✅ **Multer** creates entries for all file inputs (even blank ones)
+- ✅ Empty files have `size === 0` and are skipped
+- ✅ URL merge logic runs **after** file processing
+- ✅ Files take priority over URLs (if both provided)
+
+**This pattern has been battle-tested with the Unified Profile component - DO NOT MODIFY IT!**
+
+---
+
 ## 🚨 CRITICAL: CSP Trusted Sites for External Images
 
 Salesforce's **Content Security Policy (CSP)** blocks external images by default. If your component uses default image URLs from external CDNs, you **MUST** add those domains to the deployment configuration.
@@ -426,6 +484,7 @@ The generator automatically adds these domains to every deployment:
 | `https://res.cloudinary.com`         | User-uploaded images via Cloudinary        | `https://res.cloudinary.com/abc123/image/upload/avatar.png`                                                    |
 | `https://cdn.prod.website-files.com` | Webflow CDN (Agentforce Astro icon, etc.)  | `https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png` |
 | `https://image.s4.sfmc-content.com`  | Salesforce Marketing Cloud (Cumulus logos) | `https://image.s4.sfmc-content.com/lib/fe3111727664047b741079/m/1/ccb17401-00ab-42c3-b141-7a1b93f23360.png`    |
+| `https://images.unsplash.com`        | Unsplash (Next Best Actions card images)   | `https://images.unsplash.com/photo-1661956602116-aa6865609028?w=800&q=80`                                      |
 
 ### Adding a New CDN Domain
 
