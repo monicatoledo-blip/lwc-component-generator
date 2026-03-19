@@ -127,12 +127,22 @@ app.post("/generate", upload.any(), async (req, res) => {
 
     // Merge URL fields for any image fields that weren't uploaded
     // Pattern: if fieldName_url exists and fieldName is empty, use the URL
+    console.log("🔍 Checking for URL fields...");
+    console.log("📋 Form data keys:", Object.keys(formData));
     Object.keys(formData).forEach((key) => {
       if (key.endsWith("_url")) {
         const baseFieldName = key.replace("_url", "");
+        console.log(`   Found ${key} = ${formData[key]}`);
+        console.log(
+          `   Current ${baseFieldName} value = ${templateData[baseFieldName]}`
+        );
         if (!templateData[baseFieldName] && formData[key]) {
           templateData[baseFieldName] = formData[key];
-          console.log(`📎 Using URL for ${baseFieldName}: ${formData[key]}`);
+          console.log(`✅ Using URL for ${baseFieldName}: ${formData[key]}`);
+        } else if (templateData[baseFieldName]) {
+          console.log(
+            `⏭️  Skipping ${baseFieldName} - already has value (file uploaded)`
+          );
         }
       }
     });
@@ -262,12 +272,47 @@ function getCallbackUrl(req) {
   return `${protocol}://${host}/oauth2/callback`;
 }
 
-// Helper function to create CspTrustedSite metadata XML - LEGACY FORMAT
-function createCspTrustedSiteXml() {
+// =====================================================================
+// CSP TRUSTED SITES - FUTURE COMPONENT DEVELOPERS READ THIS!
+// =====================================================================
+// When adding new LWC components with external images, you MUST:
+// 1. Identify the CDN domain(s) used for default images in the form
+// 2. Create a new helper function below for that domain
+// 3. Add the member name to the package.xml (search "CspTrustedSite")
+// 4. Add the cspFolder.file() call in the /deploy endpoint
+//
+// Current trusted domains:
+// - res.cloudinary.com (uploaded images)
+// - cdn.prod.website-files.com (Webflow CDN - Agentforce Astro icon)
+// - image.s4.sfmc-content.com (Salesforce Marketing Cloud - Cumulus logos)
+// =====================================================================
+
+// Helper function to create Cloudinary CSP Trusted Site
+function createCloudinaryCspXml() {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
     <context>All</context>
     <endpointUrl>https://res.cloudinary.com</endpointUrl>
+    <isActive>true</isActive>
+</CspTrustedSite>`;
+}
+
+// Helper function to create Webflow CDN CSP Trusted Site
+function createWebflowCspXml() {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
+    <context>All</context>
+    <endpointUrl>https://cdn.prod.website-files.com</endpointUrl>
+    <isActive>true</isActive>
+</CspTrustedSite>`;
+}
+
+// Helper function to create Salesforce Marketing Cloud CSP Trusted Site
+function createSfmcCspXml() {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
+    <context>All</context>
+    <endpointUrl>https://image.s4.sfmc-content.com</endpointUrl>
     <isActive>true</isActive>
 </CspTrustedSite>`;
 }
@@ -440,12 +485,22 @@ app.post("/deploy", upload.any(), async (req, res) => {
 
     // Merge URL fields for any image fields that weren't uploaded
     // Pattern: if fieldName_url exists and fieldName is empty, use the URL
+    console.log("🔍 Checking for URL fields...");
+    console.log("📋 Form data keys:", Object.keys(formData));
     Object.keys(formData).forEach((key) => {
       if (key.endsWith("_url")) {
         const baseFieldName = key.replace("_url", "");
+        console.log(`   Found ${key} = ${formData[key]}`);
+        console.log(
+          `   Current ${baseFieldName} value = ${templateData[baseFieldName]}`
+        );
         if (!templateData[baseFieldName] && formData[key]) {
           templateData[baseFieldName] = formData[key];
-          console.log(`📎 Using URL for ${baseFieldName}: ${formData[key]}`);
+          console.log(`✅ Using URL for ${baseFieldName}: ${formData[key]}`);
+        } else if (templateData[baseFieldName]) {
+          console.log(
+            `⏭️  Skipping ${baseFieldName} - already has value (file uploaded)`
+          );
         }
       }
     });
@@ -488,6 +543,7 @@ app.post("/deploy", upload.any(), async (req, res) => {
     const metaCompiled = Handlebars.compile(metaTemplate)(templateData);
 
     // Create package.xml for Metadata API - HARDCODED EXACT XML
+    // NOTE: If adding new CSP domains, add them here AND create helper functions above
     const packageXml = `<?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
@@ -496,6 +552,8 @@ app.post("/deploy", upload.any(), async (req, res) => {
     </types>
     <types>
         <members>Cloudinary_CDN</members>
+        <members>Webflow_CDN</members>
+        <members>SFMC_CDN</members>
         <name>CspTrustedSite</name>
     </types>
     <version>60.0</version>
@@ -515,13 +573,19 @@ app.post("/deploy", upload.any(), async (req, res) => {
     lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
 
     // Add CspTrustedSite metadata - ALWAYS INCLUDED
+    // NOTE: If adding new CSP domains, add them here AND update package.xml above
     const cspFolder = zip.folder("cspTrustedSites");
     cspFolder.file(
       "Cloudinary_CDN.cspTrustedSite-meta.xml",
-      createCspTrustedSiteXml()
+      createCloudinaryCspXml()
     );
+    cspFolder.file(
+      "Webflow_CDN.cspTrustedSite-meta.xml",
+      createWebflowCspXml()
+    );
+    cspFolder.file("SFMC_CDN.cspTrustedSite-meta.xml", createSfmcCspXml());
     console.log(
-      "📋 Added CSP Trusted Site for Cloudinary to deployment package"
+      "📋 Added CSP Trusted Sites (Cloudinary + Webflow + SFMC) to deployment package"
     );
 
     // Generate ZIP as base64

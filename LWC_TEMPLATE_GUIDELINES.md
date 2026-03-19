@@ -409,6 +409,92 @@ Before deploying a new LWC template, verify:
 - [ ] Metadata XML exposes all customizable properties
 - [ ] API version is set to `60.0` in metadata
 - [ ] Default property values in metadata match fallback colors in JS
+- [ ] **NEW REQUIREMENT**: All external image CDN domains are added to CSP Trusted Sites (see below)
+
+---
+
+## 🚨 CRITICAL: CSP Trusted Sites for External Images
+
+Salesforce's **Content Security Policy (CSP)** blocks external images by default. If your component uses default image URLs from external CDNs, you **MUST** add those domains to the deployment configuration.
+
+### Currently Trusted Domains
+
+The generator automatically adds these domains to every deployment:
+
+| Domain                               | Purpose                                    | Example URL                                                                                                    |
+| ------------------------------------ | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------- |
+| `https://res.cloudinary.com`         | User-uploaded images via Cloudinary        | `https://res.cloudinary.com/abc123/image/upload/avatar.png`                                                    |
+| `https://cdn.prod.website-files.com` | Webflow CDN (Agentforce Astro icon, etc.)  | `https://cdn.prod.website-files.com/62ab14c60bfc7da7685ed1fb/68496baad8a54a4d16a18868_Agentforce-RGB-icon.png` |
+| `https://image.s4.sfmc-content.com`  | Salesforce Marketing Cloud (Cumulus logos) | `https://image.s4.sfmc-content.com/lib/fe3111727664047b741079/m/1/ccb17401-00ab-42c3-b141-7a1b93f23360.png`    |
+
+### Adding a New CDN Domain
+
+If you're adding a new component with images from a **new external CDN**, follow these steps:
+
+#### 1. Create a CSP Helper Function in `server.js`
+
+Find the CSP helper functions section (search for "CSP TRUSTED SITES") and add:
+
+```javascript
+// Helper function to create YourCDN CSP Trusted Site
+function createYourCdnCspXml() {
+  return `<?xml version="1.0" encoding="UTF-8"?>
+<CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
+    <context>All</context>
+    <endpointUrl>https://your-cdn-domain.com</endpointUrl>
+    <isActive>true</isActive>
+</CspTrustedSite>`;
+}
+```
+
+#### 2. Add to `package.xml`
+
+In the `/deploy` endpoint, find the `packageXml` constant and add your CDN member:
+
+```xml
+<types>
+    <members>Cloudinary_CDN</members>
+    <members>Webflow_CDN</members>
+    <members>SFMC_CDN</members>
+    <members>YourCDN_Name</members>  <!-- ADD THIS -->
+    <name>CspTrustedSite</name>
+</types>
+```
+
+#### 3. Add to Deployment ZIP
+
+Find the section that creates CSP files and add:
+
+```javascript
+cspFolder.file("YourCDN_Name.cspTrustedSite-meta.xml", createYourCdnCspXml());
+```
+
+#### 4. Update Console Log
+
+Update the log message to include your new CDN:
+
+```javascript
+console.log(
+  "📋 Added CSP Trusted Sites (Cloudinary + Webflow + SFMC + YourCDN) to deployment package"
+);
+```
+
+### Symptoms of Missing CSP Configuration
+
+If you forget to add a CSP Trusted Site, you'll see:
+
+- ✅ The URL appears correctly in Lightning App Builder component properties
+- ❌ The image doesn't display on the page (blank space or broken image icon)
+- 🔍 Browser console shows: `Refused to load the image ... because it violates the following Content Security Policy directive`
+
+### Testing CSP Configuration
+
+After deployment:
+
+1. Open the component in Lightning App Builder
+2. Right-click → **Inspect Element**
+3. Check the **Console** tab for CSP errors
+4. Verify the image loads correctly in the preview
 
 ---
 
@@ -436,7 +522,8 @@ When adding **new components**, always:
 
 ## Related Files in Generator
 
-- **Server**: `/server.js` - Handles Handlebars compilation and zip generation
+- **Server**: `/server.js` - Handles Handlebars compilation, zip generation, and CSP configuration
+  - Search for "CSP TRUSTED SITES" to find helper functions for adding new CDN domains
 - **Frontend**: `/public/index.html` - Form inputs for all properties
 - **Preview**: `/public/script.js` - Live preview update logic
 - **Styles**: `/public/styles.css` - Generator UI styling (not LWC styles)
@@ -455,11 +542,12 @@ If a component renders with **transparent backgrounds** or **missing colors** in
 For **broken image URLs**:
 
 1. Verify `src={property}` syntax (no quotes, no braces)
-2. Check CSP Trusted Site is configured for external image domains
-3. Ensure Cloudinary uploads succeeded (check server logs)
+2. **Check CSP Trusted Sites** - See "CSP Trusted Sites for External Images" section above
+3. Ensure the image CDN domain is added to `server.js` helper functions
+4. Verify Cloudinary uploads succeeded (check server logs for upload errors)
 
 ---
 
-**Last Updated**: March 17, 2026
+**Last Updated**: March 18, 2026
 **LWC Generator Version**: 1.0
 **Salesforce API Version**: 60.0
