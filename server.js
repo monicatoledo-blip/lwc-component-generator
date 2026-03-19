@@ -609,6 +609,11 @@ app.post("/deploy", upload.any(), async (req, res) => {
     });
 
     // Connect to Salesforce with stored credentials
+    console.log("🔗 Connecting to Salesforce...");
+    console.log("   Instance URL:", req.session.instanceUrl);
+    console.log("   Access Token exists:", !!req.session.accessToken);
+    console.log("   Refresh Token exists:", !!req.session.refreshToken);
+
     const conn = new jsforce.Connection({
       oauth2,
       instanceUrl: req.session.instanceUrl,
@@ -617,13 +622,32 @@ app.post("/deploy", upload.any(), async (req, res) => {
       version: "60.0"
     });
 
+    // Test the connection before deploying
+    try {
+      const identity = await conn.identity();
+      console.log("✅ Connection verified, user:", identity.username);
+    } catch (identityError) {
+      console.error("❌ Connection test failed:", identityError);
+      return res.status(401).json({
+        error: "Authentication failed",
+        message: "Your Salesforce session may have expired. Please reconnect."
+      });
+    }
+
     // Deploy using Metadata API
     console.log("🚀 Starting deployment to Salesforce...");
 
-    const deployResult = await conn.metadata.deploy(zipBase64, {
-      rollbackOnError: true,
-      singlePackage: true
-    });
+    let deployResult;
+    try {
+      deployResult = await conn.metadata.deploy(zipBase64, {
+        rollbackOnError: true,
+        singlePackage: true
+      });
+      console.log("✅ Deploy call succeeded, deploy ID:", deployResult.id);
+    } catch (deployError) {
+      console.error("❌ Deploy call failed:", deployError);
+      throw new Error(`Failed to initiate deployment: ${deployError.message}`);
+    }
 
     // Poll for deployment status
     const deployId = deployResult.id;
@@ -634,7 +658,20 @@ app.post("/deploy", upload.any(), async (req, res) => {
     while (pollCount < maxPolls) {
       await new Promise((resolve) => setTimeout(resolve, 5000)); // Wait 5 seconds
 
-      deployStatus = await conn.metadata.checkDeployStatus(deployId, true);
+      try {
+        deployStatus = await conn.metadata.checkDeployStatus(deployId, true);
+        console.log(
+          `📊 Poll ${pollCount + 1}: Status = ${deployStatus.status}, Done = ${deployStatus.done}`
+        );
+      } catch (statusError) {
+        console.error(
+          `❌ Status check failed on poll ${pollCount + 1}:`,
+          statusError
+        );
+        throw new Error(
+          `Failed to check deployment status: ${statusError.message}`
+        );
+      }
 
       if (deployStatus.done === "true" || deployStatus.done === true) {
         break;
