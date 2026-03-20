@@ -229,6 +229,15 @@ function updateAuthUI() {
   });
 }
 
+/** Palette label shown in Lightning / Experience Builder (not the LWC folder name). */
+const SALESFORCE_COMPONENT_PALETTE_LABELS = {
+  unifiedProfileLwc: "Unified Profile",
+  agentforceLeadBriefLwc: "Agentforce Lead Brief (Custom)",
+  nextBestActionsLwc: "Next Best Actions (Custom)",
+  nextBestLeadsLwc: "Next Best Leads (Custom)",
+  engagementHistoryLwc: "Engagement History (Mock)"
+};
+
 // Handle deployment
 async function handleDeploy(buttonElement) {
   // Check if authenticated
@@ -300,8 +309,11 @@ async function handleDeploy(buttonElement) {
       // Clear saved form state after successful deployment
       clearFormState();
 
+      const paletteLabel =
+        SALESFORCE_COMPONENT_PALETTE_LABELS[result.componentName] ||
+        result.componentName;
       showNotification(
-        `✅ Success! ${result.componentName} deployed to Salesforce!`,
+        `✅ Success! In Salesforce, look for "${paletteLabel}" under Custom in App Builder (not the technical name ${result.componentName}).`,
         "success"
       );
 
@@ -605,7 +617,8 @@ document.addEventListener("DOMContentLoaded", () => {
       agentforceBriefContainer.style.display !== "none";
     const isNbaActive = nextBestActionsContainer.style.display !== "none";
     const isNblActive = nextBestLeadsContainer.style.display !== "none";
-    const isEhActiveScroll = engagementHistoryContainer.style.display !== "none";
+    const isEhActiveScroll =
+      engagementHistoryContainer.style.display !== "none";
 
     // Get visible sections only
     const visibleSections = Array.from(
@@ -832,7 +845,9 @@ document.addEventListener("DOMContentLoaded", () => {
   updateNblPreview();
 
   // Setup Engagement History preview updates
-  const engagementHistoryForm = document.getElementById("engagementHistoryForm");
+  const engagementHistoryForm = document.getElementById(
+    "engagementHistoryForm"
+  );
   const ehInputs = engagementHistoryForm.querySelectorAll("input, textarea");
 
   ehInputs.forEach((input) => {
@@ -1204,9 +1219,12 @@ function updateEngagementHistoryPreview() {
   const previewDateRange = document.getElementById("previewEhDateRange");
   const previewCampaign = document.getElementById("previewEhCampaign");
   const previewContentType = document.getElementById("previewEhContentType");
-  if (data.dateRangeLabel && previewDateRange) previewDateRange.textContent = data.dateRangeLabel;
-  if (data.campaignLabel && previewCampaign) previewCampaign.textContent = data.campaignLabel;
-  if (data.contentTypeLabel && previewContentType) previewContentType.textContent = data.contentTypeLabel;
+  if (data.dateRangeLabel && previewDateRange)
+    previewDateRange.textContent = data.dateRangeLabel;
+  if (data.campaignLabel && previewCampaign)
+    previewCampaign.textContent = data.campaignLabel;
+  if (data.contentTypeLabel && previewContentType)
+    previewContentType.textContent = data.contentTypeLabel;
 
   // Colors
   const lineColor = data.lineChartColor || "#1B96FF";

@@ -38,9 +38,7 @@
             </option>
             <option value="nextBestActionsLwc">Next Best Actions</option>
             <option value="nextBestLeadsLwc">Next Best Leads</option>
-            <option value="engagementHistoryLwc">
-              Engagement History
-            </option>
+            <option value="engagementHistoryLwc">Engagement History</option>
           </select>
         </div>
         <div class="control-bar-right">
@@ -2161,9 +2159,32 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
           <section id="eh-create" class="page-section">
             <h2 class="section-title">Create Component</h2>
             <p class="section-guidance">
-              Configure your Unified Engagement History dashboard below. Watch the
-              Live Preview update in real-time to match your demo story.
+              Configure your Unified Engagement History dashboard below. Watch
+              the Live Preview update in real-time to match your demo story.
             </p>
+
+            <div
+              class="eh-salesforce-hint"
+              style="
+                margin: 0 0 20px;
+                padding: 14px 16px;
+                background: #f3f9ff;
+                border: 1px solid #b9d9f7;
+                border-radius: 8px;
+                font-size: 14px;
+                line-height: 1.5;
+                color: #181818;
+              "
+            >
+              <strong>Where to find it in Salesforce:</strong> After you deploy,
+              open <strong>Lightning App Builder</strong> (or
+              <strong>Experience Builder</strong> for a site), scroll to
+              <strong>Custom</strong> components, and add
+              <strong>Engagement History (Mock)</strong>. That is the name in
+              the palette—not <code>engagementHistoryLwc</code>. Use the builder
+              search box if you don’t see it right away. Full steps are under
+              <strong>Deploy</strong> in the sidebar (Step&nbsp;3).
+            </div>
 
             <!-- Authentication Notice -->
             <div class="auth-notice" style="display: none">
@@ -2343,37 +2364,64 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
               <!-- Campaign Chart Data -->
               <section class="form-section">
                 <h2>Campaign Chart Data</h2>
-                <p style="color: #666; font-size: 13px; margin-bottom: 12px;">
+                <p style="color: #666; font-size: 13px; margin-bottom: 12px">
                   Configure the bar chart data for Most Engaged Campaigns.
                 </p>
                 <div class="form-row">
                   <div class="form-group">
                     <label>Campaign 1 Name</label>
-                    <input type="text" name="campaign1Name" value="My 1st Campaign" />
+                    <input
+                      type="text"
+                      name="campaign1Name"
+                      value="My 1st Campaign"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Campaign 1 Value</label>
-                    <input type="number" name="campaign1Value" value="14" min="0" />
+                    <input
+                      type="number"
+                      name="campaign1Value"
+                      value="14"
+                      min="0"
+                    />
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group">
                     <label>Campaign 2 Name</label>
-                    <input type="text" name="campaign2Name" value="Nurture Campaign" />
+                    <input
+                      type="text"
+                      name="campaign2Name"
+                      value="Nurture Campaign"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Campaign 2 Value</label>
-                    <input type="number" name="campaign2Value" value="8" min="0" />
+                    <input
+                      type="number"
+                      name="campaign2Value"
+                      value="8"
+                      min="0"
+                    />
                   </div>
                 </div>
                 <div class="form-row">
                   <div class="form-group">
                     <label>Campaign 3 Name</label>
-                    <input type="text" name="campaign3Name" value="Product Launch" />
+                    <input
+                      type="text"
+                      name="campaign3Name"
+                      value="Product Launch"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Campaign 3 Value</label>
-                    <input type="number" name="campaign3Value" value="5" min="0" />
+                    <input
+                      type="number"
+                      name="campaign3Value"
+                      value="5"
+                      min="0"
+                    />
                   </div>
                 </div>
               </section>
@@ -2381,13 +2429,17 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
               <!-- Asset Chart Data -->
               <section class="form-section">
                 <h2>Asset Chart Data</h2>
-                <p style="color: #666; font-size: 13px; margin-bottom: 12px;">
+                <p style="color: #666; font-size: 13px; margin-bottom: 12px">
                   Configure the bar chart data for Most Engaged Assets.
                 </p>
                 <div class="form-row">
                   <div class="form-group">
                     <label>Asset 1 Name</label>
-                    <input type="text" name="asset1Name" value="Email_20260209_073552" />
+                    <input
+                      type="text"
+                      name="asset1Name"
+                      value="Email_20260209_073552"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Asset 1 Value</label>
@@ -2397,7 +2449,11 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                 <div class="form-row">
                   <div class="form-group">
                     <label>Asset 2 Name</label>
-                    <input type="text" name="asset2Name" value="Progressive Profiling Mail" />
+                    <input
+                      type="text"
+                      name="asset2Name"
+                      value="Progressive Profiling Mail"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Asset 2 Value</label>
@@ -2407,7 +2463,11 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                 <div class="form-row">
                   <div class="form-group">
                     <label>Asset 3 Name</label>
-                    <input type="text" name="asset3Name" value="Progressive Profiling Landing Page" />
+                    <input
+                      type="text"
+                      name="asset3Name"
+                      value="Progressive Profiling Landing Page"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Asset 3 Value</label>
@@ -2417,7 +2477,11 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                 <div class="form-row">
                   <div class="form-group">
                     <label>Asset 4 Name</label>
-                    <input type="text" name="asset4Name" value="Progressive Profiling LP" />
+                    <input
+                      type="text"
+                      name="asset4Name"
+                      value="Progressive Profiling LP"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Asset 4 Value</label>
@@ -2429,67 +2493,219 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
               <!-- Table Data -->
               <section class="form-section">
                 <h2>Table Data</h2>
-                <p style="color: #666; font-size: 13px; margin-bottom: 12px;">
+                <p style="color: #666; font-size: 13px; margin-bottom: 12px">
                   Configure the data rows for the engagement activity table.
                 </p>
                 <!-- Row 1 -->
                 <div class="form-row">
-                  <div class="form-group"><label>Row 1 Asset</label><input type="text" name="row1Asset" value="Progressive Profiling Mail" /></div>
-                  <div class="form-group"><label>Content Type</label><input type="text" name="row1ContentType" value="Email" /></div>
-                  <div class="form-group"><label>Activity</label><input type="text" name="row1ActivityType" value="Email Click" /></div>
+                  <div class="form-group">
+                    <label>Row 1 Asset</label
+                    ><input
+                      type="text"
+                      name="row1Asset"
+                      value="Progressive Profiling Mail"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Content Type</label
+                    ><input type="text" name="row1ContentType" value="Email" />
+                  </div>
+                  <div class="form-group">
+                    <label>Activity</label
+                    ><input
+                      type="text"
+                      name="row1ActivityType"
+                      value="Email Click"
+                    />
+                  </div>
                 </div>
                 <div class="form-row">
-                  <div class="form-group"><label>Campaign</label><input type="text" name="row1Campaign" value="My 1st Campaign" /></div>
-                  <div class="form-group"><label>Date</label><input type="text" name="row1Date" value="2026/2/23 10:33" /></div>
+                  <div class="form-group">
+                    <label>Campaign</label
+                    ><input
+                      type="text"
+                      name="row1Campaign"
+                      value="My 1st Campaign"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Date</label
+                    ><input
+                      type="text"
+                      name="row1Date"
+                      value="2026/2/23 10:33"
+                    />
+                  </div>
                 </div>
                 <!-- Row 2 -->
                 <div class="form-row">
-                  <div class="form-group"><label>Row 2 Asset</label><input type="text" name="row2Asset" value="Progressive Profiling Mail" /></div>
-                  <div class="form-group"><label>Content Type</label><input type="text" name="row2ContentType" value="Email" /></div>
-                  <div class="form-group"><label>Activity</label><input type="text" name="row2ActivityType" value="Email Open" /></div>
+                  <div class="form-group">
+                    <label>Row 2 Asset</label
+                    ><input
+                      type="text"
+                      name="row2Asset"
+                      value="Progressive Profiling Mail"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Content Type</label
+                    ><input type="text" name="row2ContentType" value="Email" />
+                  </div>
+                  <div class="form-group">
+                    <label>Activity</label
+                    ><input
+                      type="text"
+                      name="row2ActivityType"
+                      value="Email Open"
+                    />
+                  </div>
                 </div>
                 <div class="form-row">
-                  <div class="form-group"><label>Campaign</label><input type="text" name="row2Campaign" value="My 1st Campaign" /></div>
-                  <div class="form-group"><label>Date</label><input type="text" name="row2Date" value="2026/2/23 10:33" /></div>
+                  <div class="form-group">
+                    <label>Campaign</label
+                    ><input
+                      type="text"
+                      name="row2Campaign"
+                      value="My 1st Campaign"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Date</label
+                    ><input
+                      type="text"
+                      name="row2Date"
+                      value="2026/2/23 10:33"
+                    />
+                  </div>
                 </div>
                 <!-- Row 3 -->
                 <div class="form-row">
-                  <div class="form-group"><label>Row 3 Asset</label><input type="text" name="row3Asset" value="Progressive Profiling Mail" /></div>
-                  <div class="form-group"><label>Content Type</label><input type="text" name="row3ContentType" value="Email" /></div>
-                  <div class="form-group"><label>Activity</label><input type="text" name="row3ActivityType" value="Email Open" /></div>
+                  <div class="form-group">
+                    <label>Row 3 Asset</label
+                    ><input
+                      type="text"
+                      name="row3Asset"
+                      value="Progressive Profiling Mail"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Content Type</label
+                    ><input type="text" name="row3ContentType" value="Email" />
+                  </div>
+                  <div class="form-group">
+                    <label>Activity</label
+                    ><input
+                      type="text"
+                      name="row3ActivityType"
+                      value="Email Open"
+                    />
+                  </div>
                 </div>
                 <div class="form-row">
-                  <div class="form-group"><label>Campaign</label><input type="text" name="row3Campaign" value="My 1st Campaign" /></div>
-                  <div class="form-group"><label>Date</label><input type="text" name="row3Date" value="2026/2/23 10:33" /></div>
+                  <div class="form-group">
+                    <label>Campaign</label
+                    ><input
+                      type="text"
+                      name="row3Campaign"
+                      value="My 1st Campaign"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Date</label
+                    ><input
+                      type="text"
+                      name="row3Date"
+                      value="2026/2/23 10:33"
+                    />
+                  </div>
                 </div>
                 <!-- Row 4 -->
                 <div class="form-row">
-                  <div class="form-group"><label>Row 4 Asset</label><input type="text" name="row4Asset" value="Progressive Profiling Mail" /></div>
-                  <div class="form-group"><label>Content Type</label><input type="text" name="row4ContentType" value="Email" /></div>
-                  <div class="form-group"><label>Activity</label><input type="text" name="row4ActivityType" value="Email Open" /></div>
+                  <div class="form-group">
+                    <label>Row 4 Asset</label
+                    ><input
+                      type="text"
+                      name="row4Asset"
+                      value="Progressive Profiling Mail"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Content Type</label
+                    ><input type="text" name="row4ContentType" value="Email" />
+                  </div>
+                  <div class="form-group">
+                    <label>Activity</label
+                    ><input
+                      type="text"
+                      name="row4ActivityType"
+                      value="Email Open"
+                    />
+                  </div>
                 </div>
                 <div class="form-row">
-                  <div class="form-group"><label>Campaign</label><input type="text" name="row4Campaign" value="My 1st Campaign" /></div>
-                  <div class="form-group"><label>Date</label><input type="text" name="row4Date" value="2026/2/23 10:33" /></div>
+                  <div class="form-group">
+                    <label>Campaign</label
+                    ><input
+                      type="text"
+                      name="row4Campaign"
+                      value="My 1st Campaign"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Date</label
+                    ><input
+                      type="text"
+                      name="row4Date"
+                      value="2026/2/23 10:33"
+                    />
+                  </div>
                 </div>
                 <!-- Row 5 -->
                 <div class="form-row">
-                  <div class="form-group"><label>Row 5 Asset</label><input type="text" name="row5Asset" value="Email_20260209_073552" /></div>
-                  <div class="form-group"><label>Content Type</label><input type="text" name="row5ContentType" value="Email" /></div>
-                  <div class="form-group"><label>Activity</label><input type="text" name="row5ActivityType" value="Email Click" /></div>
+                  <div class="form-group">
+                    <label>Row 5 Asset</label
+                    ><input
+                      type="text"
+                      name="row5Asset"
+                      value="Email_20260209_073552"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Content Type</label
+                    ><input type="text" name="row5ContentType" value="Email" />
+                  </div>
+                  <div class="form-group">
+                    <label>Activity</label
+                    ><input
+                      type="text"
+                      name="row5ActivityType"
+                      value="Email Click"
+                    />
+                  </div>
                 </div>
                 <div class="form-row">
-                  <div class="form-group"><label>Campaign</label><input type="text" name="row5Campaign" value="My 1st Campaign" /></div>
-                  <div class="form-group"><label>Date</label><input type="text" name="row5Date" value="2026/2/23 10:33" /></div>
+                  <div class="form-group">
+                    <label>Campaign</label
+                    ><input
+                      type="text"
+                      name="row5Campaign"
+                      value="My 1st Campaign"
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Date</label
+                    ><input
+                      type="text"
+                      name="row5Date"
+                      value="2026/2/23 10:33"
+                    />
+                  </div>
                 </div>
               </section>
 
               <!-- Deploy Button -->
               <div class="button-group">
-                <button
-                  type="button"
-                  class="deploy-btn deploy-btn-primary"
-                >
+                <button type="button" class="deploy-btn deploy-btn-primary">
                   🔐 Connect to Salesforce
                 </button>
               </div>
@@ -2499,68 +2715,298 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
           <!-- Section: Live Preview -->
           <section id="eh-preview" class="page-section">
             <h2 class="section-title">Live Preview</h2>
-            <div class="eh-preview-wrapper" style="background: #f3f3f3; border-radius: 8px; padding: 16px;">
-              <div class="eh-preview-card" id="ehPreviewCard" style="background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; overflow: hidden;">
+            <div
+              class="eh-preview-wrapper"
+              style="background: #f3f3f3; border-radius: 8px; padding: 16px"
+            >
+              <div
+                class="eh-preview-card"
+                id="ehPreviewCard"
+                style="
+                  background: #fff;
+                  border: 1px solid #e5e5e5;
+                  border-radius: 8px;
+                  font-family:
+                    -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;,
+                    Roboto, sans-serif;
+                  overflow: hidden;
+                "
+              >
                 <!-- Header -->
-                <div class="eh-preview-header" style="display: flex; align-items: center; padding: 12px 16px; border-bottom: 1px solid #e5e5e5;">
-                  <svg width="24" height="24" viewBox="0 0 24 24" style="margin-right: 10px;">
-                    <rect width="24" height="24" rx="4" fill="#0176D3"/>
-                    <path d="M6 8h12M6 12h8M6 16h10" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/>
+                <div
+                  class="eh-preview-header"
+                  style="
+                    display: flex;
+                    align-items: center;
+                    padding: 12px 16px;
+                    border-bottom: 1px solid #e5e5e5;
+                  "
+                >
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    style="margin-right: 10px"
+                  >
+                    <rect width="24" height="24" rx="4" fill="#0176D3" />
+                    <path
+                      d="M6 8h12M6 12h8M6 16h10"
+                      stroke="#fff"
+                      stroke-width="1.5"
+                      stroke-linecap="round"
+                    />
                   </svg>
-                  <span id="previewEhCardTitle" style="font-size: 16px; font-weight: 700; color: #181818;">Contact Engagement History</span>
+                  <span
+                    id="previewEhCardTitle"
+                    style="font-size: 16px; font-weight: 700; color: #181818"
+                    >Contact Engagement History</span
+                  >
                 </div>
                 <!-- Filter Bar -->
-                <div style="display: flex; gap: 16px; padding: 10px 16px; background: #f3f3f3; border-bottom: 1px solid #e5e5e5; flex-wrap: wrap;">
-                  <div style="flex: 1; min-width: 100px;">
-                    <div style="font-size: 11px; color: #706e6b; margin-bottom: 2px;">Date Range</div>
-                    <div id="previewEhDateRange" style="font-size: 12px; padding: 4px 8px; background: #fff; border: 1px solid #d8dde6; border-radius: 4px;">Last 7 Days</div>
+                <div
+                  style="
+                    display: flex;
+                    gap: 16px;
+                    padding: 10px 16px;
+                    background: #f3f3f3;
+                    border-bottom: 1px solid #e5e5e5;
+                    flex-wrap: wrap;
+                  "
+                >
+                  <div style="flex: 1; min-width: 100px">
+                    <div
+                      style="
+                        font-size: 11px;
+                        color: #706e6b;
+                        margin-bottom: 2px;
+                      "
+                    >
+                      Date Range
+                    </div>
+                    <div
+                      id="previewEhDateRange"
+                      style="
+                        font-size: 12px;
+                        padding: 4px 8px;
+                        background: #fff;
+                        border: 1px solid #d8dde6;
+                        border-radius: 4px;
+                      "
+                    >
+                      Last 7 Days
+                    </div>
                   </div>
-                  <div style="flex: 1; min-width: 100px;">
-                    <div style="font-size: 11px; color: #706e6b; margin-bottom: 2px;">Campaign</div>
-                    <div id="previewEhCampaign" style="font-size: 12px; padding: 4px 8px; background: #fff; border: 1px solid #d8dde6; border-radius: 4px;">All</div>
+                  <div style="flex: 1; min-width: 100px">
+                    <div
+                      style="
+                        font-size: 11px;
+                        color: #706e6b;
+                        margin-bottom: 2px;
+                      "
+                    >
+                      Campaign
+                    </div>
+                    <div
+                      id="previewEhCampaign"
+                      style="
+                        font-size: 12px;
+                        padding: 4px 8px;
+                        background: #fff;
+                        border: 1px solid #d8dde6;
+                        border-radius: 4px;
+                      "
+                    >
+                      All
+                    </div>
                   </div>
-                  <div style="flex: 1; min-width: 100px;">
-                    <div style="font-size: 11px; color: #706e6b; margin-bottom: 2px;">Content Type</div>
-                    <div id="previewEhContentType" style="font-size: 12px; padding: 4px 8px; background: #fff; border: 1px solid #d8dde6; border-radius: 4px;">All</div>
+                  <div style="flex: 1; min-width: 100px">
+                    <div
+                      style="
+                        font-size: 11px;
+                        color: #706e6b;
+                        margin-bottom: 2px;
+                      "
+                    >
+                      Content Type
+                    </div>
+                    <div
+                      id="previewEhContentType"
+                      style="
+                        font-size: 12px;
+                        padding: 4px 8px;
+                        background: #fff;
+                        border: 1px solid #d8dde6;
+                        border-radius: 4px;
+                      "
+                    >
+                      All
+                    </div>
                   </div>
                 </div>
                 <!-- Charts Section -->
-                <div style="padding: 16px;">
+                <div style="padding: 16px">
                   <!-- Side-by-side charts -->
-                  <div style="display: flex; gap: 12px; margin-bottom: 12px;">
+                  <div style="display: flex; gap: 12px; margin-bottom: 12px">
                     <!-- Engagement Over Time -->
-                    <div style="flex: 1; border: 1px solid #e5e5e5; border-radius: 8px; background: #fff; padding: 12px;">
-                      <div style="font-size: 13px; font-weight: 700; color: #181818; margin-bottom: 8px;">Engagement Over Time</div>
-                      <div style="position: relative; height: 120px;">
-                        <canvas id="previewEhLineChart" width="300" height="120"></canvas>
+                    <div
+                      style="
+                        flex: 1;
+                        border: 1px solid #e5e5e5;
+                        border-radius: 8px;
+                        background: #fff;
+                        padding: 12px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 13px;
+                          font-weight: 700;
+                          color: #181818;
+                          margin-bottom: 8px;
+                        "
+                      >
+                        Engagement Over Time
+                      </div>
+                      <div style="position: relative; height: 120px">
+                        <canvas
+                          id="previewEhLineChart"
+                          width="300"
+                          height="120"
+                        ></canvas>
                       </div>
                     </div>
                     <!-- Most Engaged Campaigns -->
-                    <div style="flex: 1; border: 1px solid #e5e5e5; border-radius: 8px; background: #fff; padding: 12px;">
-                      <div style="font-size: 13px; font-weight: 700; color: #181818; margin-bottom: 4px;">Most Engaged Campaigns</div>
-                      <div id="previewEhCampaignBars" style="padding: 8px 0;">
+                    <div
+                      style="
+                        flex: 1;
+                        border: 1px solid #e5e5e5;
+                        border-radius: 8px;
+                        background: #fff;
+                        padding: 12px;
+                      "
+                    >
+                      <div
+                        style="
+                          font-size: 13px;
+                          font-weight: 700;
+                          color: #181818;
+                          margin-bottom: 4px;
+                        "
+                      >
+                        Most Engaged Campaigns
+                      </div>
+                      <div id="previewEhCampaignBars" style="padding: 8px 0">
                         <!-- Dynamically rendered campaign bars -->
                       </div>
                     </div>
                   </div>
                   <!-- Most Engaged Assets -->
-                  <div style="border: 1px solid #e5e5e5; border-radius: 8px; background: #fff; padding: 12px; margin-bottom: 12px;">
-                    <div style="font-size: 13px; font-weight: 700; color: #181818; margin-bottom: 4px;">Most Engaged Assets</div>
-                    <div id="previewEhAssetBars" style="padding: 8px 0;">
+                  <div
+                    style="
+                      border: 1px solid #e5e5e5;
+                      border-radius: 8px;
+                      background: #fff;
+                      padding: 12px;
+                      margin-bottom: 12px;
+                    "
+                  >
+                    <div
+                      style="
+                        font-size: 13px;
+                        font-weight: 700;
+                        color: #181818;
+                        margin-bottom: 4px;
+                      "
+                    >
+                      Most Engaged Assets
+                    </div>
+                    <div id="previewEhAssetBars" style="padding: 8px 0">
                       <!-- Dynamically rendered asset bars -->
                     </div>
                   </div>
                 </div>
                 <!-- Data Table -->
-                <div style="padding: 0 16px 16px;">
-                  <table id="previewEhTable" style="width: 100%; border-collapse: collapse; font-size: 12px;">
+                <div style="padding: 0 16px 16px">
+                  <table
+                    id="previewEhTable"
+                    style="
+                      width: 100%;
+                      border-collapse: collapse;
+                      font-size: 12px;
+                    "
+                  >
                     <thead>
-                      <tr style="background: #fafaf9;">
-                        <th style="text-align: left; padding: 8px 10px; color: #706e6b; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e5e5;">Asset Name</th>
-                        <th style="text-align: left; padding: 8px 10px; color: #706e6b; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e5e5;">Content Type</th>
-                        <th style="text-align: left; padding: 8px 10px; color: #706e6b; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e5e5;">Activity Type</th>
-                        <th style="text-align: left; padding: 8px 10px; color: #706e6b; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e5e5;">Campaign</th>
-                        <th style="text-align: left; padding: 8px 10px; color: #706e6b; font-weight: 600; font-size: 10px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e5e5e5;">Date</th>
+                      <tr style="background: #fafaf9">
+                        <th
+                          style="
+                            text-align: left;
+                            padding: 8px 10px;
+                            color: #706e6b;
+                            font-weight: 600;
+                            font-size: 10px;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            border-bottom: 1px solid #e5e5e5;
+                          "
+                        >
+                          Asset Name
+                        </th>
+                        <th
+                          style="
+                            text-align: left;
+                            padding: 8px 10px;
+                            color: #706e6b;
+                            font-weight: 600;
+                            font-size: 10px;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            border-bottom: 1px solid #e5e5e5;
+                          "
+                        >
+                          Content Type
+                        </th>
+                        <th
+                          style="
+                            text-align: left;
+                            padding: 8px 10px;
+                            color: #706e6b;
+                            font-weight: 600;
+                            font-size: 10px;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            border-bottom: 1px solid #e5e5e5;
+                          "
+                        >
+                          Activity Type
+                        </th>
+                        <th
+                          style="
+                            text-align: left;
+                            padding: 8px 10px;
+                            color: #706e6b;
+                            font-weight: 600;
+                            font-size: 10px;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            border-bottom: 1px solid #e5e5e5;
+                          "
+                        >
+                          Campaign
+                        </th>
+                        <th
+                          style="
+                            text-align: left;
+                            padding: 8px 10px;
+                            color: #706e6b;
+                            font-weight: 600;
+                            font-size: 10px;
+                            text-transform: uppercase;
+                            letter-spacing: 0.5px;
+                            border-bottom: 1px solid #e5e5e5;
+                          "
+                        >
+                          Date
+                        </th>
                       </tr>
                     </thead>
                     <tbody id="previewEhTableBody">
@@ -2593,11 +3039,11 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
           <div class="instruction-step">
             <h3>Step 2: Customize & Deploy</h3>
             <p>
-              Fill out the form with your desired text, colors, and upload your
-              image. Once you're ready, click
+              Fill out the form with your desired text, colors, and (for
+              components that use them) images. Once you're ready, click
               <strong>"Deploy to Salesforce"</strong>. The app will
-              automatically generate the code, upload your image to the cloud,
-              and push everything directly to your org.
+              automatically generate the code, upload files to the cloud when
+              applicable, and push everything directly to your org.
             </p>
           </div>
 
@@ -2620,13 +3066,21 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
               </li>
               <li>
                 Find the component in the Custom section. It will appear with
-                one of these labels:
+                one of these labels (use the builder search box if needed):
                 <ul style="margin-top: 8px; margin-left: 20px">
                   <li><strong>Unified Profile</strong></li>
                   <li><strong>Agentforce Lead Brief (Custom)</strong></li>
                   <li><strong>Next Best Actions (Custom)</strong></li>
                   <li><strong>Next Best Leads (Custom)</strong></li>
+                  <li><strong>Engagement History (Mock)</strong></li>
                 </ul>
+                <p style="margin-top: 10px; font-size: 14px; color: #3e3e3c">
+                  <strong>Note:</strong> Lightning App Builder shows this
+                  <em>label</em>, not the technical folder name (e.g.
+                  <code>engagementHistoryLwc</code>). Experience Cloud pages use
+                  the same label once the component is deployed with community
+                  targets.
+                </p>
                 Drag it onto the page canvas.
               </li>
               <li>
@@ -2671,10 +3125,10 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
               <p>
                 You don't always need to re-deploy to make updates. Because your
                 custom component is built with dynamic properties, you can
-                change things like text and hex colors right inside Salesforce!
-                Just click on your component while in the Lightning App Builder,
-                and use the properties panel on the right side of your screen to
-                make instant adjustments.
+                change things like text, colors, and (for Engagement History)
+                mock table and chart inputs right inside Salesforce! Select your
+                component in App Builder and use the properties panel on the
+                right.
               </p>
             </div>
           </div>

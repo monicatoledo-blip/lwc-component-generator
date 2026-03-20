@@ -89,11 +89,23 @@ The server will start and display:
 
 After deployment:
 
-1. Open Lightning App Builder
+1. Open Lightning App Builder (or Experience Builder for Experience Cloud sites)
 2. Edit a Record Page, App Page, or Home Page
-3. Find your component in the **Custom** section
+3. Find your component in the **Custom** section — use the **search** field if needed
 4. Drag it onto the page
 5. Save and activate
+
+**Palette labels (not the technical `*.js` bundle name):** Salesforce lists each component by its `masterLabel` from metadata. Look for:
+
+| You built this in the generator | Appears in Salesforce as           |
+| ------------------------------- | ---------------------------------- |
+| Unified Profile                 | **Unified Profile**                |
+| Agentforce Lead Brief           | **Agentforce Lead Brief (Custom)** |
+| Next Best Actions               | **Next Best Actions (Custom)**     |
+| Next Best Leads                 | **Next Best Leads (Custom)**       |
+| Engagement History              | **Engagement History (Mock)**      |
+
+The technical names (e.g. `engagementHistoryLwc`) do **not** show in the component list—search for the label in the table above.
 
 ## Deployment vs Download
 
