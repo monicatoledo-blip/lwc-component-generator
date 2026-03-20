@@ -1,7 +1,5 @@
-// engagementHistoryLwc.js — v2.0.0 fix-engagement-history
+// engagementHistoryLwc.js — v3.0.0 pure-CSS charts, zero external deps
 import { LightningElement, api } from "lwc";
-import { loadScript } from "lightning/platformResourceLoader";
-import ChartJs from "@salesforce/resourceUrl/ChartJs";
 
 const DATE_RANGE_OPTIONS = [
   { label: "All Time", value: "all" },
@@ -20,7 +18,7 @@ export default class EngagementHistoryLwc extends LightningElement {
   @api barChartColor = "#0070d2";
   @api assetBarColor = "#7b68ee";
 
-  // Campaign bar data (design-time values injected by generator)
+  // Campaign bar data
   @api campaign1Name = "";
   @api campaign1Value = "0";
   @api campaign2Name = "";
@@ -70,23 +68,14 @@ export default class EngagementHistoryLwc extends LightningElement {
   @api row5Date = "";
 
   // ── Internal state ─────────────────────────────────────────
-  chartJsLoaded = false;
-  chartLoadError = false;
-
   selectedDateRange = "all";
   selectedCampaign = "all";
   selectedContentType = "all";
 
-  lineChart = null;
-  campaignChart = null;
-  assetChart = null;
-
-  // Collapsible chart sections
   lineChartCollapsed = false;
   campaignChartCollapsed = false;
   assetChartCollapsed = false;
 
-  // Sort state
   sortField = "date";
   sortDirection = "desc";
 
@@ -136,7 +125,6 @@ export default class EngagementHistoryLwc extends LightningElement {
   get filteredRows() {
     let rows = [...this._allRows];
 
-    // Date range filter
     if (this.selectedDateRange !== "all") {
       const days = parseInt(this.selectedDateRange, 10);
       const cutoff = new Date();
@@ -147,17 +135,14 @@ export default class EngagementHistoryLwc extends LightningElement {
       });
     }
 
-    // Campaign filter
     if (this.selectedCampaign !== "all") {
       rows = rows.filter((r) => r.campaign === this.selectedCampaign);
     }
 
-    // Content-type filter
     if (this.selectedContentType !== "all") {
       rows = rows.filter((r) => r.contentType === this.selectedContentType);
     }
 
-    // Sort
     const dir = this.sortDirection === "asc" ? 1 : -1;
     rows.sort((a, b) => {
       let va = a[this.sortField] || "";
@@ -181,6 +166,142 @@ export default class EngagementHistoryLwc extends LightningElement {
     return this.filteredRows.length === 0;
   }
 
+  // ── Pure-CSS chart data (Engagement Over Time — line dots) ─
+  get lineChartData() {
+    const rows = this.filteredRows;
+    const dateMap = {};
+    rows.forEach((r) => {
+      const d = this._parseDate(r.date);
+      if (d) {
+        const key = d.toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short"
+        });
+        dateMap[key] = (dateMap[key] || 0) + 1;
+      }
+    });
+
+    const sortedKeys = Object.keys(dateMap).sort(
+      (a, b) => new Date(a) - new Date(b)
+    );
+
+    let cumulative = 0;
+    const points = sortedKeys.map((k) => {
+      cumulative += dateMap[k];
+      return { label: k, value: cumulative };
+    });
+
+    if (points.length === 0) return [];
+
+    const maxVal = Math.max(...points.map((p) => p.value), 1);
+    return points.map((p) => ({
+      label: p.label,
+      value: p.value,
+      heightPct: Math.round((p.value / maxVal) * 100),
+      barStyle: `height: ${Math.round((p.value / maxVal) * 100)}%`,
+      dotStyle: `bottom: ${Math.round((p.value / maxVal) * 100)}%`
+    }));
+  }
+
+  get lineChartMaxValue() {
+    const pts = this.lineChartData;
+    if (pts.length === 0) return 1;
+    return Math.max(...pts.map((p) => p.value), 1);
+  }
+
+  get hasLineData() {
+    return this.lineChartData.length > 0;
+  }
+
+  get noLineData() {
+    return this.lineChartData.length === 0;
+  }
+
+  // ── Pure-CSS chart data (Campaign horizontal bars) ─────────
+  get campaignChartData() {
+    const rows = this.filteredRows;
+    const campMap = {};
+    rows.forEach((r) => {
+      if (r.campaign) {
+        campMap[r.campaign] = (campMap[r.campaign] || 0) + 1;
+      }
+    });
+
+    if (Object.keys(campMap).length === 0) {
+      for (let i = 1; i <= 3; i++) {
+        const name = this[`campaign${i}Name`];
+        const val = parseInt(this[`campaign${i}Value`], 10) || 0;
+        if (name) campMap[name] = val;
+      }
+    }
+
+    const maxVal = Math.max(...Object.values(campMap), 1);
+    const color = this.barChartColor || "#0070d2";
+    return Object.keys(campMap).map((name) => ({
+      label: name,
+      value: campMap[name],
+      widthPct: Math.round((campMap[name] / maxVal) * 100),
+      color,
+      barStyle: `width: ${Math.round((campMap[name] / maxVal) * 100)}%; background-color: ${color}`
+    }));
+  }
+
+  get hasCampaignData() {
+    return this.campaignChartData.length > 0;
+  }
+
+  get noCampaignData() {
+    return this.campaignChartData.length === 0;
+  }
+
+  // ── Pure-CSS chart data (Asset horizontal bars) ────────────
+  get assetChartData() {
+    const rows = this.filteredRows;
+    const assetMap = {};
+    rows.forEach((r) => {
+      if (r.asset) {
+        assetMap[r.asset] = (assetMap[r.asset] || 0) + 1;
+      }
+    });
+
+    if (Object.keys(assetMap).length === 0) {
+      for (let i = 1; i <= 4; i++) {
+        const name = this[`asset${i}Name`];
+        const val = parseInt(this[`asset${i}Value`], 10) || 0;
+        if (name) assetMap[name] = val;
+      }
+    }
+
+    const palette = [
+      this.barChartColor || "#0070d2",
+      this.assetBarColor || "#7b68ee",
+      "#2e8b57",
+      "#e6812f"
+    ];
+
+    const maxVal = Math.max(...Object.values(assetMap), 1);
+    let idx = 0;
+    return Object.keys(assetMap).map((name) => {
+      const color = palette[idx % palette.length];
+      idx++;
+      return {
+        label: name,
+        value: assetMap[name],
+        widthPct: Math.round((assetMap[name] / maxVal) * 100),
+        color,
+        barStyle: `width: ${Math.round((assetMap[name] / maxVal) * 100)}%; background-color: ${color}`
+      };
+    });
+  }
+
+  get hasAssetData() {
+    return this.assetChartData.length > 0;
+  }
+
+  get noAssetData() {
+    return this.assetChartData.length === 0;
+  }
+
   // ── Sort indicator getters ─────────────────────────────────
   get sortAssetClass() {
     return this.sortField === "asset" ? "sorted" : "";
@@ -199,39 +320,24 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   get sortAssetIcon() {
-    return this.sortField === "asset"
-      ? this.sortDirection === "asc"
-        ? "↑"
-        : "↓"
-      : "↕";
+    return this._sortIcon("asset");
   }
   get sortContentTypeIcon() {
-    return this.sortField === "contentType"
-      ? this.sortDirection === "asc"
-        ? "↑"
-        : "↓"
-      : "↕";
+    return this._sortIcon("contentType");
   }
   get sortActivityTypeIcon() {
-    return this.sortField === "activityType"
-      ? this.sortDirection === "asc"
-        ? "↑"
-        : "↓"
-      : "↕";
+    return this._sortIcon("activityType");
   }
   get sortCampaignIcon() {
-    return this.sortField === "campaign"
-      ? this.sortDirection === "asc"
-        ? "↑"
-        : "↓"
-      : "↕";
+    return this._sortIcon("campaign");
   }
   get sortDateIcon() {
-    return this.sortField === "date"
-      ? this.sortDirection === "asc"
-        ? "↑"
-        : "↓"
-      : "↕";
+    return this._sortIcon("date");
+  }
+
+  _sortIcon(field) {
+    if (this.sortField !== field) return "↕";
+    return this.sortDirection === "asc" ? "↑" : "↓";
   }
 
   // ── Collapse toggles ──────────────────────────────────────
@@ -245,7 +351,6 @@ export default class EngagementHistoryLwc extends LightningElement {
     return this.assetChartCollapsed ? "chart-body hidden" : "chart-body";
   }
 
-  // ── Toggle icon getters (LWC does not allow ternaries in templates) ──
   get lineChartToggleIcon() {
     return this.lineChartCollapsed
       ? "utility:chevronright"
@@ -262,37 +367,17 @@ export default class EngagementHistoryLwc extends LightningElement {
       : "utility:chevrondown";
   }
 
-  // ── Lifecycle ──────────────────────────────────────────────
-  renderedCallback() {
-    if (this.chartJsLoaded) {
-      return;
-    }
-    this.chartJsLoaded = true;
-
-    loadScript(this, ChartJs)
-      .then(() => {
-        this._renderAllCharts();
-      })
-      .catch((error) => {
-        this.chartLoadError = true;
-        console.error("Chart.js load error:", error);
-      });
-  }
-
   // ── Event handlers ─────────────────────────────────────────
   handleDateRangeChange(event) {
     this.selectedDateRange = event.detail.value;
-    this._renderAllCharts();
   }
 
   handleCampaignChange(event) {
     this.selectedCampaign = event.detail.value;
-    this._renderAllCharts();
   }
 
   handleContentTypeChange(event) {
     this.selectedContentType = event.detail.value;
-    this._renderAllCharts();
   }
 
   handleSort(event) {
@@ -307,257 +392,19 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   toggleLineChart() {
     this.lineChartCollapsed = !this.lineChartCollapsed;
-    if (!this.lineChartCollapsed) {
-      // eslint-disable-next-line @lwc/lwc/no-async-operation
-      setTimeout(() => this._renderLineChart(), 50);
-    }
   }
 
   toggleCampaignChart() {
     this.campaignChartCollapsed = !this.campaignChartCollapsed;
-    if (!this.campaignChartCollapsed) {
-      // eslint-disable-next-line @lwc/lwc/no-async-operation
-      setTimeout(() => this._renderCampaignChart(), 50);
-    }
   }
 
   toggleAssetChart() {
     this.assetChartCollapsed = !this.assetChartCollapsed;
-    if (!this.assetChartCollapsed) {
-      // eslint-disable-next-line @lwc/lwc/no-async-operation
-      setTimeout(() => this._renderAssetChart(), 50);
-    }
-  }
-
-  // ── Chart rendering ────────────────────────────────────────
-  _renderAllCharts() {
-    this._renderLineChart();
-    this._renderCampaignChart();
-    this._renderAssetChart();
-  }
-
-  _renderLineChart() {
-    if (this.lineChartCollapsed) return;
-    const canvas = this.template.querySelector(".line-chart-container canvas");
-    if (!canvas) return;
-
-    if (this.lineChart) {
-      this.lineChart.destroy();
-    }
-
-    // Build time-series data from filtered rows
-    const rows = this.filteredRows;
-    const dateMap = {};
-    rows.forEach((r) => {
-      const d = this._parseDate(r.date);
-      if (d) {
-        const key = d.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short"
-        });
-        dateMap[key] = (dateMap[key] || 0) + 1;
-      }
-    });
-
-    const sortedKeys = Object.keys(dateMap).sort((a, b) => {
-      return new Date(a) - new Date(b);
-    });
-
-    // Cumulative total
-    let cumulative = 0;
-    const cumulativeData = sortedKeys.map((k) => {
-      cumulative += dateMap[k];
-      return cumulative;
-    });
-
-    const ctx = canvas.getContext("2d");
-    this.lineChart = new window.Chart(ctx, {
-      type: "line",
-      data: {
-        labels: sortedKeys,
-        datasets: [
-          {
-            label: "Total Activities",
-            data: cumulativeData,
-            borderColor: this.lineChartColor || "#0070d2",
-            backgroundColor: "rgba(0,112,210,0.08)",
-            fill: true,
-            tension: 0.3,
-            pointRadius: 5,
-            pointBackgroundColor: this.lineChartColor || "#0070d2"
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          x: {
-            title: { display: true, text: "Activity Date" },
-            grid: { display: false }
-          },
-          y: {
-            title: { display: true, text: "Total Activities" },
-            beginAtZero: true,
-            ticks: { stepSize: 1 }
-          }
-        }
-      }
-    });
-  }
-
-  _renderCampaignChart() {
-    if (this.campaignChartCollapsed) return;
-    const canvas = this.template.querySelector(
-      ".campaign-chart-container canvas"
-    );
-    if (!canvas) return;
-
-    if (this.campaignChart) {
-      this.campaignChart.destroy();
-    }
-
-    // Aggregate campaign counts from filtered rows
-    const rows = this.filteredRows;
-    const campMap = {};
-    rows.forEach((r) => {
-      if (r.campaign) {
-        campMap[r.campaign] = (campMap[r.campaign] || 0) + 1;
-      }
-    });
-
-    // Fallback to @api props when no row data matches
-    if (Object.keys(campMap).length === 0) {
-      for (let i = 1; i <= 3; i++) {
-        const name = this[`campaign${i}Name`];
-        const val = parseInt(this[`campaign${i}Value`], 10) || 0;
-        if (name) campMap[name] = val;
-      }
-    }
-
-    const labels = Object.keys(campMap);
-    const data = labels.map((l) => campMap[l]);
-
-    const ctx = canvas.getContext("2d");
-    this.campaignChart = new window.Chart(ctx, {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: "Total Activities",
-            data,
-            backgroundColor: this.barChartColor || "#0070d2",
-            borderRadius: 4,
-            barThickness: 22
-          }
-        ]
-      },
-      options: {
-        indexAxis: "y",
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          x: {
-            title: { display: true, text: "Total Activities" },
-            beginAtZero: true,
-            ticks: { stepSize: 1 }
-          },
-          y: {
-            grid: { display: false }
-          }
-        }
-      }
-    });
-  }
-
-  _renderAssetChart() {
-    if (this.assetChartCollapsed) return;
-    const canvas = this.template.querySelector(
-      ".asset-chart-container canvas"
-    );
-    if (!canvas) return;
-
-    if (this.assetChart) {
-      this.assetChart.destroy();
-    }
-
-    // Aggregate asset counts from filtered rows
-    const rows = this.filteredRows;
-    const assetMap = {};
-    rows.forEach((r) => {
-      if (r.asset) {
-        assetMap[r.asset] = (assetMap[r.asset] || 0) + 1;
-      }
-    });
-
-    // Fallback to @api props when no row data matches
-    if (Object.keys(assetMap).length === 0) {
-      for (let i = 1; i <= 4; i++) {
-        const name = this[`asset${i}Name`];
-        const val = parseInt(this[`asset${i}Value`], 10) || 0;
-        if (name) assetMap[name] = val;
-      }
-    }
-
-    const labels = Object.keys(assetMap);
-    const data = labels.map((l) => assetMap[l]);
-
-    // Multi-color bars for assets
-    const palette = [
-      this.barChartColor || "#0070d2",
-      this.assetBarColor || "#7b68ee",
-      "#2e8b57",
-      "#e6812f"
-    ];
-    const bgColors = data.map((_, idx) => palette[idx % palette.length]);
-
-    const ctx = canvas.getContext("2d");
-    this.assetChart = new window.Chart(ctx, {
-      type: "bar",
-      data: {
-        labels,
-        datasets: [
-          {
-            label: "Total Activities",
-            data,
-            backgroundColor: bgColors,
-            borderRadius: 4,
-            barThickness: 22
-          }
-        ]
-      },
-      options: {
-        indexAxis: "y",
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: { display: false }
-        },
-        scales: {
-          x: {
-            title: { display: true, text: "Total Activities" },
-            beginAtZero: true,
-            ticks: { stepSize: 1 }
-          },
-          y: {
-            grid: { display: false }
-          }
-        }
-      }
-    });
   }
 
   // ── Helpers ────────────────────────────────────────────────
   _parseDate(str) {
     if (!str) return null;
-    // Handle "YYYY/M/DD HH:mm" and standard formats
     const normalised = str.replace(/\//g, "-");
     const d = new Date(normalised);
     return isNaN(d.getTime()) ? null : d;

@@ -36,6 +36,7 @@
     <!-- ── Charts Section ─────────────────────────────────── -->
     <div class="slds-p-around_medium">
       <div class="slds-grid slds-gutters slds-wrap">
+
         <!-- Engagement Over Time -->
         <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-bottom_small">
           <div class="chart-card">
@@ -48,9 +49,29 @@
               ></lightning-icon>
             </div>
             <div class={lineChartSectionClass}>
-              <div class="line-chart-container">
-                <canvas></canvas>
-              </div>
+              <template lwc:if={hasLineData}>
+                <div class="css-line-chart">
+                  <div class="line-y-axis">
+                    <span class="axis-label">{lineChartMaxValue}</span>
+                    <span class="axis-label">0</span>
+                  </div>
+                  <div class="line-plot-area">
+                    <template for:each={lineChartData} for:item="point">
+                      <div key={point.label} class="line-col">
+                        <div class="line-bar-track">
+                          <div class="line-bar-fill" style={point.barStyle}></div>
+                          <div class="line-dot" style={point.dotStyle}></div>
+                        </div>
+                        <span class="line-x-label">{point.label}</span>
+                      </div>
+                    </template>
+                  </div>
+                </div>
+                <div class="axis-title">Activity Date</div>
+              </template>
+              <template lwc:if={noLineData}>
+                <p class="no-chart-data">No engagement data for this period.</p>
+              </template>
             </div>
           </div>
         </div>
@@ -67,9 +88,23 @@
               ></lightning-icon>
             </div>
             <div class={campaignChartSectionClass}>
-              <div class="campaign-chart-container">
-                <canvas></canvas>
-              </div>
+              <template lwc:if={hasCampaignData}>
+                <div class="css-hbar-chart">
+                  <template for:each={campaignChartData} for:item="bar">
+                    <div key={bar.label} class="hbar-row">
+                      <span class="hbar-label">{bar.label}</span>
+                      <div class="hbar-track">
+                        <div class="hbar-fill" style={bar.barStyle}></div>
+                      </div>
+                      <span class="hbar-value">{bar.value}</span>
+                    </div>
+                  </template>
+                </div>
+                <div class="axis-title">Total Activities</div>
+              </template>
+              <template lwc:if={noCampaignData}>
+                <p class="no-chart-data">No campaign data available.</p>
+              </template>
             </div>
           </div>
         </div>
@@ -86,22 +121,29 @@
           ></lightning-icon>
         </div>
         <div class={assetChartSectionClass}>
-          <div class="asset-chart-container">
-            <canvas></canvas>
-          </div>
+          <template lwc:if={hasAssetData}>
+            <div class="css-hbar-chart">
+              <template for:each={assetChartData} for:item="bar">
+                <div key={bar.label} class="hbar-row">
+                  <span class="hbar-label">{bar.label}</span>
+                  <div class="hbar-track">
+                    <div class="hbar-fill" style={bar.barStyle}></div>
+                  </div>
+                  <span class="hbar-value">{bar.value}</span>
+                </div>
+              </template>
+            </div>
+            <div class="axis-title">Total Activities</div>
+          </template>
+          <template lwc:if={noAssetData}>
+            <p class="no-chart-data">No asset data available.</p>
+          </template>
         </div>
       </div>
     </div>
 
     <!-- ── Data Table ─────────────────────────────────────── -->
     <div class="slds-p-horizontal_medium slds-p-bottom_medium">
-      <template lwc:if={chartLoadError}>
-        <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert">
-          <span class="slds-assistive-text">Warning</span>
-          <p>Charts could not be rendered. The charting library failed to load.</p>
-        </div>
-      </template>
-
       <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered engagement-table">
         <thead>
           <tr class="slds-line-height_reset">
