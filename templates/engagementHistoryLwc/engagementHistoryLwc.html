@@ -1,0 +1,114 @@
+<template>
+  <lightning-card title="{cardTitle}" icon-name="standard:metrics">
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="filter-row">
+        <div class="filter-col">
+          <label class="filter-label">Date Range</label>
+          <div class="filter-value">{dateRangeLabel}</div>
+        </div>
+        <div class="filter-col">
+          <label class="filter-label">Campaign</label>
+          <div class="filter-value">{campaignLabel}</div>
+        </div>
+        <div class="filter-col">
+          <label class="filter-label">Content Type</label>
+          <div class="filter-value">{contentTypeLabel}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics Section -->
+    <div class="metrics-section">
+      <h2 class="section-heading">Metrics</h2>
+      <div class="charts-row">
+        <!-- Engagement Over Time -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">Engagement Over Time</span>
+          </div>
+          <div class="chart-body line-chart-area">
+            <div class="line-chart-container">
+              <canvas></canvas>
+            </div>
+          </div>
+        </div>
+        <!-- Most Engaged Campaigns -->
+        <div class="chart-card">
+          <div class="chart-header">
+            <span class="chart-title">Most Engaged Campaigns</span>
+          </div>
+          <div class="chart-body bar-chart-area">
+            <div class="bar-chart-container">
+              <canvas></canvas>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Most Engaged Assets -->
+      <div class="chart-card asset-chart-card">
+        <div class="chart-header">
+          <span class="chart-title">Most Engaged Assets</span>
+        </div>
+        <div class="chart-body bar-chart-area">
+          <div class="bar-chart-container">
+            <canvas></canvas>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Data Table -->
+    <div class="table-section">
+      <table class="engagement-table">
+        <thead>
+          <tr>
+            <th>Asset Name</th>
+            <th>Content Type</th>
+            <th>Activity Type</th>
+            <th>Campaign</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td class="link-cell">{row1Asset}</td>
+            <td>{row1ContentType}</td>
+            <td>{row1ActivityType}</td>
+            <td class="link-cell">{row1Campaign}</td>
+            <td>{row1Date}</td>
+          </tr>
+          <tr>
+            <td class="link-cell">{row2Asset}</td>
+            <td>{row2ContentType}</td>
+            <td>{row2ActivityType}</td>
+            <td class="link-cell">{row2Campaign}</td>
+            <td>{row2Date}</td>
+          </tr>
+          <tr>
+            <td class="link-cell">{row3Asset}</td>
+            <td>{row3ContentType}</td>
+            <td>{row3ActivityType}</td>
+            <td class="link-cell">{row3Campaign}</td>
+            <td>{row3Date}</td>
+          </tr>
+          <tr>
+            <td class="link-cell">{row4Asset}</td>
+            <td>{row4ContentType}</td>
+            <td>{row4ActivityType}</td>
+            <td class="link-cell">{row4Campaign}</td>
+            <td>{row4Date}</td>
+          </tr>
+          <tr>
+            <td class="link-cell">{row5Asset}</td>
+            <td>{row5ContentType}</td>
+            <td>{row5ActivityType}</td>
+            <td class="link-cell">{row5Campaign}</td>
+            <td>{row5Date}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </lightning-card>
+</template>
