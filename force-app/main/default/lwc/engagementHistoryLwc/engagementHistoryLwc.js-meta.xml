@@ -9,12 +9,317 @@
         <target>lightning__HomePage</target>
     </targets>
     <targetConfigs>
-        <targetConfig targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage">
-            <property name="cardTitle" type="String" default="Contact Engagement History" label="Card Title" description="Title displayed at the top of the component" />
-            <property name="accentColor" type="String" default="#0070d2" label="Accent Color" description="Primary accent color for charts and links" />
-            <property name="lineChartColor" type="String" default="#0070d2" label="Line Chart Color" description="Color for the Engagement Over Time line chart" />
-            <property name="barChartColor" type="String" default="#0070d2" label="Bar Chart Color" description="Color for the campaign bar chart" />
-            <property name="assetBarColor" type="String" default="#7b68ee" label="Asset Bar Color" description="Color for the asset bar chart" />
+        <targetConfig
+      targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage"
+    >
+            <property
+        name="cardTitle"
+        type="String"
+        default="Contact Engagement History"
+        label="Card Title"
+        description="Title displayed at the top of the component"
+      />
+            <property
+        name="accentColor"
+        type="String"
+        default="#0070d2"
+        label="Accent Color"
+        description="Primary accent color for charts and links"
+      />
+            <property
+        name="lineChartColor"
+        type="String"
+        default="#0070d2"
+        label="Line Chart Color"
+        description="Color for the Engagement Over Time line chart"
+      />
+            <property
+        name="barChartColor"
+        type="String"
+        default="#0070d2"
+        label="Bar Chart Color"
+        description="Color for the campaign bar chart"
+      />
+            <property
+        name="assetBarColor"
+        type="String"
+        default="#7b68ee"
+        label="Asset Bar Color"
+        description="Color for the asset bar chart"
+      />
+            <property
+        name="campaign1Name"
+        type="String"
+        default="My 1st Campaign"
+        label="Campaign 1 Name"
+        description="Most Engaged Campaigns chart — first bar label"
+      />
+            <property
+        name="campaign1Value"
+        type="String"
+        default="14"
+        label="Campaign 1 Value"
+        description="Count for campaign 1 when table rows do not drive the chart"
+      />
+            <property
+        name="campaign2Name"
+        type="String"
+        default="Nurture Campaign"
+        label="Campaign 2 Name"
+        description="Second campaign bar label"
+      />
+            <property
+        name="campaign2Value"
+        type="String"
+        default="8"
+        label="Campaign 2 Value"
+        description="Count for campaign 2"
+      />
+            <property
+        name="campaign3Name"
+        type="String"
+        default="Product Launch"
+        label="Campaign 3 Name"
+        description="Third campaign bar label"
+      />
+            <property
+        name="campaign3Value"
+        type="String"
+        default="5"
+        label="Campaign 3 Value"
+        description="Count for campaign 3"
+      />
+            <property
+        name="asset1Name"
+        type="String"
+        default="Email_20260209_073552"
+        label="Asset 1 Name"
+        description="Most Engaged Assets chart — first bar label"
+      />
+            <property
+        name="asset1Value"
+        type="String"
+        default="7"
+        label="Asset 1 Value"
+        description="Count for asset 1 when table rows do not drive the chart"
+      />
+            <property
+        name="asset2Name"
+        type="String"
+        default="Progressive Profiling Mail"
+        label="Asset 2 Name"
+        description="Second asset bar label"
+      />
+            <property
+        name="asset2Value"
+        type="String"
+        default="3"
+        label="Asset 2 Value"
+        description="Count for asset 2"
+      />
+            <property
+        name="asset3Name"
+        type="String"
+        default="Progressive Profiling Landing Page"
+        label="Asset 3 Name"
+        description="Third asset bar label"
+      />
+            <property
+        name="asset3Value"
+        type="String"
+        default="3"
+        label="Asset 3 Value"
+        description="Count for asset 3"
+      />
+            <property
+        name="asset4Name"
+        type="String"
+        default="Progressive Profiling LP"
+        label="Asset 4 Name"
+        description="Fourth asset bar label"
+      />
+            <property
+        name="asset4Value"
+        type="String"
+        default="1"
+        label="Asset 4 Value"
+        description="Count for asset 4"
+      />
+            <property
+        name="row1Asset"
+        type="String"
+        default="Progressive Profiling Mail"
+        label="Row 1 — Asset"
+        description="Table row 1 asset name"
+      />
+            <property
+        name="row1ContentType"
+        type="String"
+        default="Email"
+        label="Row 1 — Content Type"
+        description="Table row 1 content type"
+      />
+            <property
+        name="row1ActivityType"
+        type="String"
+        default="Email Click"
+        label="Row 1 — Activity"
+        description="Table row 1 activity type"
+      />
+            <property
+        name="row1Campaign"
+        type="String"
+        default="My 1st Campaign"
+        label="Row 1 — Campaign"
+        description="Table row 1 campaign"
+      />
+            <property
+        name="row1Date"
+        type="String"
+        default="2026/2/23 10:33"
+        label="Row 1 — Date"
+        description="Table row 1 date (e.g. 2026/2/23 10:33)"
+      />
+            <property
+        name="row2Asset"
+        type="String"
+        default="Progressive Profiling Mail"
+        label="Row 2 — Asset"
+        description="Table row 2 asset name"
+      />
+            <property
+        name="row2ContentType"
+        type="String"
+        default="Email"
+        label="Row 2 — Content Type"
+        description="Table row 2 content type"
+      />
+            <property
+        name="row2ActivityType"
+        type="String"
+        default="Email Open"
+        label="Row 2 — Activity"
+        description="Table row 2 activity type"
+      />
+            <property
+        name="row2Campaign"
+        type="String"
+        default="My 1st Campaign"
+        label="Row 2 — Campaign"
+        description="Table row 2 campaign"
+      />
+            <property
+        name="row2Date"
+        type="String"
+        default="2026/2/23 10:33"
+        label="Row 2 — Date"
+        description="Table row 2 date"
+      />
+            <property
+        name="row3Asset"
+        type="String"
+        default="Progressive Profiling Mail"
+        label="Row 3 — Asset"
+        description="Table row 3 asset name"
+      />
+            <property
+        name="row3ContentType"
+        type="String"
+        default="Email"
+        label="Row 3 — Content Type"
+        description="Table row 3 content type"
+      />
+            <property
+        name="row3ActivityType"
+        type="String"
+        default="Email Open"
+        label="Row 3 — Activity"
+        description="Table row 3 activity type"
+      />
+            <property
+        name="row3Campaign"
+        type="String"
+        default="My 1st Campaign"
+        label="Row 3 — Campaign"
+        description="Table row 3 campaign"
+      />
+            <property
+        name="row3Date"
+        type="String"
+        default="2026/2/23 10:33"
+        label="Row 3 — Date"
+        description="Table row 3 date"
+      />
+            <property
+        name="row4Asset"
+        type="String"
+        default="Progressive Profiling Mail"
+        label="Row 4 — Asset"
+        description="Table row 4 asset name"
+      />
+            <property
+        name="row4ContentType"
+        type="String"
+        default="Email"
+        label="Row 4 — Content Type"
+        description="Table row 4 content type"
+      />
+            <property
+        name="row4ActivityType"
+        type="String"
+        default="Email Open"
+        label="Row 4 — Activity"
+        description="Table row 4 activity type"
+      />
+            <property
+        name="row4Campaign"
+        type="String"
+        default="My 1st Campaign"
+        label="Row 4 — Campaign"
+        description="Table row 4 campaign"
+      />
+            <property
+        name="row4Date"
+        type="String"
+        default="2026/2/23 10:33"
+        label="Row 4 — Date"
+        description="Table row 4 date"
+      />
+            <property
+        name="row5Asset"
+        type="String"
+        default="Email_20260209_073552"
+        label="Row 5 — Asset"
+        description="Table row 5 asset name"
+      />
+            <property
+        name="row5ContentType"
+        type="String"
+        default="Email"
+        label="Row 5 — Content Type"
+        description="Table row 5 content type"
+      />
+            <property
+        name="row5ActivityType"
+        type="String"
+        default="Email Click"
+        label="Row 5 — Activity"
+        description="Table row 5 activity type"
+      />
+            <property
+        name="row5Campaign"
+        type="String"
+        default="My 1st Campaign"
+        label="Row 5 — Campaign"
+        description="Table row 5 campaign"
+      />
+            <property
+        name="row5Date"
+        type="String"
+        default="2026/2/23 10:33"
+        label="Row 5 — Date"
+        description="Table row 5 date"
+      />
         </targetConfig>
     </targetConfigs>
 </LightningComponentBundle>

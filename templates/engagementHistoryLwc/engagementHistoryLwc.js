@@ -70,7 +70,8 @@ export default class EngagementHistoryLwc extends LightningElement {
   @api row5Date = "{{{row5Date}}}";
 
   // ── Internal state ─────────────────────────────────────────
-  chartJsLoaded = false;
+  _chartScriptRequested = false;
+  _chartsReady = false;
   chartLoadError = false;
 
   selectedDateRange = "all";
@@ -264,19 +265,22 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   // ── Lifecycle ──────────────────────────────────────────────
   renderedCallback() {
-    if (this.chartJsLoaded) {
+    if (!this._chartScriptRequested) {
+      this._chartScriptRequested = true;
+      loadScript(this, ChartJs)
+        .then(() => {
+          this._chartsReady = true;
+          this._renderAllCharts();
+        })
+        .catch((error) => {
+          this.chartLoadError = true;
+          console.error("Chart.js load error:", error);
+        });
       return;
     }
-    this.chartJsLoaded = true;
-
-    loadScript(this, ChartJs)
-      .then(() => {
-        this._renderAllCharts();
-      })
-      .catch((error) => {
-        this.chartLoadError = true;
-        console.error("Chart.js load error:", error);
-      });
+    if (this._chartsReady) {
+      this._renderAllCharts();
+    }
   }
 
   // ── Event handlers ─────────────────────────────────────────
@@ -479,9 +483,7 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   _renderAssetChart() {
     if (this.assetChartCollapsed) return;
-    const canvas = this.template.querySelector(
-      ".asset-chart-container canvas"
-    );
+    const canvas = this.template.querySelector(".asset-chart-container canvas");
     if (!canvas) return;
 
     if (this.assetChart) {

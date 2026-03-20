@@ -20,57 +20,58 @@ export default class EngagementHistoryLwc extends LightningElement {
   @api barChartColor = "#0070d2";
   @api assetBarColor = "#7b68ee";
 
-  // Campaign bar data (design-time values injected by generator)
-  @api campaign1Name = "";
-  @api campaign1Value = "0";
-  @api campaign2Name = "";
-  @api campaign2Value = "0";
-  @api campaign3Name = "";
-  @api campaign3Value = "0";
+  // Campaign bar data (design-time values — match generator form defaults)
+  @api campaign1Name = "My 1st Campaign";
+  @api campaign1Value = "14";
+  @api campaign2Name = "Nurture Campaign";
+  @api campaign2Value = "8";
+  @api campaign3Name = "Product Launch";
+  @api campaign3Value = "5";
 
   // Asset bar data
-  @api asset1Name = "";
-  @api asset1Value = "0";
-  @api asset2Name = "";
-  @api asset2Value = "0";
-  @api asset3Name = "";
-  @api asset3Value = "0";
-  @api asset4Name = "";
-  @api asset4Value = "0";
+  @api asset1Name = "Email_20260209_073552";
+  @api asset1Value = "7";
+  @api asset2Name = "Progressive Profiling Mail";
+  @api asset2Value = "3";
+  @api asset3Name = "Progressive Profiling Landing Page";
+  @api asset3Value = "3";
+  @api asset4Name = "Progressive Profiling LP";
+  @api asset4Value = "1";
 
   // Table row data
-  @api row1Asset = "";
-  @api row1ContentType = "";
-  @api row1ActivityType = "";
-  @api row1Campaign = "";
-  @api row1Date = "";
+  @api row1Asset = "Progressive Profiling Mail";
+  @api row1ContentType = "Email";
+  @api row1ActivityType = "Email Click";
+  @api row1Campaign = "My 1st Campaign";
+  @api row1Date = "2026/2/23 10:33";
 
-  @api row2Asset = "";
-  @api row2ContentType = "";
-  @api row2ActivityType = "";
-  @api row2Campaign = "";
-  @api row2Date = "";
+  @api row2Asset = "Progressive Profiling Mail";
+  @api row2ContentType = "Email";
+  @api row2ActivityType = "Email Open";
+  @api row2Campaign = "My 1st Campaign";
+  @api row2Date = "2026/2/23 10:33";
 
-  @api row3Asset = "";
-  @api row3ContentType = "";
-  @api row3ActivityType = "";
-  @api row3Campaign = "";
-  @api row3Date = "";
+  @api row3Asset = "Progressive Profiling Mail";
+  @api row3ContentType = "Email";
+  @api row3ActivityType = "Email Open";
+  @api row3Campaign = "My 1st Campaign";
+  @api row3Date = "2026/2/23 10:33";
 
-  @api row4Asset = "";
-  @api row4ContentType = "";
-  @api row4ActivityType = "";
-  @api row4Campaign = "";
-  @api row4Date = "";
+  @api row4Asset = "Progressive Profiling Mail";
+  @api row4ContentType = "Email";
+  @api row4ActivityType = "Email Open";
+  @api row4Campaign = "My 1st Campaign";
+  @api row4Date = "2026/2/23 10:33";
 
-  @api row5Asset = "";
-  @api row5ContentType = "";
-  @api row5ActivityType = "";
-  @api row5Campaign = "";
-  @api row5Date = "";
+  @api row5Asset = "Email_20260209_073552";
+  @api row5ContentType = "Email";
+  @api row5ActivityType = "Email Click";
+  @api row5Campaign = "My 1st Campaign";
+  @api row5Date = "2026/2/23 10:33";
 
   // ── Internal state ─────────────────────────────────────────
-  chartJsLoaded = false;
+  _chartScriptRequested = false;
+  _chartsReady = false;
   chartLoadError = false;
 
   selectedDateRange = "all";
@@ -264,19 +265,22 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   // ── Lifecycle ──────────────────────────────────────────────
   renderedCallback() {
-    if (this.chartJsLoaded) {
+    if (!this._chartScriptRequested) {
+      this._chartScriptRequested = true;
+      loadScript(this, ChartJs)
+        .then(() => {
+          this._chartsReady = true;
+          this._renderAllCharts();
+        })
+        .catch((error) => {
+          this.chartLoadError = true;
+          console.error("Chart.js load error:", error);
+        });
       return;
     }
-    this.chartJsLoaded = true;
-
-    loadScript(this, ChartJs)
-      .then(() => {
-        this._renderAllCharts();
-      })
-      .catch((error) => {
-        this.chartLoadError = true;
-        console.error("Chart.js load error:", error);
-      });
+    if (this._chartsReady) {
+      this._renderAllCharts();
+    }
   }
 
   // ── Event handlers ─────────────────────────────────────────
@@ -479,9 +483,7 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   _renderAssetChart() {
     if (this.assetChartCollapsed) return;
-    const canvas = this.template.querySelector(
-      ".asset-chart-container canvas"
-    );
+    const canvas = this.template.querySelector(".asset-chart-container canvas");
     if (!canvas) return;
 
     if (this.assetChart) {
