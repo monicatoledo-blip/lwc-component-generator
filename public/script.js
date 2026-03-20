@@ -20,6 +20,8 @@ function saveFormState() {
       form = document.getElementById("nbaForm");
     } else if (selectedComponent === "nextBestLeadsLwc") {
       form = document.getElementById("nblForm");
+    } else if (selectedComponent === "engagementHistoryLwc") {
+      form = document.getElementById("engagementHistoryForm");
     }
 
     if (!form) return;
@@ -70,6 +72,8 @@ function restoreFormState() {
         form = document.getElementById("nbaForm");
       } else if (formState.componentType === "nextBestLeadsLwc") {
         form = document.getElementById("nblForm");
+      } else if (formState.componentType === "engagementHistoryLwc") {
+        form = document.getElementById("engagementHistoryForm");
       }
 
       if (!form) return;
@@ -264,6 +268,8 @@ async function handleDeploy(buttonElement) {
       form = document.getElementById("nbaForm");
     } else if (selectedComponent === "nextBestLeadsLwc") {
       form = document.getElementById("nblForm");
+    } else if (selectedComponent === "engagementHistoryLwc") {
+      form = document.getElementById("engagementHistoryForm");
     }
 
     const formData = processFormData(form, selectedComponent);
@@ -486,6 +492,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const nextBestLeadsContainer = document.getElementById(
     "next-best-leads-container"
   );
+  const engagementHistoryContainer = document.getElementById(
+    "engagement-history-container"
+  );
 
   // Update deployment instructions based on selected component
   function updateDeploymentInstructions(componentType) {
@@ -501,21 +510,31 @@ document.addEventListener("DOMContentLoaded", () => {
       agentforceBriefContainer.style.display = "none";
       nextBestActionsContainer.style.display = "none";
       nextBestLeadsContainer.style.display = "none";
+      engagementHistoryContainer.style.display = "none";
     } else if (selectedComponent === "agentforceLeadBriefLwc") {
       unifiedProfileContainer.style.display = "none";
       agentforceBriefContainer.style.display = "block";
       nextBestActionsContainer.style.display = "none";
       nextBestLeadsContainer.style.display = "none";
+      engagementHistoryContainer.style.display = "none";
     } else if (selectedComponent === "nextBestActionsLwc") {
       unifiedProfileContainer.style.display = "none";
       agentforceBriefContainer.style.display = "none";
       nextBestActionsContainer.style.display = "block";
       nextBestLeadsContainer.style.display = "none";
+      engagementHistoryContainer.style.display = "none";
     } else if (selectedComponent === "nextBestLeadsLwc") {
       unifiedProfileContainer.style.display = "none";
       agentforceBriefContainer.style.display = "none";
       nextBestActionsContainer.style.display = "none";
       nextBestLeadsContainer.style.display = "block";
+      engagementHistoryContainer.style.display = "none";
+    } else if (selectedComponent === "engagementHistoryLwc") {
+      unifiedProfileContainer.style.display = "none";
+      agentforceBriefContainer.style.display = "none";
+      nextBestActionsContainer.style.display = "none";
+      nextBestLeadsContainer.style.display = "none";
+      engagementHistoryContainer.style.display = "block";
     }
 
     // Update deployment instructions
@@ -541,6 +560,7 @@ document.addEventListener("DOMContentLoaded", () => {
         agentforceBriefContainer.style.display !== "none";
       const isNbaActive = nextBestActionsContainer.style.display !== "none";
       const isNblActive = nextBestLeadsContainer.style.display !== "none";
+      const isEhActive = engagementHistoryContainer.style.display !== "none";
 
       // Map base IDs to component-specific IDs
       let actualTargetId = targetId;
@@ -562,6 +582,12 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (targetId === "preview") {
           actualTargetId = "nbl-preview";
         }
+      } else if (isEhActive) {
+        if (targetId === "create") {
+          actualTargetId = "eh-create";
+        } else if (targetId === "preview") {
+          actualTargetId = "eh-preview";
+        }
       }
 
       const targetSection = document.getElementById(actualTargetId);
@@ -579,6 +605,7 @@ document.addEventListener("DOMContentLoaded", () => {
       agentforceBriefContainer.style.display !== "none";
     const isNbaActive = nextBestActionsContainer.style.display !== "none";
     const isNblActive = nextBestLeadsContainer.style.display !== "none";
+    const isEhActiveScroll = engagementHistoryContainer.style.display !== "none";
 
     // Get visible sections only
     const visibleSections = Array.from(
@@ -611,6 +638,14 @@ document.addEventListener("DOMContentLoaded", () => {
           if (sectionId === "nbl-create") {
             current = "create";
           } else if (sectionId === "nbl-preview") {
+            current = "preview";
+          } else {
+            current = sectionId;
+          }
+        } else if (isEhActiveScroll) {
+          if (sectionId === "eh-create") {
+            current = "create";
+          } else if (sectionId === "eh-preview") {
             current = "preview";
           } else {
             current = sectionId;
@@ -651,6 +686,8 @@ document.addEventListener("DOMContentLoaded", () => {
           updateNbaPreview();
         } else if (selectedComponent === "nextBestLeadsLwc") {
           updateNblPreview();
+        } else if (selectedComponent === "engagementHistoryLwc") {
+          updateEngagementHistoryPreview();
         }
       });
 
@@ -675,6 +712,8 @@ document.addEventListener("DOMContentLoaded", () => {
             updateNbaPreview();
           } else if (selectedComponent === "nextBestLeadsLwc") {
             updateNblPreview();
+          } else if (selectedComponent === "engagementHistoryLwc") {
+            updateEngagementHistoryPreview();
           }
         }
         // Force uppercase
@@ -791,6 +830,31 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initial NBL preview update
   updateNblPreview();
+
+  // Setup Engagement History preview updates
+  const engagementHistoryForm = document.getElementById("engagementHistoryForm");
+  const ehInputs = engagementHistoryForm.querySelectorAll("input, textarea");
+
+  ehInputs.forEach((input) => {
+    input.addEventListener("input", updateEngagementHistoryPreview);
+
+    // Prevent Enter key from submitting the form
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && input.tagName !== "TEXTAREA") {
+        e.preventDefault();
+      }
+    });
+  });
+
+  // Prevent Enter key from submitting Engagement History form at form level
+  engagementHistoryForm.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+      e.preventDefault();
+    }
+  });
+
+  // Initial Engagement History preview update
+  updateEngagementHistoryPreview();
 });
 
 function updatePreview() {
@@ -1124,6 +1188,184 @@ function updateNblPreview() {
   }
 }
 
+// Update Engagement History Preview
+function updateEngagementHistoryPreview() {
+  const form = document.getElementById("engagementHistoryForm");
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  // Update card title
+  const previewCardTitle = document.getElementById("previewEhCardTitle");
+  if (data.cardTitle && previewCardTitle) {
+    previewCardTitle.textContent = data.cardTitle;
+  }
+
+  // Update filter labels
+  const previewDateRange = document.getElementById("previewEhDateRange");
+  const previewCampaign = document.getElementById("previewEhCampaign");
+  const previewContentType = document.getElementById("previewEhContentType");
+  if (data.dateRangeLabel && previewDateRange) previewDateRange.textContent = data.dateRangeLabel;
+  if (data.campaignLabel && previewCampaign) previewCampaign.textContent = data.campaignLabel;
+  if (data.contentTypeLabel && previewContentType) previewContentType.textContent = data.contentTypeLabel;
+
+  // Colors
+  const lineColor = data.lineChartColor || "#1B96FF";
+  const barColor = data.barChartColor || "#0D9DDA";
+  const assetColor = data.assetBarColor || "#04844B";
+  const linkColor = data.tableLinkColor || "#0070D2";
+
+  // Render line chart
+  renderEhLineChart(lineColor);
+
+  // Render campaign bars
+  const campaignBarsEl = document.getElementById("previewEhCampaignBars");
+  if (campaignBarsEl) {
+    const campaigns = [];
+    for (let i = 1; i <= 3; i++) {
+      const name = data["campaign" + i + "Name"] || "";
+      const value = parseInt(data["campaign" + i + "Value"]) || 0;
+      if (name) campaigns.push({ name, value });
+    }
+    const maxCampaign = Math.max(...campaigns.map((c) => c.value), 1);
+    campaignBarsEl.innerHTML = campaigns
+      .map(
+        (c) => `
+      <div style="display: flex; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 11px; color: #181818; min-width: 100px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${c.name}</span>
+        <div style="flex: 1; background: #e5e5e5; border-radius: 4px; height: 16px; margin: 0 8px; position: relative;">
+          <div style="background: ${barColor}; border-radius: 4px; height: 100%; width: ${(c.value / maxCampaign) * 100}%;"></div>
+        </div>
+        <span style="font-size: 11px; font-weight: 700; color: #181818; min-width: 24px; text-align: right;">${c.value}</span>
+      </div>`
+      )
+      .join("");
+  }
+
+  // Render asset bars
+  const assetBarsEl = document.getElementById("previewEhAssetBars");
+  if (assetBarsEl) {
+    const assets = [];
+    for (let i = 1; i <= 4; i++) {
+      const name = data["asset" + i + "Name"] || "";
+      const value = parseInt(data["asset" + i + "Value"]) || 0;
+      if (name) assets.push({ name, value });
+    }
+    const maxAsset = Math.max(...assets.map((a) => a.value), 1);
+    assetBarsEl.innerHTML = assets
+      .map(
+        (a) => `
+      <div style="display: flex; align-items: center; margin-bottom: 6px;">
+        <span style="font-size: 11px; color: #181818; min-width: 140px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${a.name}</span>
+        <div style="flex: 1; background: #e5e5e5; border-radius: 4px; height: 16px; margin: 0 8px; position: relative;">
+          <div style="background: ${assetColor}; border-radius: 4px; height: 100%; width: ${(a.value / maxAsset) * 100}%;"></div>
+        </div>
+        <span style="font-size: 11px; font-weight: 700; color: #181818; min-width: 24px; text-align: right;">${a.value}</span>
+      </div>`
+      )
+      .join("");
+  }
+
+  // Render table rows
+  const tableBody = document.getElementById("previewEhTableBody");
+  if (tableBody) {
+    let rows = "";
+    for (let i = 1; i <= 5; i++) {
+      const asset = data["row" + i + "Asset"] || "";
+      const contentType = data["row" + i + "ContentType"] || "";
+      const activityType = data["row" + i + "ActivityType"] || "";
+      const campaign = data["row" + i + "Campaign"] || "";
+      const date = data["row" + i + "Date"] || "";
+      if (asset) {
+        rows += `<tr>
+          <td style="padding: 8px 10px; border-bottom: 1px solid #f0f0f0; color: ${linkColor};">${asset}</td>
+          <td style="padding: 8px 10px; border-bottom: 1px solid #f0f0f0; color: #181818;">${contentType}</td>
+          <td style="padding: 8px 10px; border-bottom: 1px solid #f0f0f0; color: #181818;">${activityType}</td>
+          <td style="padding: 8px 10px; border-bottom: 1px solid #f0f0f0; color: ${linkColor};">${campaign}</td>
+          <td style="padding: 8px 10px; border-bottom: 1px solid #f0f0f0; color: #181818;">${date}</td>
+        </tr>`;
+      }
+    }
+    tableBody.innerHTML = rows;
+  }
+}
+
+// Render engagement history line chart on canvas
+function renderEhLineChart(color) {
+  const canvas = document.getElementById("previewEhLineChart");
+  if (!canvas) return;
+  const ctx = canvas.getContext("2d");
+  const w = canvas.width;
+  const h = canvas.height;
+  ctx.clearRect(0, 0, w, h);
+
+  // Mock data points for line chart
+  const points = [2, 3, 4, 5, 6, 8, 10, 12];
+  const maxVal = Math.max(...points);
+  const padding = { top: 10, right: 10, bottom: 20, left: 30 };
+  const chartW = w - padding.left - padding.right;
+  const chartH = h - padding.top - padding.bottom;
+
+  // Draw axes
+  ctx.strokeStyle = "#e5e5e5";
+  ctx.lineWidth = 1;
+  ctx.beginPath();
+  ctx.moveTo(padding.left, padding.top);
+  ctx.lineTo(padding.left, h - padding.bottom);
+  ctx.lineTo(w - padding.right, h - padding.bottom);
+  ctx.stroke();
+
+  // Draw Y axis labels
+  ctx.fillStyle = "#706e6b";
+  ctx.font = "9px sans-serif";
+  ctx.textAlign = "right";
+  for (let i = 0; i <= 4; i++) {
+    const yVal = Math.round((maxVal / 4) * i);
+    const y = h - padding.bottom - (i / 4) * chartH;
+    ctx.fillText(yVal, padding.left - 4, y + 3);
+    // Grid line
+    ctx.strokeStyle = "#f0f0f0";
+    ctx.beginPath();
+    ctx.moveTo(padding.left, y);
+    ctx.lineTo(w - padding.right, y);
+    ctx.stroke();
+  }
+
+  // Draw line
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  points.forEach((val, i) => {
+    const x = padding.left + (i / (points.length - 1)) * chartW;
+    const y = h - padding.bottom - (val / maxVal) * chartH;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Fill area under line
+  ctx.lineTo(padding.left + chartW, h - padding.bottom);
+  ctx.lineTo(padding.left, h - padding.bottom);
+  ctx.closePath();
+  ctx.fillStyle = color + "1A"; // 10% opacity
+  ctx.fill();
+
+  // Draw dots
+  ctx.fillStyle = color;
+  points.forEach((val, i) => {
+    const x = padding.left + (i / (points.length - 1)) * chartW;
+    const y = h - padding.bottom - (val / maxVal) * chartH;
+    ctx.beginPath();
+    ctx.arc(x, y, 3, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // X axis label
+  ctx.fillStyle = "#706e6b";
+  ctx.font = "9px sans-serif";
+  ctx.textAlign = "center";
+  ctx.fillText("Activity Date", w / 2, h - 2);
+}
+
 // Helper function to process form data for image uploads
 function processFormData(form, componentType) {
   const formData = new FormData(form);
@@ -1199,6 +1441,8 @@ async function handleDownload(buttonElement) {
       form = document.getElementById("nbaForm");
     } else if (selectedComponent === "nextBestLeadsLwc") {
       form = document.getElementById("nblForm");
+    } else if (selectedComponent === "engagementHistoryLwc") {
+      form = document.getElementById("engagementHistoryForm");
     }
 
     const formData = processFormData(form, selectedComponent);
@@ -1251,6 +1495,12 @@ document.getElementById("nbaForm").addEventListener("submit", (e) => {
 document.getElementById("nblForm").addEventListener("submit", (e) => {
   e.preventDefault();
 });
+
+document
+  .getElementById("engagementHistoryForm")
+  .addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
 
 // Deploy button handlers
 document.querySelectorAll(".deploy-btn").forEach((btn) => {
