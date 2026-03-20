@@ -869,13 +869,22 @@ app.post(
       const cspMemberTags = cspMembers
         .map((member) => `        <members>${member}</members>`)
         .join("\n");
+      const staticResourceTypesXml =
+        componentType === "engagementHistoryLwc"
+          ? `    <types>
+        <members>ChartJs</members>
+        <name>StaticResource</name>
+    </types>
+`
+          : "";
+
       const packageXml = `<?xml version="1.0" encoding="UTF-8"?>
 <Package xmlns="http://soap.sforce.com/2006/04/metadata">
     <types>
         <members>*</members>
         <name>LightningComponentBundle</name>
     </types>
-    <types>
+${staticResourceTypesXml}    <types>
 ${cspMemberTags}
         <name>CspTrustedSite</name>
     </types>
@@ -894,6 +903,25 @@ ${cspMemberTags}
       lwcFolder.file(`${componentType}.js`, jsCompiled);
       lwcFolder.file(`${componentType}.css`, cssCompiled);
       lwcFolder.file(`${componentType}.js-meta.xml`, metaCompiled);
+
+      // engagementHistoryLwc loads Chart.js via @salesforce/resourceUrl/ChartJs — include it in this package
+      if (componentType === "engagementHistoryLwc") {
+        const srDir = path.join(
+          __dirname,
+          "force-app",
+          "main",
+          "default",
+          "staticresources"
+        );
+        const [chartResourceBuf, chartMetaXml] = await Promise.all([
+          fs.readFile(path.join(srDir, "ChartJs.resource")),
+          fs.readFile(path.join(srDir, "ChartJs.resource-meta.xml"), "utf8")
+        ]);
+        const srFolder = zip.folder("staticresources");
+        srFolder.file("ChartJs.resource", chartResourceBuf);
+        srFolder.file("ChartJs.resource-meta.xml", chartMetaXml);
+        console.log("📦 Included StaticResource ChartJs in deployment package");
+      }
 
       // Add CspTrustedSite metadata - KNOWN DOMAINS
       const cspFolder = zip.folder("cspTrustedSites");
