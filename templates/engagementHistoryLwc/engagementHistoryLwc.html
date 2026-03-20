@@ -1,32 +1,50 @@
 <template>
-  <lightning-card title={cardTitle} icon-name="standard:metrics">
+  <lightning-card title="{cardTitle}" icon-name="standard:metrics">
     <!-- ── Filter Bar ─────────────────────────────────────── -->
     <div class="filter-bar slds-p-around_small">
       <div class="slds-grid slds-gutters slds-wrap">
-        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-around_xx-small">
+        <div
+          class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-around_xx-small"
+        >
           <lightning-combobox
             label="Date Range"
-            value={selectedDateRange}
-            options={dateRangeOptions}
-            onchange={handleDateRangeChange}
+            value="{selectedDateRange}"
+            options="{dateRangeOptions}"
+            onchange="
+              {
+                handleDateRangeChange;
+              }
+            "
             variant="label-stacked"
           ></lightning-combobox>
         </div>
-        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-around_xx-small">
+        <div
+          class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-around_xx-small"
+        >
           <lightning-combobox
             label="Campaign"
-            value={selectedCampaign}
-            options={campaignOptions}
-            onchange={handleCampaignChange}
+            value="{selectedCampaign}"
+            options="{campaignOptions}"
+            onchange="
+              {
+                handleCampaignChange;
+              }
+            "
             variant="label-stacked"
           ></lightning-combobox>
         </div>
-        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-around_xx-small">
+        <div
+          class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3 slds-p-around_xx-small"
+        >
           <lightning-combobox
             label="Content Type"
-            value={selectedContentType}
-            options={contentTypeOptions}
-            onchange={handleContentTypeChange}
+            value="{selectedContentType}"
+            options="{contentTypeOptions}"
+            onchange="
+              {
+                handleContentTypeChange;
+              }
+            "
             variant="label-stacked"
           ></lightning-combobox>
         </div>
@@ -37,17 +55,26 @@
     <div class="slds-p-around_medium">
       <div class="slds-grid slds-gutters slds-wrap">
         <!-- Engagement Over Time -->
-        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-bottom_small">
+        <div
+          class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-bottom_small"
+        >
           <div class="chart-card">
-            <div class="chart-header" onclick={toggleLineChart}>
+            <div
+              class="chart-header"
+              onclick="
+                {
+                  toggleLineChart;
+                }
+              "
+            >
               <span class="chart-title">Engagement Over Time</span>
               <lightning-icon
-                icon-name={lineChartToggleIcon}
+                icon-name="{lineChartToggleIcon}"
                 size="x-small"
                 alternative-text="Toggle"
               ></lightning-icon>
             </div>
-            <div class={lineChartSectionClass}>
+            <div class="{lineChartSectionClass}">
               <div class="line-chart-container">
                 <canvas></canvas>
               </div>
@@ -56,17 +83,26 @@
         </div>
 
         <!-- Most Engaged Campaigns -->
-        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-bottom_small">
+        <div
+          class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-bottom_small"
+        >
           <div class="chart-card">
-            <div class="chart-header" onclick={toggleCampaignChart}>
+            <div
+              class="chart-header"
+              onclick="
+                {
+                  toggleCampaignChart;
+                }
+              "
+            >
               <span class="chart-title">Most Engaged Campaigns</span>
               <lightning-icon
-                icon-name={campaignChartToggleIcon}
+                icon-name="{campaignChartToggleIcon}"
                 size="x-small"
                 alternative-text="Toggle"
               ></lightning-icon>
             </div>
-            <div class={campaignChartSectionClass}>
+            <div class="{campaignChartSectionClass}">
               <div class="campaign-chart-container">
                 <canvas></canvas>
               </div>
@@ -77,15 +113,22 @@
 
       <!-- Most Engaged Assets (full width) -->
       <div class="chart-card slds-m-bottom_small">
-        <div class="chart-header" onclick={toggleAssetChart}>
+        <div
+          class="chart-header"
+          onclick="
+            {
+              toggleAssetChart;
+            }
+          "
+        >
           <span class="chart-title">Most Engaged Assets</span>
           <lightning-icon
-            icon-name={assetChartToggleIcon}
+            icon-name="{assetChartToggleIcon}"
             size="x-small"
             alternative-text="Toggle"
           ></lightning-icon>
         </div>
-        <div class={assetChartSectionClass}>
+        <div class="{assetChartSectionClass}">
           <div class="asset-chart-container">
             <canvas></canvas>
           </div>
@@ -95,57 +138,118 @@
 
     <!-- ── Data Table ─────────────────────────────────────── -->
     <div class="slds-p-horizontal_medium slds-p-bottom_medium">
-      <template lwc:if={chartLoadError}>
-        <div class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small" role="alert">
+      <template lwc:if="{chartLoadError}">
+        <div
+          class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small"
+          role="alert"
+        >
           <span class="slds-assistive-text">Warning</span>
-          <p>Charts could not be rendered. The charting library failed to load.</p>
+          <p>
+            Charts could not be rendered. The charting library failed to load.
+          </p>
         </div>
       </template>
 
-      <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered engagement-table">
-        <thead>
-          <tr class="slds-line-height_reset">
-            <th scope="col" class="sortable-header" data-field="asset" onclick={handleSort}>
-              <span>Asset Name</span>
-              <span class={sortAssetClass}>{sortAssetIcon}</span>
-            </th>
-            <th scope="col" class="sortable-header" data-field="contentType" onclick={handleSort}>
-              <span>Content Type</span>
-              <span class={sortContentTypeClass}>{sortContentTypeIcon}</span>
-            </th>
-            <th scope="col" class="sortable-header" data-field="activityType" onclick={handleSort}>
-              <span>Activity Type</span>
-              <span class={sortActivityTypeClass}>{sortActivityTypeIcon}</span>
-            </th>
-            <th scope="col" class="sortable-header" data-field="campaign" onclick={handleSort}>
-              <span>Campaign</span>
-              <span class={sortCampaignClass}>{sortCampaignIcon}</span>
-            </th>
-            <th scope="col" class="sortable-header" data-field="date" onclick={handleSort}>
-              <span>Date</span>
-              <span class={sortDateClass}>{sortDateIcon}</span>
-            </th>
-          </tr>
-        </thead>
-        <tbody>
-          <template for:each={filteredRows} for:item="row">
-            <tr key={row.id}>
-              <td class="link-cell">{row.asset}</td>
-              <td>{row.contentType}</td>
-              <td>{row.activityType}</td>
-              <td class="link-cell">{row.campaign}</td>
-              <td>{row.date}</td>
+      <div class="eh-table-wrap" style="{tableLinkScopeStyle}">
+        <table
+          class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered engagement-table"
+        >
+          <thead>
+            <tr class="slds-line-height_reset">
+              <th
+                scope="col"
+                class="sortable-header"
+                data-field="asset"
+                onclick="
+                  {
+                    handleSort;
+                  }
+                "
+              >
+                <span>Asset Name</span>
+                <span class="{sortAssetClass}">{sortAssetIcon}</span>
+              </th>
+              <th
+                scope="col"
+                class="sortable-header"
+                data-field="contentType"
+                onclick="
+                  {
+                    handleSort;
+                  }
+                "
+              >
+                <span>Content Type</span>
+                <span class="{sortContentTypeClass}"
+                  >{sortContentTypeIcon}</span
+                >
+              </th>
+              <th
+                scope="col"
+                class="sortable-header"
+                data-field="activityType"
+                onclick="
+                  {
+                    handleSort;
+                  }
+                "
+              >
+                <span>Activity Type</span>
+                <span class="{sortActivityTypeClass}"
+                  >{sortActivityTypeIcon}</span
+                >
+              </th>
+              <th
+                scope="col"
+                class="sortable-header"
+                data-field="campaign"
+                onclick="
+                  {
+                    handleSort;
+                  }
+                "
+              >
+                <span>Campaign</span>
+                <span class="{sortCampaignClass}">{sortCampaignIcon}</span>
+              </th>
+              <th
+                scope="col"
+                class="sortable-header"
+                data-field="date"
+                onclick="
+                  {
+                    handleSort;
+                  }
+                "
+              >
+                <span>Date</span>
+                <span class="{sortDateClass}">{sortDateIcon}</span>
+              </th>
             </tr>
-          </template>
-          <template lwc:if={noRows}>
-            <tr>
-              <td colspan="5" class="slds-text-align_center slds-p-around_medium no-data">
-                No engagement data matches the current filters.
-              </td>
-            </tr>
-          </template>
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            <template for:each="{filteredRows}" for:item="row">
+              <tr key="{row.id}">
+                <td class="link-cell">{row.asset}</td>
+                <td>{row.contentType}</td>
+                <td>{row.activityType}</td>
+                <td class="link-cell">{row.campaign}</td>
+                <td>{row.date}</td>
+              </tr>
+            </template>
+            <template lwc:if="{noRows}">
+              <tr>
+                <td
+                  colspan="5"
+                  class="slds-text-align_center slds-p-around_medium no-data"
+                >
+                  No engagement data matches the current filters.
+                </td>
+              </tr>
+            </template>
+          </tbody>
+        </table>
+      </div>
     </div>
   </lightning-card>
 </template>

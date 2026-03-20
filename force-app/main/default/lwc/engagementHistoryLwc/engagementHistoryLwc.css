@@ -40,7 +40,9 @@
 .chart-body {
   padding: 8px 16px 16px;
   min-height: 180px;
-  transition: max-height 0.2s ease, opacity 0.2s ease;
+  transition:
+    max-height 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .chart-body.hidden {
@@ -88,8 +90,12 @@
   font-weight: 700;
 }
 
+.eh-table-wrap {
+  --eh-table-link-color: #0070d2;
+}
+
 .link-cell {
-  color: #0070d2;
+  color: var(--eh-table-link-color, #0070d2);
 }
 
 .no-data {

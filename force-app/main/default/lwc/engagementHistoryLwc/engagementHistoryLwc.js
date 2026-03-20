@@ -19,6 +19,7 @@ export default class EngagementHistoryLwc extends LightningElement {
   @api lineChartColor = "#0070d2";
   @api barChartColor = "#0070d2";
   @api assetBarColor = "#7b68ee";
+  @api tableLinkColor = "#0070d2";
 
   // Campaign bar data (design-time values — match generator form defaults)
   @api campaign1Name = "My 1st Campaign";
@@ -180,6 +181,11 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   get noRows() {
     return this.filteredRows.length === 0;
+  }
+
+  get tableLinkScopeStyle() {
+    const c = this.tableLinkColor || "#0070d2";
+    return `--eh-table-link-color: ${c}`;
   }
 
   // ── Sort indicator getters ─────────────────────────────────

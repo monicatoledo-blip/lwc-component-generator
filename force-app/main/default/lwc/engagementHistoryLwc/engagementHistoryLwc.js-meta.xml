@@ -50,6 +50,13 @@
         description="Color for the asset bar chart"
       />
             <property
+        name="tableLinkColor"
+        type="String"
+        default="#0070d2"
+        label="Table Link Color"
+        description="Color for Asset Name and Campaign link-style cells"
+      />
+            <property
         name="campaign1Name"
         type="String"
         default="My 1st Campaign"

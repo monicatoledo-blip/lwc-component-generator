@@ -2183,7 +2183,14 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
               <strong>Engagement History (Mock)</strong>. That is the name in
               the palette—not <code>engagementHistoryLwc</code>. Use the builder
               search box if you don’t see it right away. Full steps are under
-              <strong>Deploy</strong> in the sidebar (Step&nbsp;3).
+              <strong>Deploy</strong> in the sidebar (Step&nbsp;3). <br /><br />
+              <strong>Editing mock data in Salesforce:</strong> After you place
+              the component, use the
+              <strong>right-hand properties panel</strong> and
+              <strong>scroll</strong>—there are many fields (chart series + five
+              table rows), not just title and colors. If those rows never
+              appear, <strong>deploy again</strong> from this tool so your org
+              gets the latest component metadata.
             </div>
 
             <!-- Authentication Notice -->
@@ -2748,7 +2755,13 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     viewBox="0 0 24 24"
                     style="margin-right: 10px"
                   >
-                    <rect width="24" height="24" rx="4" fill="#0176D3" />
+                    <rect
+                      id="previewEhHeaderIcon"
+                      width="24"
+                      height="24"
+                      rx="4"
+                      fill="#0176D3"
+                    />
                     <path
                       d="M6 8h12M6 12h8M6 16h10"
                       stroke="#fff"
@@ -3027,6 +3040,55 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
             with just a few clicks.
           </p>
 
+          <div
+            class="palette-names-reference"
+            style="
+              margin: 0 0 24px;
+              padding: 16px 18px;
+              background: #fafaf9;
+              border: 1px solid #dddbda;
+              border-radius: 8px;
+              border-left: 4px solid #0176d3;
+            "
+          >
+            <p style="margin: 0 0 10px; font-weight: 700; color: #181818">
+              Salesforce Custom palette — exact names
+            </p>
+            <p style="margin: 0 0 10px; font-size: 14px; line-height: 1.5">
+              In Lightning App Builder, open the
+              <strong>Custom</strong> section. Each generated component appears
+              under one of these <strong>labels</strong> (not the technical
+              folder name):
+            </p>
+            <ul style="margin: 0 0 12px; padding-left: 22px; line-height: 1.6">
+              <li><strong>Unified Profile</strong></li>
+              <li><strong>Agentforce Lead Brief (Custom)</strong></li>
+              <li><strong>Next Best Actions (Custom)</strong></li>
+              <li><strong>Next Best Leads (Custom)</strong></li>
+              <li>
+                <strong>Engagement History (Mock)</strong>
+                — sorts under <strong>E</strong> (“Engagement…”); use the
+                builder <strong>search</strong> and type
+                <code>Engagement</code> or <code>Mock</code> if you don’t see
+                it.
+              </li>
+            </ul>
+            <p
+              style="
+                margin: 0;
+                font-size: 13px;
+                color: #3e3e3c;
+                line-height: 1.5;
+              "
+            >
+              <strong>Seeing it under “C” instead?</strong> An older package
+              used the label <strong>Contact Engagement History</strong>, which
+              sorts under <strong>C</strong>. Deploy again from this catalog so
+              your org gets <strong>Engagement History (Mock)</strong> and the
+              updated metadata.
+            </p>
+          </div>
+
           <div class="instruction-step">
             <h3>Step 1: Connect to Salesforce</h3>
             <p>
@@ -3075,13 +3137,29 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                   <li><strong>Engagement History (Mock)</strong></li>
                 </ul>
                 <p style="margin-top: 10px; font-size: 14px; color: #3e3e3c">
-                  <strong>Note:</strong> Lightning App Builder shows this
-                  <em>label</em>, not the technical folder name (e.g.
-                  <code>engagementHistoryLwc</code>). Experience Cloud pages use
-                  the same label once the component is deployed with community
-                  targets.
+                  <strong>Note:</strong> The list above includes all five
+                  catalog components. The palette is sorted
+                  <strong>alphabetically by label</strong>—<strong
+                    >Engagement History (Mock)</strong
+                  >
+                  is under <strong>E</strong>. Use search if the list is long.
+                  Technical names like <code>engagementHistoryLwc</code> never
+                  appear in the list. Experience Cloud uses the same labels
+                  after deploy.
                 </p>
                 Drag it onto the page canvas.
+              </li>
+              <li>
+                <strong>Engagement History (Mock):</strong> Select the component
+                on the canvas, then in the
+                <strong>right-hand properties panel</strong>,
+                <strong>scroll down</strong> past the color fields—you should
+                see campaign/asset chart inputs and
+                <strong>Row 1–5</strong> table fields. If you only see the title
+                and a handful of colors, your org is still on an older bundle;
+                run <strong>Deploy to Salesforce</strong> again from this app
+                (or deploy the latest <code>engagementHistoryLwc</code> from
+                your project).
               </li>
               <li>
                 Click <strong>Save</strong> and <strong>Activate</strong>.

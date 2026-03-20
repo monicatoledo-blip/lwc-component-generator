@@ -547,6 +547,7 @@ document.addEventListener("DOMContentLoaded", () => {
       nextBestActionsContainer.style.display = "none";
       nextBestLeadsContainer.style.display = "none";
       engagementHistoryContainer.style.display = "block";
+      updateEngagementHistoryPreview();
     }
 
     // Update deployment instructions
@@ -685,11 +686,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const hexInput = document.getElementById(hexInputId);
 
     if (hexInput) {
-      // Update hex input when color picker changes
-      picker.addEventListener("input", (e) => {
+      function onColorPickerValueChange(e) {
         hexInput.value = e.target.value.toUpperCase();
 
-        // Call appropriate preview function based on active component
         const selectedComponent = componentSelect.value;
         if (selectedComponent === "unifiedProfileLwc") {
           updatePreview();
@@ -702,7 +701,11 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (selectedComponent === "engagementHistoryLwc") {
           updateEngagementHistoryPreview();
         }
-      });
+      }
+
+      // `input` while dragging; `change` when released (some browsers / mobile)
+      picker.addEventListener("input", onColorPickerValueChange);
+      picker.addEventListener("change", onColorPickerValueChange);
 
       // Update color picker when hex input changes
       hexInput.addEventListener("input", (e) => {
@@ -715,7 +718,6 @@ document.addEventListener("DOMContentLoaded", () => {
         if (/^#[0-9A-Fa-f]{6}$/.test(value)) {
           picker.value = value;
 
-          // Call appropriate preview function based on active component
           const selectedComponent = componentSelect.value;
           if (selectedComponent === "unifiedProfileLwc") {
             updatePreview();
@@ -725,9 +727,12 @@ document.addEventListener("DOMContentLoaded", () => {
             updateNbaPreview();
           } else if (selectedComponent === "nextBestLeadsLwc") {
             updateNblPreview();
-          } else if (selectedComponent === "engagementHistoryLwc") {
-            updateEngagementHistoryPreview();
           }
+        }
+        // Engagement History: refresh on every keystroke (uses picker as fallback
+        // while hex is incomplete)
+        if (componentSelect.value === "engagementHistoryLwc") {
+          updateEngagementHistoryPreview();
         }
         // Force uppercase
         e.target.value = value.toUpperCase();
@@ -1203,9 +1208,30 @@ function updateNblPreview() {
   }
 }
 
+/** Read a 6-digit hex color from the named hex field or its paired color picker. */
+function readEngagementHexColor(hexInputId, fallback) {
+  const hexEl = document.getElementById(hexInputId);
+  const picker = document.querySelector(
+    `.color-picker[data-hex="${hexInputId}"]`
+  );
+  let hexVal = hexEl?.value?.trim() || "";
+  if (hexVal && !hexVal.startsWith("#")) {
+    hexVal = `#${hexVal}`;
+  }
+  if (/^#[0-9A-Fa-f]{6}$/.test(hexVal)) {
+    return hexVal.toUpperCase();
+  }
+  const pv = (picker?.value || "").trim();
+  if (/^#[0-9A-Fa-f]{6}$/i.test(pv)) {
+    return pv.toUpperCase();
+  }
+  return fallback;
+}
+
 // Update Engagement History Preview
 function updateEngagementHistoryPreview() {
   const form = document.getElementById("engagementHistoryForm");
+  if (!form) return;
   const formData = new FormData(form);
   const data = Object.fromEntries(formData.entries());
 
@@ -1213,6 +1239,13 @@ function updateEngagementHistoryPreview() {
   const previewCardTitle = document.getElementById("previewEhCardTitle");
   if (data.cardTitle && previewCardTitle) {
     previewCardTitle.textContent = data.cardTitle;
+  }
+
+  // Header icon (accent) — was hardcoded; must match accentColor input
+  const headerIcon = document.getElementById("previewEhHeaderIcon");
+  const accentColor = readEngagementHexColor("ehAccentColorHex", "#0176D3");
+  if (headerIcon) {
+    headerIcon.setAttribute("fill", accentColor);
   }
 
   // Update filter labels
@@ -1226,11 +1259,10 @@ function updateEngagementHistoryPreview() {
   if (data.contentTypeLabel && previewContentType)
     previewContentType.textContent = data.contentTypeLabel;
 
-  // Colors
-  const lineColor = data.lineChartColor || "#1B96FF";
-  const barColor = data.barChartColor || "#0D9DDA";
-  const assetColor = data.assetBarColor || "#04844B";
-  const linkColor = data.tableLinkColor || "#0070D2";
+  const lineColor = readEngagementHexColor("ehLineChartColorHex", "#1B96FF");
+  const barColor = readEngagementHexColor("ehBarChartColorHex", "#0D9DDA");
+  const assetColor = readEngagementHexColor("ehAssetBarColorHex", "#04844B");
+  const linkColor = readEngagementHexColor("ehTableLinkColorHex", "#0070D2");
 
   // Render line chart
   renderEhLineChart(lineColor);
@@ -1307,6 +1339,18 @@ function updateEngagementHistoryPreview() {
   }
 }
 
+function ehHexToRgba(hex, alpha) {
+  const m = /^#([0-9a-f]{6})$/i.exec(hex);
+  if (!m) {
+    return `rgba(27, 150, 255, ${alpha})`;
+  }
+  const n = parseInt(m[1], 16);
+  const r = (n >> 16) & 255;
+  const g = (n >> 8) & 255;
+  const b = n & 255;
+  return `rgba(${r},${g},${b},${alpha})`;
+}
+
 // Render engagement history line chart on canvas
 function renderEhLineChart(color) {
   const canvas = document.getElementById("previewEhLineChart");
@@ -1364,7 +1408,7 @@ function renderEhLineChart(color) {
   ctx.lineTo(padding.left + chartW, h - padding.bottom);
   ctx.lineTo(padding.left, h - padding.bottom);
   ctx.closePath();
-  ctx.fillStyle = color + "1A"; // 10% opacity
+  ctx.fillStyle = ehHexToRgba(color, 0.12);
   ctx.fill();
 
   // Draw dots
