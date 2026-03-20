@@ -42,7 +42,7 @@
             <div class="chart-header" onclick={toggleLineChart}>
               <span class="chart-title">Engagement Over Time</span>
               <lightning-icon
-                icon-name={lineChartCollapsed ? 'utility:chevronright' : 'utility:chevrondown'}
+                icon-name={lineChartToggleIcon}
                 size="x-small"
                 alternative-text="Toggle"
               ></lightning-icon>
@@ -61,7 +61,7 @@
             <div class="chart-header" onclick={toggleCampaignChart}>
               <span class="chart-title">Most Engaged Campaigns</span>
               <lightning-icon
-                icon-name={campaignChartCollapsed ? 'utility:chevronright' : 'utility:chevrondown'}
+                icon-name={campaignChartToggleIcon}
                 size="x-small"
                 alternative-text="Toggle"
               ></lightning-icon>
@@ -80,7 +80,7 @@
         <div class="chart-header" onclick={toggleAssetChart}>
           <span class="chart-title">Most Engaged Assets</span>
           <lightning-icon
-            icon-name={assetChartCollapsed ? 'utility:chevronright' : 'utility:chevrondown'}
+            icon-name={assetChartToggleIcon}
             size="x-small"
             alternative-text="Toggle"
           ></lightning-icon>
@@ -137,7 +137,7 @@
               <td>{row.date}</td>
             </tr>
           </template>
-          <template lwc:if={!hasRows}>
+          <template lwc:if={noRows}>
             <tr>
               <td colspan="5" class="slds-text-align_center slds-p-around_medium no-data">
                 No engagement data matches the current filters.

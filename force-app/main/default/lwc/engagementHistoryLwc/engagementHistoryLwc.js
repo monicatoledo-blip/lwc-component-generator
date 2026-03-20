@@ -177,6 +177,10 @@ export default class EngagementHistoryLwc extends LightningElement {
     return this.filteredRows.length > 0;
   }
 
+  get noRows() {
+    return this.filteredRows.length === 0;
+  }
+
   // ── Sort indicator getters ─────────────────────────────────
   get sortAssetClass() {
     return this.sortField === "asset" ? "sorted" : "";
@@ -239,6 +243,23 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
   get assetChartSectionClass() {
     return this.assetChartCollapsed ? "chart-body hidden" : "chart-body";
+  }
+
+  // ── Toggle icon getters (LWC does not allow ternaries in templates) ──
+  get lineChartToggleIcon() {
+    return this.lineChartCollapsed
+      ? "utility:chevronright"
+      : "utility:chevrondown";
+  }
+  get campaignChartToggleIcon() {
+    return this.campaignChartCollapsed
+      ? "utility:chevronright"
+      : "utility:chevrondown";
+  }
+  get assetChartToggleIcon() {
+    return this.assetChartCollapsed
+      ? "utility:chevronright"
+      : "utility:chevrondown";
   }
 
   // ── Lifecycle ──────────────────────────────────────────────
