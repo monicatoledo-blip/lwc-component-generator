@@ -406,9 +406,10 @@ function getCallbackUrl(req) {
 function createCloudinaryCspXml() {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
-    <context>All</context>
+    <description>Cloudinary CDN for LWC Generator images</description>
     <endpointUrl>https://res.cloudinary.com</endpointUrl>
     <isActive>true</isActive>
+    <isApplicableToImgSrc>true</isApplicableToImgSrc>
 </CspTrustedSite>`;
 }
 
@@ -416,9 +417,10 @@ function createCloudinaryCspXml() {
 function createWebflowCspXml() {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
-    <context>All</context>
+    <description>Webflow CDN for Agentforce icons</description>
     <endpointUrl>https://cdn.prod.website-files.com</endpointUrl>
     <isActive>true</isActive>
+    <isApplicableToImgSrc>true</isApplicableToImgSrc>
 </CspTrustedSite>`;
 }
 
@@ -426,9 +428,10 @@ function createWebflowCspXml() {
 function createSfmcCspXml() {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
-    <context>All</context>
+    <description>Salesforce Marketing Cloud image CDN</description>
     <endpointUrl>https://image.s4.sfmc-content.com</endpointUrl>
     <isActive>true</isActive>
+    <isApplicableToImgSrc>true</isApplicableToImgSrc>
 </CspTrustedSite>`;
 }
 
@@ -436,9 +439,10 @@ function createSfmcCspXml() {
 function createUnsplashCspXml() {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
-    <context>All</context>
+    <description>Unsplash image CDN</description>
     <endpointUrl>https://images.unsplash.com</endpointUrl>
     <isActive>true</isActive>
+    <isApplicableToImgSrc>true</isApplicableToImgSrc>
 </CspTrustedSite>`;
 }
 
@@ -446,9 +450,10 @@ function createUnsplashCspXml() {
 function createDynamicCspXml(url) {
   return `<?xml version="1.0" encoding="UTF-8"?>
 <CspTrustedSite xmlns="http://soap.sforce.com/2006/04/metadata">
-    <context>All</context>
+    <description>Image CDN for LWC component</description>
     <endpointUrl>${url}</endpointUrl>
     <isActive>true</isActive>
+    <isApplicableToImgSrc>true</isApplicableToImgSrc>
 </CspTrustedSite>`;
 }
 
