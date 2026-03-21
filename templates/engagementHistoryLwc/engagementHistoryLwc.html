@@ -10,11 +10,7 @@
             label="Date Range"
             value="{selectedDateRange}"
             options="{dateRangeOptions}"
-            onchange="
-              {
-                handleDateRangeChange;
-              }
-            "
+            onchange={handleDateRangeChange}
             variant="label-stacked"
           ></lightning-combobox>
         </div>
@@ -25,11 +21,7 @@
             label="Campaign"
             value="{selectedCampaign}"
             options="{campaignOptions}"
-            onchange="
-              {
-                handleCampaignChange;
-              }
-            "
+            onchange={handleCampaignChange}
             variant="label-stacked"
           ></lightning-combobox>
         </div>
@@ -40,11 +32,7 @@
             label="Content Type"
             value="{selectedContentType}"
             options="{contentTypeOptions}"
-            onchange="
-              {
-                handleContentTypeChange;
-              }
-            "
+            onchange={handleContentTypeChange}
             variant="label-stacked"
           ></lightning-combobox>
         </div>
@@ -59,11 +47,7 @@
             type="toggle"
             label="Show Campaigns"
             checked="{showCampaigns}"
-            onchange="
-              {
-                handleToggleCampaigns;
-              }
-            "
+            onchange={handleToggleCampaigns}
           ></lightning-input>
         </div>
         <div
@@ -73,11 +57,7 @@
             type="toggle"
             label="Show Assets"
             checked="{showAssets}"
-            onchange="
-              {
-                handleToggleAssets;
-              }
-            "
+            onchange={handleToggleAssets}
           ></lightning-input>
         </div>
         <div
@@ -87,11 +67,7 @@
             type="toggle"
             label="Show Table"
             checked="{showTable}"
-            onchange="
-              {
-                handleToggleTable;
-              }
-            "
+            onchange={handleToggleTable}
           ></lightning-input>
         </div>
       </div>
@@ -104,11 +80,7 @@
         <div class="chart-card slds-m-bottom_small">
           <div
             class="chart-header"
-            onclick="
-              {
-                toggleCampaignChart;
-              }
-            "
+            onclick={toggleCampaignChart}
           >
             <span class="chart-title">Most Engaged Campaigns</span>
             <lightning-icon
@@ -130,11 +102,7 @@
         <div class="chart-card slds-m-bottom_small">
           <div
             class="chart-header"
-            onclick="
-              {
-                toggleAssetChart;
-              }
-            "
+            onclick={toggleAssetChart}
           >
             <span class="chart-title">Most Engaged Assets</span>
             <lightning-icon
@@ -177,11 +145,7 @@
                   scope="col"
                   class="sortable-header"
                   data-field="asset"
-                  onclick="
-                    {
-                      handleSort;
-                    }
-                  "
+                  onclick={handleSort}
                 >
                   <span>Asset Name</span>
                   <span class="{sortAssetClass}">{sortAssetIcon}</span>
@@ -190,11 +154,7 @@
                   scope="col"
                   class="sortable-header"
                   data-field="contentType"
-                  onclick="
-                    {
-                      handleSort;
-                    }
-                  "
+                  onclick={handleSort}
                 >
                   <span>Content Type</span>
                   <span class="{sortContentTypeClass}"
@@ -205,11 +165,7 @@
                   scope="col"
                   class="sortable-header"
                   data-field="activityType"
-                  onclick="
-                    {
-                      handleSort;
-                    }
-                  "
+                  onclick={handleSort}
                 >
                   <span>Activity Type</span>
                   <span class="{sortActivityTypeClass}"
@@ -220,11 +176,7 @@
                   scope="col"
                   class="sortable-header"
                   data-field="campaign"
-                  onclick="
-                    {
-                      handleSort;
-                    }
-                  "
+                  onclick={handleSort}
                 >
                   <span>Campaign</span>
                   <span class="{sortCampaignClass}">{sortCampaignIcon}</span>
@@ -233,11 +185,7 @@
                   scope="col"
                   class="sortable-header"
                   data-field="date"
-                  onclick="
-                    {
-                      handleSort;
-                    }
-                  "
+                  onclick={handleSort}
                 >
                   <span>Date</span>
                   <span class="{sortDateClass}">{sortDateIcon}</span>

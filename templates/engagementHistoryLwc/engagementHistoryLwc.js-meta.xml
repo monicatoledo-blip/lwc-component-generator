@@ -29,13 +29,6 @@
         description="Primary accent color for charts and links"
       />
             <property
-        name="lineChartColor"
-        type="String"
-        default="{{{lineChartColor}}}"
-        label="Line Chart Color"
-        description="Color for the Engagement Over Time line chart"
-      />
-            <property
         name="barChartColor"
         type="String"
         default="{{{barChartColor}}}"
@@ -55,6 +48,27 @@
         default="{{{tableLinkColor}}}"
         label="Table Link Color"
         description="Color for Asset Name and Campaign link-style cells"
+      />
+            <property
+        name="showCampaigns"
+        type="Boolean"
+        default="true"
+        label="Show Most Engaged Campaigns"
+        description="Toggle visibility of the Most Engaged Campaigns chart"
+      />
+            <property
+        name="showAssets"
+        type="Boolean"
+        default="true"
+        label="Show Most Engaged Assets"
+        description="Toggle visibility of the Most Engaged Assets chart"
+      />
+            <property
+        name="showTable"
+        type="Boolean"
+        default="true"
+        label="Show Data Table"
+        description="Toggle visibility of the engagement data table"
       />
             <property
         name="campaign1Name"

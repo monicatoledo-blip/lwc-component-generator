@@ -9,3 +9,6 @@
 .vscode
 
 coverage/
+
+# Handlebars templates - do not format (causes LWC1043 errors)
+templates/
