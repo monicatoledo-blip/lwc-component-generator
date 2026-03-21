@@ -65,6 +65,9 @@ export default class EngagementHistoryLwc extends LightningElement {
   // ── Configurable properties ────────────────────────────────
   @api cardTitle = "Engagement History";
 
+  /** @deprecated Flexipages still pass this; component does not read it (fixed SF blue for header icon). */
+  @api accentColor = "#0176d3";
+
   @api barChartColor = "#0176d3";
   @api assetBarColor = "#2e844a";
   @api tableLinkColor = "#0070d2";
