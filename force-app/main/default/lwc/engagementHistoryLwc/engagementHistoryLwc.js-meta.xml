@@ -50,27 +50,6 @@
         description="Color for Asset Name and Campaign link-style cells"
       />
             <property
-        name="showCampaigns"
-        type="Boolean"
-        default="true"
-        label="Show Most Engaged Campaigns"
-        description="Toggle visibility of the Most Engaged Campaigns chart"
-      />
-            <property
-        name="showAssets"
-        type="Boolean"
-        default="true"
-        label="Show Most Engaged Assets"
-        description="Toggle visibility of the Most Engaged Assets chart"
-      />
-            <property
-        name="showTable"
-        type="Boolean"
-        default="true"
-        label="Show Data Table"
-        description="Toggle visibility of the engagement data table"
-      />
-            <property
         name="campaign1Name"
         type="String"
         default="{{{campaign1Name}}}"

@@ -78,7 +78,7 @@ export default class EngagementHistoryLwc extends LightningElement {
   selectedCampaign = "all";
   selectedContentType = "all";
 
-  // Toggle visibility
+  // Section visibility (internal state)
   showCampaigns = true;
   showAssets = true;
   showTable = true;
