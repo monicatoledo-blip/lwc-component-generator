@@ -92,31 +92,31 @@ export default class EngagementHistoryLwc extends LightningElement {
   @api row1ContentType = "eBook";
   @api row1ActivityType = "Download";
   @api row1Campaign = "Q3 Wealth Management Webinar";
-  @api row1Date = "2026/3/15 14:22";
+  @api row1Date = "03/15/2026 2:22 PM";
 
   @api row2Asset = "Investment Portfolio Guide";
   @api row2ContentType = "Whitepaper";
   @api row2ActivityType = "Download";
   @api row2Campaign = "High Net Worth Prospect Outreach";
-  @api row2Date = "2026/3/14 09:18";
+  @api row2Date = "03/14/2026 9:18 AM";
 
   @api row3Asset = "HNW Client Onboarding Email";
   @api row3ContentType = "Email";
   @api row3ActivityType = "Email Click";
   @api row3Campaign = "High Net Worth Prospect Outreach";
-  @api row3Date = "2026/3/12 16:45";
+  @api row3Date = "03/12/2026 4:45 PM";
 
   @api row4Asset = "Retirement Calculator Landing Page";
   @api row4ContentType = "Landing Page";
   @api row4ActivityType = "Form Submit";
   @api row4Campaign = "Retirement Planning Drip Campaign";
-  @api row4Date = "2026/3/10 11:30";
+  @api row4Date = "03/10/2026 11:30 AM";
 
   @api row5Asset = "Q3 Webinar Registration";
   @api row5ContentType = "Webinar";
   @api row5ActivityType = "Registration";
   @api row5Campaign = "Q3 Wealth Management Webinar";
-  @api row5Date = "2026/3/08 13:55";
+  @api row5Date = "03/08/2026 1:55 PM";
 
   // ── Internal state (primitives → reactive without @track) ──
   _chartScriptRequested = false;
@@ -653,8 +653,41 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   _parseDate(str) {
     if (!str) return null;
-    // Handle "YYYY/M/DD HH:mm" and standard formats
-    const normalised = str.replace(/\//g, "-");
+    const s = String(str).trim();
+
+    // mm/dd/yyyy h:mm AM|PM (preferred mock format)
+    const us12 =
+      /^(\d{1,2})\/(\d{1,2})\/(\d{4})\s+(\d{1,2}):(\d{2})\s*(AM|PM)$/i.exec(s);
+    if (us12) {
+      const month = parseInt(us12[1], 10) - 1;
+      const day = parseInt(us12[2], 10);
+      const year = parseInt(us12[3], 10);
+      let hour = parseInt(us12[4], 10);
+      const minute = parseInt(us12[5], 10);
+      const ap = us12[6].toUpperCase();
+      if (ap === "PM" && hour !== 12) {
+        hour += 12;
+      }
+      if (ap === "AM" && hour === 12) {
+        hour = 0;
+      }
+      const d = new Date(year, month, day, hour, minute, 0, 0);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    // Legacy: yyyy/m/d HH:mm (24-hour)
+    const legacy = /^(\d{4})\/(\d{1,2})\/(\d{1,2})\s+(\d{1,2}):(\d{2})/.exec(s);
+    if (legacy) {
+      const year = parseInt(legacy[1], 10);
+      const month = parseInt(legacy[2], 10) - 1;
+      const day = parseInt(legacy[3], 10);
+      const hour = parseInt(legacy[4], 10);
+      const minute = parseInt(legacy[5], 10);
+      const d = new Date(year, month, day, hour, minute, 0, 0);
+      return isNaN(d.getTime()) ? null : d;
+    }
+
+    const normalised = s.replace(/\//g, "-");
     const d = new Date(normalised);
     return isNaN(d.getTime()) ? null : d;
   }
