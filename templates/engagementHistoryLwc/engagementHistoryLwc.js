@@ -1,4 +1,9 @@
-// engagementHistoryLwc.js — v2.1.0 chart-polish
+// engagementHistoryLwc.js — v2.2.0 reactivity-lwb
+/*
+ * Reactivity: toggles, comboboxes, and sort use primitive class fields (default LWC reactivity).
+ * Chart redraw runs in renderedCallback after each render so DOM and filteredRows stay in sync.
+ * Locker: canvases are resolved only via this.template.querySelector (never document.*).
+ */
 import { LightningElement, api } from "lwc";
 import { loadScript } from "lightning/platformResourceLoader";
 import ChartJs from "@salesforce/resourceUrl/ChartJs";
@@ -113,7 +118,7 @@ export default class EngagementHistoryLwc extends LightningElement {
   @api row5Campaign = "Q3 Wealth Management Webinar";
   @api row5Date = "2026/3/08 13:55";
 
-  // ── Internal state ─────────────────────────────────────────
+  // ── Internal state (primitives → reactive without @track) ──
   _chartScriptRequested = false;
   _chartsReady = false;
   chartLoadError = false;
@@ -122,7 +127,7 @@ export default class EngagementHistoryLwc extends LightningElement {
   selectedCampaign = "all";
   selectedContentType = "all";
 
-  // Section visibility (internal state)
+  /** Section visibility — bound to lightning-input toggles; drives if:true templates. */
   showCampaigns = true;
   showAssets = true;
   showTable = true;
@@ -308,6 +313,7 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Lifecycle ──────────────────────────────────────────────
+  /** After any reactive update, sync Chart.js with current template + filtered data. */
   renderedCallback() {
     if (!this._chartScriptRequested) {
       this._chartScriptRequested = true;
@@ -327,20 +333,17 @@ export default class EngagementHistoryLwc extends LightningElement {
     }
   }
 
-  // ── Event handlers ─────────────────────────────────────────
+  // ── Event handlers (assign reactive primitives; renderedCallback redraws charts) ──
   handleDateRangeChange(event) {
     this.selectedDateRange = event.detail.value;
-    this._renderAllCharts();
   }
 
   handleCampaignChange(event) {
     this.selectedCampaign = event.detail.value;
-    this._renderAllCharts();
   }
 
   handleContentTypeChange(event) {
     this.selectedContentType = event.detail.value;
-    this._renderAllCharts();
   }
 
   handleSort(event) {
@@ -355,18 +358,10 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   handleToggleCampaigns(event) {
     this.showCampaigns = event.detail.checked;
-    if (this.showCampaigns && this._chartsReady) {
-      // eslint-disable-next-line @lwc/lwc/no-async-operation
-      setTimeout(() => this._renderCampaignChart(), 50);
-    }
   }
 
   handleToggleAssets(event) {
     this.showAssets = event.detail.checked;
-    if (this.showAssets && this._chartsReady) {
-      // eslint-disable-next-line @lwc/lwc/no-async-operation
-      setTimeout(() => this._renderAssetChart(), 50);
-    }
   }
 
   handleToggleTable(event) {
@@ -375,18 +370,10 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   toggleCampaignChart() {
     this.campaignChartCollapsed = !this.campaignChartCollapsed;
-    if (!this.campaignChartCollapsed) {
-      // eslint-disable-next-line @lwc/lwc/no-async-operation
-      setTimeout(() => this._renderCampaignChart(), 50);
-    }
   }
 
   toggleAssetChart() {
     this.assetChartCollapsed = !this.assetChartCollapsed;
-    if (!this.assetChartCollapsed) {
-      // eslint-disable-next-line @lwc/lwc/no-async-operation
-      setTimeout(() => this._renderAssetChart(), 50);
-    }
   }
 
   // ── Chart rendering ────────────────────────────────────────
@@ -396,11 +383,19 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   _renderCampaignChart() {
-    if (this.campaignChartCollapsed) return;
+    if (this.campaignChartCollapsed) {
+      return;
+    }
     const canvas = this.template.querySelector(
       ".campaign-chart-container canvas"
     );
-    if (!canvas) return;
+    if (!canvas) {
+      if (this.campaignChart) {
+        this.campaignChart.destroy();
+        this.campaignChart = null;
+      }
+      return;
+    }
 
     if (this.campaignChart) {
       this.campaignChart.destroy();
@@ -508,9 +503,17 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   _renderAssetChart() {
-    if (this.assetChartCollapsed) return;
+    if (this.assetChartCollapsed) {
+      return;
+    }
     const canvas = this.template.querySelector(".asset-chart-container canvas");
-    if (!canvas) return;
+    if (!canvas) {
+      if (this.assetChart) {
+        this.assetChart.destroy();
+        this.assetChart = null;
+      }
+      return;
+    }
 
     if (this.assetChart) {
       this.assetChart.destroy();

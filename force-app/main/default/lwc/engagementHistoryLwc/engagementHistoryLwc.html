@@ -1,5 +1,5 @@
 <template>
-  <lightning-card title="{cardTitle}" icon-name="standard:metrics">
+  <lightning-card title={cardTitle} icon-name="standard:metrics">
     <!-- ── Filter Bar & Toggle Controls ──────────────────── -->
     <div class="filter-bar slds-p-around_small">
       <div class="slds-grid slds-gutters slds-wrap">
@@ -8,8 +8,8 @@
         >
           <lightning-combobox
             label="Date Range"
-            value="{selectedDateRange}"
-            options="{dateRangeOptions}"
+            value={selectedDateRange}
+            options={dateRangeOptions}
             onchange={handleDateRangeChange}
             variant="label-stacked"
           ></lightning-combobox>
@@ -19,8 +19,8 @@
         >
           <lightning-combobox
             label="Campaign"
-            value="{selectedCampaign}"
-            options="{campaignOptions}"
+            value={selectedCampaign}
+            options={campaignOptions}
             onchange={handleCampaignChange}
             variant="label-stacked"
           ></lightning-combobox>
@@ -30,8 +30,8 @@
         >
           <lightning-combobox
             label="Content Type"
-            value="{selectedContentType}"
-            options="{contentTypeOptions}"
+            value={selectedContentType}
+            options={contentTypeOptions}
             onchange={handleContentTypeChange}
             variant="label-stacked"
           ></lightning-combobox>
@@ -46,7 +46,7 @@
           <lightning-input
             type="toggle"
             label="Show Campaigns"
-            checked="{showCampaigns}"
+            checked={showCampaigns}
             onchange={handleToggleCampaigns}
           ></lightning-input>
         </div>
@@ -56,7 +56,7 @@
           <lightning-input
             type="toggle"
             label="Show Assets"
-            checked="{showAssets}"
+            checked={showAssets}
             onchange={handleToggleAssets}
           ></lightning-input>
         </div>
@@ -66,27 +66,26 @@
           <lightning-input
             type="toggle"
             label="Show Table"
-            checked="{showTable}"
+            checked={showTable}
             onchange={handleToggleTable}
           ></lightning-input>
         </div>
       </div>
     </div>
 
-    <!-- ── Charts Section ─────────────────────────────────── -->
+    <!-- ── Charts Section (if:true removes nodes so flex reflows in LWB / preview) ── -->
     <div class="slds-p-around_medium charts-container">
-      <!-- Most Engaged Campaigns -->
-      <template lwc:if="{showCampaigns}">
+      <template if:true={showCampaigns}>
         <div class="chart-card slds-m-bottom_small">
           <div class="chart-header" onclick={toggleCampaignChart}>
             <span class="chart-title">Most Engaged Campaigns</span>
             <lightning-icon
-              icon-name="{campaignChartToggleIcon}"
+              icon-name={campaignChartToggleIcon}
               size="x-small"
               alternative-text="Toggle"
             ></lightning-icon>
           </div>
-          <div class="{campaignChartSectionClass}">
+          <div class={campaignChartSectionClass}>
             <div class="campaign-chart-container">
               <canvas></canvas>
             </div>
@@ -94,18 +93,17 @@
         </div>
       </template>
 
-      <!-- Most Engaged Assets -->
-      <template lwc:if="{showAssets}">
+      <template if:true={showAssets}>
         <div class="chart-card slds-m-bottom_small">
           <div class="chart-header" onclick={toggleAssetChart}>
             <span class="chart-title">Most Engaged Assets</span>
             <lightning-icon
-              icon-name="{assetChartToggleIcon}"
+              icon-name={assetChartToggleIcon}
               size="x-small"
               alternative-text="Toggle"
             ></lightning-icon>
           </div>
-          <div class="{assetChartSectionClass}">
+          <div class={assetChartSectionClass}>
             <div class="asset-chart-container">
               <canvas></canvas>
             </div>
@@ -115,9 +113,9 @@
     </div>
 
     <!-- ── Data Table ─────────────────────────────────────── -->
-    <template lwc:if="{showTable}">
+    <template if:true={showTable}>
       <div class="slds-p-horizontal_medium slds-p-bottom_medium">
-        <template lwc:if="{chartLoadError}">
+        <template if:true={chartLoadError}>
           <div
             class="slds-notify slds-notify_alert slds-alert_warning slds-m-bottom_small"
             role="alert"
@@ -129,7 +127,7 @@
           </div>
         </template>
 
-        <div class="eh-table-wrap" style="{tableLinkScopeStyle}">
+        <div class="eh-table-wrap" style={tableLinkScopeStyle}>
           <table
             class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_col-bordered engagement-table"
           >
@@ -142,7 +140,7 @@
                   onclick={handleSort}
                 >
                   <span>Asset Name</span>
-                  <span class="{sortAssetClass}">{sortAssetIcon}</span>
+                  <span class={sortAssetClass}>{sortAssetIcon}</span>
                 </th>
                 <th
                   scope="col"
@@ -151,7 +149,7 @@
                   onclick={handleSort}
                 >
                   <span>Content Type</span>
-                  <span class="{sortContentTypeClass}"
+                  <span class={sortContentTypeClass}
                     >{sortContentTypeIcon}</span
                   >
                 </th>
@@ -162,7 +160,7 @@
                   onclick={handleSort}
                 >
                   <span>Activity Type</span>
-                  <span class="{sortActivityTypeClass}"
+                  <span class={sortActivityTypeClass}
                     >{sortActivityTypeIcon}</span
                   >
                 </th>
@@ -173,7 +171,7 @@
                   onclick={handleSort}
                 >
                   <span>Campaign</span>
-                  <span class="{sortCampaignClass}">{sortCampaignIcon}</span>
+                  <span class={sortCampaignClass}>{sortCampaignIcon}</span>
                 </th>
                 <th
                   scope="col"
@@ -182,13 +180,13 @@
                   onclick={handleSort}
                 >
                   <span>Date</span>
-                  <span class="{sortDateClass}">{sortDateIcon}</span>
+                  <span class={sortDateClass}>{sortDateIcon}</span>
                 </th>
               </tr>
             </thead>
             <tbody>
-              <template for:each="{filteredRows}" for:item="row">
-                <tr key="{row.id}">
+              <template for:each={filteredRows} for:item="row">
+                <tr key={row.id}>
                   <td class="link-cell">{row.asset}</td>
                   <td>{row.contentType}</td>
                   <td>{row.activityType}</td>
@@ -196,7 +194,7 @@
                   <td>{row.date}</td>
                 </tr>
               </template>
-              <template lwc:if="{noRows}">
+              <template if:true={noRows}>
                 <tr>
                   <td
                     colspan="5"
