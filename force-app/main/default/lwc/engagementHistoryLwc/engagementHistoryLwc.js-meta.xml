@@ -22,13 +22,6 @@
         description="Title displayed at the top of the component"
       />
             <property
-        name="accentColor"
-        type="String"
-        default="{{{accentColor}}}"
-        label="Accent Color"
-        description="Primary accent color for charts and links"
-      />
-            <property
         name="barChartColor"
         type="String"
         default="{{{barChartColor}}}"
