@@ -69,10 +69,6 @@ export default class EngagementHistoryLwc extends LightningElement {
   @api row5Campaign = "Q3 Wealth Management Webinar";
   @api row5Date = "2026/3/08 13:55";
 
-  // Line chart configuration
-  @api lineChartTrend = "upward"; // "upward" or "downward"
-  @api lineChartColor = "#0070d2";
-
   // ── Internal state ─────────────────────────────────────────
   _chartScriptRequested = false;
   _chartsReady = false;
@@ -82,16 +78,15 @@ export default class EngagementHistoryLwc extends LightningElement {
   selectedCampaign = "all";
   selectedContentType = "all";
 
-  // Internal tracked properties for line chart
-  _currentTrend = "upward";
-  _currentLineColor = "#0070d2";
+  // Toggle visibility
+  showCampaigns = true;
+  showAssets = true;
+  showTable = true;
 
-  lineChart = null;
   campaignChart = null;
   assetChart = null;
 
   // Collapsible chart sections
-  lineChartCollapsed = false;
   campaignChartCollapsed = false;
   assetChartCollapsed = false;
 
@@ -102,13 +97,6 @@ export default class EngagementHistoryLwc extends LightningElement {
   // ── Dropdown options ───────────────────────────────────────
   get dateRangeOptions() {
     return DATE_RANGE_OPTIONS;
-  }
-
-  get trendOptions() {
-    return [
-      { label: "Trending Upward", value: "upward" },
-      { label: "Trending Downward", value: "downward" }
-    ];
   }
 
   get campaignOptions() {
@@ -202,18 +190,6 @@ export default class EngagementHistoryLwc extends LightningElement {
     return `--eh-table-link-color: ${c}`;
   }
 
-  get colorPreviewStyle() {
-    return `background-color: ${this._currentLineColor}`;
-  }
-
-  get currentTrend() {
-    return this._currentTrend || this.lineChartTrend || "upward";
-  }
-
-  get currentLineColor() {
-    return this._currentLineColor || this.lineChartColor || "#0070d2";
-  }
-
   // ── Sort indicator getters ─────────────────────────────────
   get sortAssetClass() {
     return this.sortField === "asset" ? "sorted" : "";
@@ -268,9 +244,6 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Collapse toggles ──────────────────────────────────────
-  get lineChartSectionClass() {
-    return this.lineChartCollapsed ? "chart-body hidden" : "chart-body";
-  }
   get campaignChartSectionClass() {
     return this.campaignChartCollapsed ? "chart-body hidden" : "chart-body";
   }
@@ -279,11 +252,6 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Toggle icon getters (LWC does not allow ternaries in templates) ──
-  get lineChartToggleIcon() {
-    return this.lineChartCollapsed
-      ? "utility:chevronright"
-      : "utility:chevrondown";
-  }
   get campaignChartToggleIcon() {
     return this.campaignChartCollapsed
       ? "utility:chevronright"
@@ -296,12 +264,6 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Lifecycle ──────────────────────────────────────────────
-  connectedCallback() {
-    // Initialize internal properties from @api properties
-    this._currentTrend = this.lineChartTrend || "upward";
-    this._currentLineColor = this.lineChartColor || "#0070d2";
-  }
-
   renderedCallback() {
     if (!this._chartScriptRequested) {
       this._chartScriptRequested = true;
@@ -347,12 +309,24 @@ export default class EngagementHistoryLwc extends LightningElement {
     }
   }
 
-  toggleLineChart() {
-    this.lineChartCollapsed = !this.lineChartCollapsed;
-    if (!this.lineChartCollapsed) {
+  handleToggleCampaigns(event) {
+    this.showCampaigns = event.detail.checked;
+    if (this.showCampaigns && this._chartsReady) {
       // eslint-disable-next-line @lwc/lwc/no-async-operation
-      setTimeout(() => this._renderLineChart(), 50);
+      setTimeout(() => this._renderCampaignChart(), 50);
     }
+  }
+
+  handleToggleAssets(event) {
+    this.showAssets = event.detail.checked;
+    if (this.showAssets && this._chartsReady) {
+      // eslint-disable-next-line @lwc/lwc/no-async-operation
+      setTimeout(() => this._renderAssetChart(), 50);
+    }
+  }
+
+  handleToggleTable(event) {
+    this.showTable = event.detail.checked;
   }
 
   toggleCampaignChart() {
@@ -373,144 +347,8 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   // ── Chart rendering ────────────────────────────────────────
   _renderAllCharts() {
-    this._renderLineChart();
     this._renderCampaignChart();
     this._renderAssetChart();
-  }
-
-  _renderLineChart() {
-    if (this.lineChartCollapsed) return;
-    const canvas = this.template.querySelector(".line-chart-container canvas");
-    if (!canvas) return;
-
-    if (this.lineChart) {
-      this.lineChart.destroy();
-    }
-
-    // Predefined trend data
-    const labels = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday"
-    ];
-    const trendData = {
-      upward: [12, 28, 45, 68, 95, 135, 188],
-      downward: [188, 152, 118, 85, 58, 32, 15]
-    };
-    const dataValues = trendData[this.currentTrend] || trendData.upward;
-
-    // Convert hex color to rgba for gradient
-    const hexToRgba = (hex, alpha) => {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    };
-
-    const ctx = canvas.getContext("2d");
-
-    // Create gradient for area fill
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, hexToRgba(this.currentLineColor, 0.3));
-    gradient.addColorStop(1, hexToRgba(this.currentLineColor, 0.01));
-
-    this.lineChart = new window.Chart(ctx, {
-      type: "line",
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: "Engagement",
-            data: dataValues,
-            borderColor: this.currentLineColor,
-            backgroundColor: gradient,
-            fill: true,
-            tension: 0.4,
-            borderWidth: 3,
-            pointRadius: 0,
-            pointHoverRadius: 8,
-            pointHoverBackgroundColor: "#ffffff",
-            pointHoverBorderColor: this.currentLineColor,
-            pointHoverBorderWidth: 3
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        layout: {
-          padding: {
-            left: 8,
-            right: 8,
-            top: 20,
-            bottom: 8
-          }
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            enabled: true,
-            mode: "index",
-            intersect: false,
-            backgroundColor: "rgba(0, 0, 0, 0.85)",
-            padding: 14,
-            titleFont: { size: 14, weight: "600" },
-            bodyFont: { size: 13 },
-            displayColors: false,
-            borderColor: this.currentLineColor,
-            borderWidth: 2,
-            cornerRadius: 8,
-            callbacks: {
-              label: function (context) {
-                return "Engagement: " + context.parsed.y;
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: {
-              display: false,
-              drawBorder: false
-            },
-            ticks: {
-              font: { size: 11, weight: "500" },
-              padding: 10,
-              color: "#6b7280"
-            }
-          },
-          y: {
-            beginAtZero: true,
-            grid: {
-              display: true,
-              drawBorder: false,
-              color: "rgba(0, 0, 0, 0.03)",
-              lineWidth: 1
-            },
-            ticks: {
-              font: { size: 11, weight: "500" },
-              padding: 12,
-              color: "#6b7280",
-              callback: function (value) {
-                return value;
-              }
-            }
-          }
-        },
-        interaction: {
-          mode: "index",
-          intersect: false
-        },
-        animation: {
-          duration: 750,
-          easing: "easeInOutQuart"
-        }
-      }
-    });
   }
 
   _renderCampaignChart() {
@@ -771,20 +609,5 @@ export default class EngagementHistoryLwc extends LightningElement {
       .split(",")
       .map((s) => s.trim())
       .filter((s) => s);
-  }
-
-  // ── Line Chart Configuration Handlers ──────────────────────
-  handleTrendChange(event) {
-    this._currentTrend = event.detail.value;
-    if (this._chartsReady) {
-      this._renderLineChart();
-    }
-  }
-
-  handleLineColorChange(event) {
-    this._currentLineColor = event.target.value;
-    if (this._chartsReady) {
-      this._renderLineChart();
-    }
   }
 }

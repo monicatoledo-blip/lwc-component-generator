@@ -1,4 +1,4 @@
-// engagementHistoryLwc.js — v2.0.0
+// engagementHistoryLwc.js — v2.0.0 fix-engagement-history
 import { LightningElement, api } from "lwc";
 import { loadScript } from "lightning/platformResourceLoader";
 import ChartJs from "@salesforce/resourceUrl/ChartJs";
@@ -13,65 +13,61 @@ const DATE_RANGE_OPTIONS = [
 
 export default class EngagementHistoryLwc extends LightningElement {
   // ── Configurable properties ────────────────────────────────
-  @api cardTitle = "{{{cardTitle}}}";
+  @api cardTitle = "Engagement History";
 
-  @api accentColor = "{{{accentColor}}}";
-  @api barChartColor = "{{{barChartColor}}}";
-  @api assetBarColor = "{{{assetBarColor}}}";
-  @api tableLinkColor = "{{{tableLinkColor}}}";
+  @api accentColor = "#0070d2";
+  @api barChartColor = "#0070d2";
+  @api assetBarColor = "#7b68ee";
+  @api tableLinkColor = "#0070d2";
 
-  // Campaign bar data (design-time values injected by generator)
-  @api campaign1Name = "{{{campaign1Name}}}";
-  @api campaign1Value = "{{{campaign1Value}}}";
-  @api campaign2Name = "{{{campaign2Name}}}";
-  @api campaign2Value = "{{{campaign2Value}}}";
-  @api campaign3Name = "{{{campaign3Name}}}";
-  @api campaign3Value = "{{{campaign3Value}}}";
+  // Campaign bar data (design-time values — match generator form defaults)
+  @api campaign1Name = "Q3 Wealth Management Webinar";
+  @api campaign1Value = "28";
+  @api campaign2Name = "High Net Worth Prospect Outreach";
+  @api campaign2Value = "19";
+  @api campaign3Name = "Retirement Planning Drip Campaign";
+  @api campaign3Value = "12";
 
   // Asset bar data
-  @api asset1Name = "{{{asset1Name}}}";
-  @api asset1Value = "{{{asset1Value}}}";
-  @api asset2Name = "{{{asset2Name}}}";
-  @api asset2Value = "{{{asset2Value}}}";
-  @api asset3Name = "{{{asset3Name}}}";
-  @api asset3Value = "{{{asset3Value}}}";
-  @api asset4Name = "{{{asset4Name}}}";
-  @api asset4Value = "{{{asset4Value}}}";
+  @api asset1Name = "Wealth Management eBook";
+  @api asset1Value = "15";
+  @api asset2Name = "Investment Portfolio Guide";
+  @api asset2Value = "12";
+  @api asset3Name = "HNW Client Onboarding Email";
+  @api asset3Value = "9";
+  @api asset4Name = "Retirement Calculator Landing Page";
+  @api asset4Value = "6";
 
   // Table row data
-  @api row1Asset = "{{{row1Asset}}}";
-  @api row1ContentType = "{{{row1ContentType}}}";
-  @api row1ActivityType = "{{{row1ActivityType}}}";
-  @api row1Campaign = "{{{row1Campaign}}}";
-  @api row1Date = "{{{row1Date}}}";
+  @api row1Asset = "Wealth Management eBook";
+  @api row1ContentType = "eBook";
+  @api row1ActivityType = "Download";
+  @api row1Campaign = "Q3 Wealth Management Webinar";
+  @api row1Date = "2026/3/15 14:22";
 
-  @api row2Asset = "{{{row2Asset}}}";
-  @api row2ContentType = "{{{row2ContentType}}}";
-  @api row2ActivityType = "{{{row2ActivityType}}}";
-  @api row2Campaign = "{{{row2Campaign}}}";
-  @api row2Date = "{{{row2Date}}}";
+  @api row2Asset = "Investment Portfolio Guide";
+  @api row2ContentType = "Whitepaper";
+  @api row2ActivityType = "Download";
+  @api row2Campaign = "High Net Worth Prospect Outreach";
+  @api row2Date = "2026/3/14 09:18";
 
-  @api row3Asset = "{{{row3Asset}}}";
-  @api row3ContentType = "{{{row3ContentType}}}";
-  @api row3ActivityType = "{{{row3ActivityType}}}";
-  @api row3Campaign = "{{{row3Campaign}}}";
-  @api row3Date = "{{{row3Date}}}";
+  @api row3Asset = "HNW Client Onboarding Email";
+  @api row3ContentType = "Email";
+  @api row3ActivityType = "Email Click";
+  @api row3Campaign = "High Net Worth Prospect Outreach";
+  @api row3Date = "2026/3/12 16:45";
 
-  @api row4Asset = "{{{row4Asset}}}";
-  @api row4ContentType = "{{{row4ContentType}}}";
-  @api row4ActivityType = "{{{row4ActivityType}}}";
-  @api row4Campaign = "{{{row4Campaign}}}";
-  @api row4Date = "{{{row4Date}}}";
+  @api row4Asset = "Retirement Calculator Landing Page";
+  @api row4ContentType = "Landing Page";
+  @api row4ActivityType = "Form Submit";
+  @api row4Campaign = "Retirement Planning Drip Campaign";
+  @api row4Date = "2026/3/10 11:30";
 
-  @api row5Asset = "{{{row5Asset}}}";
-  @api row5ContentType = "{{{row5ContentType}}}";
-  @api row5ActivityType = "{{{row5ActivityType}}}";
-  @api row5Campaign = "{{{row5Campaign}}}";
-  @api row5Date = "{{{row5Date}}}";
-
-  // Line chart configuration
-  @api lineChartTrend = "{{{lineChartTrend}}}";
-  @api lineChartColor = "{{{lineChartColor}}}";
+  @api row5Asset = "Q3 Webinar Registration";
+  @api row5ContentType = "Webinar";
+  @api row5ActivityType = "Registration";
+  @api row5Campaign = "Q3 Wealth Management Webinar";
+  @api row5Date = "2026/3/08 13:55";
 
   // ── Internal state ─────────────────────────────────────────
   _chartScriptRequested = false;
@@ -82,16 +78,15 @@ export default class EngagementHistoryLwc extends LightningElement {
   selectedCampaign = "all";
   selectedContentType = "all";
 
-  // Internal tracked properties for line chart
-  _currentTrend = "upward";
-  _currentLineColor = "#0070d2";
+  // Toggle visibility
+  showCampaigns = true;
+  showAssets = true;
+  showTable = true;
 
-  lineChart = null;
   campaignChart = null;
   assetChart = null;
 
   // Collapsible chart sections
-  lineChartCollapsed = false;
   campaignChartCollapsed = false;
   assetChartCollapsed = false;
 
@@ -102,13 +97,6 @@ export default class EngagementHistoryLwc extends LightningElement {
   // ── Dropdown options ───────────────────────────────────────
   get dateRangeOptions() {
     return DATE_RANGE_OPTIONS;
-  }
-
-  get trendOptions() {
-    return [
-      { label: "Trending Upward", value: "upward" },
-      { label: "Trending Downward", value: "downward" }
-    ];
   }
 
   get campaignOptions() {
@@ -202,18 +190,6 @@ export default class EngagementHistoryLwc extends LightningElement {
     return `--eh-table-link-color: ${c}`;
   }
 
-  get colorPreviewStyle() {
-    return `background-color: ${this._currentLineColor}`;
-  }
-
-  get currentTrend() {
-    return this._currentTrend || this.lineChartTrend || "upward";
-  }
-
-  get currentLineColor() {
-    return this._currentLineColor || this.lineChartColor || "#0070d2";
-  }
-
   // ── Sort indicator getters ─────────────────────────────────
   get sortAssetClass() {
     return this.sortField === "asset" ? "sorted" : "";
@@ -268,9 +244,6 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Collapse toggles ──────────────────────────────────────
-  get lineChartSectionClass() {
-    return this.lineChartCollapsed ? "chart-body hidden" : "chart-body";
-  }
   get campaignChartSectionClass() {
     return this.campaignChartCollapsed ? "chart-body hidden" : "chart-body";
   }
@@ -279,11 +252,6 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Toggle icon getters (LWC does not allow ternaries in templates) ──
-  get lineChartToggleIcon() {
-    return this.lineChartCollapsed
-      ? "utility:chevronright"
-      : "utility:chevrondown";
-  }
   get campaignChartToggleIcon() {
     return this.campaignChartCollapsed
       ? "utility:chevronright"
@@ -296,12 +264,6 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Lifecycle ──────────────────────────────────────────────
-  connectedCallback() {
-    // Initialize internal properties from @api properties
-    this._currentTrend = this.lineChartTrend || "upward";
-    this._currentLineColor = this.lineChartColor || "#0070d2";
-  }
-
   renderedCallback() {
     if (!this._chartScriptRequested) {
       this._chartScriptRequested = true;
@@ -347,12 +309,24 @@ export default class EngagementHistoryLwc extends LightningElement {
     }
   }
 
-  toggleLineChart() {
-    this.lineChartCollapsed = !this.lineChartCollapsed;
-    if (!this.lineChartCollapsed) {
+  handleToggleCampaigns(event) {
+    this.showCampaigns = event.detail.checked;
+    if (this.showCampaigns && this._chartsReady) {
       // eslint-disable-next-line @lwc/lwc/no-async-operation
-      setTimeout(() => this._renderLineChart(), 50);
+      setTimeout(() => this._renderCampaignChart(), 50);
     }
+  }
+
+  handleToggleAssets(event) {
+    this.showAssets = event.detail.checked;
+    if (this.showAssets && this._chartsReady) {
+      // eslint-disable-next-line @lwc/lwc/no-async-operation
+      setTimeout(() => this._renderAssetChart(), 50);
+    }
+  }
+
+  handleToggleTable(event) {
+    this.showTable = event.detail.checked;
   }
 
   toggleCampaignChart() {
@@ -373,144 +347,8 @@ export default class EngagementHistoryLwc extends LightningElement {
 
   // ── Chart rendering ────────────────────────────────────────
   _renderAllCharts() {
-    this._renderLineChart();
     this._renderCampaignChart();
     this._renderAssetChart();
-  }
-
-  _renderLineChart() {
-    if (this.lineChartCollapsed) return;
-    const canvas = this.template.querySelector(".line-chart-container canvas");
-    if (!canvas) return;
-
-    if (this.lineChart) {
-      this.lineChart.destroy();
-    }
-
-    // Predefined trend data
-    const labels = [
-      "Monday",
-      "Tuesday",
-      "Wednesday",
-      "Thursday",
-      "Friday",
-      "Saturday",
-      "Sunday"
-    ];
-    const trendData = {
-      upward: [12, 28, 45, 68, 95, 135, 188],
-      downward: [188, 152, 118, 85, 58, 32, 15]
-    };
-    const dataValues = trendData[this.currentTrend] || trendData.upward;
-
-    // Convert hex color to rgba for gradient
-    const hexToRgba = (hex, alpha) => {
-      const r = parseInt(hex.slice(1, 3), 16);
-      const g = parseInt(hex.slice(3, 5), 16);
-      const b = parseInt(hex.slice(5, 7), 16);
-      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
-    };
-
-    const ctx = canvas.getContext("2d");
-
-    // Create gradient for area fill
-    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
-    gradient.addColorStop(0, hexToRgba(this.currentLineColor, 0.3));
-    gradient.addColorStop(1, hexToRgba(this.currentLineColor, 0.01));
-
-    this.lineChart = new window.Chart(ctx, {
-      type: "line",
-      data: {
-        labels: labels,
-        datasets: [
-          {
-            label: "Engagement",
-            data: dataValues,
-            borderColor: this.currentLineColor,
-            backgroundColor: gradient,
-            fill: true,
-            tension: 0.4,
-            borderWidth: 3,
-            pointRadius: 0,
-            pointHoverRadius: 8,
-            pointHoverBackgroundColor: "#ffffff",
-            pointHoverBorderColor: this.currentLineColor,
-            pointHoverBorderWidth: 3
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        layout: {
-          padding: {
-            left: 8,
-            right: 8,
-            top: 20,
-            bottom: 8
-          }
-        },
-        plugins: {
-          legend: { display: false },
-          tooltip: {
-            enabled: true,
-            mode: "index",
-            intersect: false,
-            backgroundColor: "rgba(0, 0, 0, 0.85)",
-            padding: 14,
-            titleFont: { size: 14, weight: "600" },
-            bodyFont: { size: 13 },
-            displayColors: false,
-            borderColor: this.currentLineColor,
-            borderWidth: 2,
-            cornerRadius: 8,
-            callbacks: {
-              label: function (context) {
-                return "Engagement: " + context.parsed.y;
-              }
-            }
-          }
-        },
-        scales: {
-          x: {
-            grid: {
-              display: false,
-              drawBorder: false
-            },
-            ticks: {
-              font: { size: 11, weight: "500" },
-              padding: 10,
-              color: "#6b7280"
-            }
-          },
-          y: {
-            beginAtZero: true,
-            grid: {
-              display: true,
-              drawBorder: false,
-              color: "rgba(0, 0, 0, 0.03)",
-              lineWidth: 1
-            },
-            ticks: {
-              font: { size: 11, weight: "500" },
-              padding: 12,
-              color: "#6b7280",
-              callback: function (value) {
-                return value;
-              }
-            }
-          }
-        },
-        interaction: {
-          mode: "index",
-          intersect: false
-        },
-        animation: {
-          duration: 750,
-          easing: "easeInOutQuart"
-        }
-      }
-    });
   }
 
   _renderCampaignChart() {
@@ -771,20 +609,5 @@ export default class EngagementHistoryLwc extends LightningElement {
       .split(",")
       .map((s) => s.trim())
       .filter((s) => s);
-  }
-
-  // ── Line Chart Configuration Handlers ──────────────────────
-  handleTrendChange(event) {
-    this._currentTrend = event.detail.value;
-    if (this._chartsReady) {
-      this._renderLineChart();
-    }
-  }
-
-  handleLineColorChange(event) {
-    this._currentLineColor = event.target.value;
-    if (this._chartsReady) {
-      this._renderLineChart();
-    }
   }
 }
