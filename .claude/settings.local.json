@@ -40,7 +40,19 @@
       "Bash(kill 41573)",
       "Bash(node -c script.js)",
       "Bash(heroku logs:*)",
-      "Bash(grep -n \"masterLabel\" \"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/\"*/*.js-meta.xml)"
+      "Bash(grep -n \"masterLabel\" \"/Users/monica.toledo/Cursor-LWC-Project/LWC Generator/templates/\"*/*.js-meta.xml)",
+      "Bash(grep -n \"''/generate''\" server.js)",
+      "Bash(kill 55648 55628)",
+      "Bash(curl -s http://localhost:3000)",
+      "Bash(grep -A5 'selectedComponent === \"\"engagementHistoryLwc\"\"' public/script.js)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" http://localhost:3000)",
+      "Bash(cp templates/engagementHistoryLwc/engagementHistoryLwc.html force-app/main/default/lwc/engagementHistoryLwc/engagementHistoryLwc.html)",
+      "Bash(cp templates/engagementHistoryLwc/engagementHistoryLwc.js-meta.xml force-app/main/default/lwc/engagementHistoryLwc/engagementHistoryLwc.js-meta.xml)",
+      "Bash(perl -i -0pe 's/on\\(?:change|click\\)=\"\"\\\\s*\\\\{\\\\s*\\(\\\\w+\\);\\\\s*\\\\}\\\\s*\"\"/on$1={$1}/gs' engagementHistoryLwc.html)",
+      "Bash(perl -i -0pe 's/onchange=\"\"\\\\s*\\\\{\\\\s*handleDateRangeChange;\\\\s*\\\\}\\\\s*\"\"/onchange={handleDateRangeChange}/gs; s/onchange=\"\"\\\\s*\\\\{\\\\s*handleCampaignChange;\\\\s*\\\\}\\\\s*\"\"/onchange={handleCampaignChange}/gs; s/onchange=\"\"\\\\s*\\\\{\\\\s*handleContentTypeChange;\\\\s*\\\\}\\\\s*\"\"/onchange={handleContentTypeChange}/gs; s/onchange=\"\"\\\\s*\\\\{\\\\s*handleToggleCampaigns;\\\\s*\\\\}\\\\s*\"\"/onchange={handleToggleCampaigns}/gs; s/onchange=\"\"\\\\s*\\\\{\\\\s*handleToggleAssets;\\\\s*\\\\}\\\\s*\"\"/onchange={handleToggleAssets}/gs; s/onchange=\"\"\\\\s*\\\\{\\\\s*handleToggleTable;\\\\s*\\\\}\\\\s*\"\"/onchange={handleToggleTable}/gs; s/onclick=\"\"\\\\s*\\\\{\\\\s*toggleCampaignChart;\\\\s*\\\\}\\\\s*\"\"/onclick={toggleCampaignChart}/gs; s/onclick=\"\"\\\\s*\\\\{\\\\s*toggleAssetChart;\\\\s*\\\\}\\\\s*\"\"/onclick={toggleAssetChart}/gs; s/onclick=\"\"\\\\s*\\\\{\\\\s*handleSort;\\\\s*\\\\}\\\\s*\"\"/onclick={handleSort}/gs' engagementHistoryLwc.html)",
+      "Bash(grep -A50 \"componentType === ''''engagementHistoryLwc''''\" server.js)",
+      "Bash(heroku restart:*)",
+      "Bash(cp templates/engagementHistoryLwc/engagementHistoryLwc.js force-app/main/default/lwc/engagementHistoryLwc/engagementHistoryLwc.js)"
     ]
   }
 }
