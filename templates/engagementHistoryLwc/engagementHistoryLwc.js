@@ -234,11 +234,6 @@ export default class EngagementHistoryLwc extends LightningElement {
     return this.filteredRows.length === 0;
   }
 
-  get tableLinkScopeStyle() {
-    const c = this.tableLinkColor || "#0070d2";
-    return `--eh-table-link-color: ${c}`;
-  }
-
   // ── Sort indicator getters ─────────────────────────────────
   get sortAssetClass() {
     return this.sortField === "asset" ? "sorted" : "";
@@ -315,6 +310,7 @@ export default class EngagementHistoryLwc extends LightningElement {
   // ── Lifecycle ──────────────────────────────────────────────
   /** After any reactive update, sync Chart.js with current template + filtered data. */
   renderedCallback() {
+    this._syncTableLinkCssVariable();
     if (!this._chartScriptRequested) {
       this._chartScriptRequested = true;
       loadScript(this, ChartJs)
@@ -621,6 +617,16 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Helpers ────────────────────────────────────────────────
+  /** Apply @api tableLinkColor as --eh-table-link-color (avoids style={...} in HTML for IDE/CSS parsers). */
+  _syncTableLinkCssVariable() {
+    const wrap = this.template.querySelector(".eh-table-wrap");
+    if (!wrap) {
+      return;
+    }
+    const c = this.tableLinkColor || "#0070d2";
+    wrap.style.setProperty("--eh-table-link-color", c);
+  }
+
   /**
    * Minimum y-axis width so category labels are not clipped (horizontal bars, indexAxis "y").
    * Uses a generous char-width estimate; afterFit expands the scale when Chart's default is too narrow.
