@@ -1,7 +1,8 @@
-// engagementHistoryLwc.js — v2.2.0 reactivity-lwb
+// engagementHistoryLwc.js — v2.3.0 chart-api-lwb
 /*
  * Reactivity: toggles, comboboxes, and sort use primitive class fields (default LWC reactivity).
- * Chart redraw runs in renderedCallback after each render so DOM and filteredRows stay in sync.
+ * Bar charts read @api campaign/asset props (LWB); the data table uses filteredRows.
+ * Chart redraw runs in renderedCallback after each render.
  * Locker: canvases are resolved only via this.template.querySelector (never document.*).
  */
 import { LightningElement, api } from "lwc";
@@ -397,26 +398,22 @@ export default class EngagementHistoryLwc extends LightningElement {
       this.campaignChart.destroy();
     }
 
-    // Aggregate campaign counts from filtered rows
-    const rows = this.filteredRows;
-    const campMap = {};
-    rows.forEach((r) => {
-      if (r.campaign) {
-        campMap[r.campaign] = (campMap[r.campaign] || 0) + 1;
+    // Bar chart uses @api campaign N name/value only (LWB / Experience Generator).
+    // Table filters apply to the data table, not these mock chart bars.
+    const labels = [];
+    const data = [];
+    for (let i = 1; i <= 3; i++) {
+      const name = String(this[`campaign${i}Name`] || "").trim();
+      if (!name) {
+        continue;
       }
-    });
-
-    // Fallback to @api props when no row data matches
-    if (Object.keys(campMap).length === 0) {
-      for (let i = 1; i <= 3; i++) {
-        const name = this[`campaign${i}Name`];
-        const val = parseInt(this[`campaign${i}Value`], 10) || 0;
-        if (name) campMap[name] = val;
-      }
+      const val = parseInt(this[`campaign${i}Value`], 10) || 0;
+      labels.push(name);
+      data.push(this._barDisplayCount(val));
     }
-
-    const labels = Object.keys(campMap);
-    const data = labels.map((l) => this._barDisplayCount(campMap[l]));
+    if (labels.length === 0) {
+      return;
+    }
     const yAxisMinWidth = this._yAxisMinWidthForLabels(labels);
     const valueLabelPaddingRight = 44;
 
@@ -515,26 +512,20 @@ export default class EngagementHistoryLwc extends LightningElement {
       this.assetChart.destroy();
     }
 
-    // Aggregate asset counts from filtered rows
-    const rows = this.filteredRows;
-    const assetMap = {};
-    rows.forEach((r) => {
-      if (r.asset) {
-        assetMap[r.asset] = (assetMap[r.asset] || 0) + 1;
+    const labels = [];
+    const data = [];
+    for (let i = 1; i <= 4; i++) {
+      const name = String(this[`asset${i}Name`] || "").trim();
+      if (!name) {
+        continue;
       }
-    });
-
-    // Fallback to @api props when no row data matches
-    if (Object.keys(assetMap).length === 0) {
-      for (let i = 1; i <= 4; i++) {
-        const name = this[`asset${i}Name`];
-        const val = parseInt(this[`asset${i}Value`], 10) || 0;
-        if (name) assetMap[name] = val;
-      }
+      const val = parseInt(this[`asset${i}Value`], 10) || 0;
+      labels.push(name);
+      data.push(this._barDisplayCount(val));
     }
-
-    const labels = Object.keys(assetMap);
-    const data = labels.map((l) => this._barDisplayCount(assetMap[l]));
+    if (labels.length === 0) {
+      return;
+    }
     const yAxisMinWidth = this._yAxisMinWidthForLabels(labels);
     const valueLabelPaddingRight = 44;
 
