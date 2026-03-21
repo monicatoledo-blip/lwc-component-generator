@@ -858,6 +858,11 @@ document.addEventListener("DOMContentLoaded", () => {
   ehInputs.forEach((input) => {
     input.addEventListener("input", updateEngagementHistoryPreview);
 
+    // For checkboxes, also listen to change event
+    if (input.type === "checkbox") {
+      input.addEventListener("change", updateEngagementHistoryPreview);
+    }
+
     // Prevent Enter key from submitting the form
     input.addEventListener("keydown", (e) => {
       if (e.key === "Enter" && input.tagName !== "TEXTAREA") {
@@ -1270,13 +1275,28 @@ function updateEngagementHistoryPreview() {
   if (data.contentTypeLabel && previewContentType)
     previewContentType.textContent = data.contentTypeLabel;
 
-  const lineColor = readEngagementHexColor("ehLineChartColorHex", "#1B96FF");
   const barColor = readEngagementHexColor("ehBarChartColorHex", "#0D9DDA");
   const assetColor = readEngagementHexColor("ehAssetBarColorHex", "#04844B");
   const linkColor = readEngagementHexColor("ehTableLinkColorHex", "#0070D2");
 
-  // Render line chart
-  renderEhLineChart(lineColor);
+  // Handle section visibility toggles
+  const showCampaigns = data.showCampaigns === "on";
+  const showAssets = data.showAssets === "on";
+  const showTable = data.showTable === "on";
+
+  const campaignSection = document.getElementById("previewEhCampaignSection");
+  const assetSection = document.getElementById("previewEhAssetSection");
+  const tableSection = document.getElementById("previewEhTableSection");
+
+  if (campaignSection) {
+    campaignSection.style.display = showCampaigns ? "block" : "none";
+  }
+  if (assetSection) {
+    assetSection.style.display = showAssets ? "block" : "none";
+  }
+  if (tableSection) {
+    tableSection.style.display = showTable ? "block" : "none";
+  }
 
   // Render campaign bars
   const campaignBarsEl = document.getElementById("previewEhCampaignBars");
@@ -1291,8 +1311,8 @@ function updateEngagementHistoryPreview() {
     campaignBarsEl.innerHTML = campaigns
       .map(
         (c) => `
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-        <span style="flex: 0 0 46%; max-width: 46%; font-size: 11px; color: #181818; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere;">${escapeHtmlEh(c.name)}</span>
+      <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+        <span style="flex: 0 0 30%; max-width: 30%; font-size: 11px; color: #181818; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere;">${escapeHtmlEh(c.name)}</span>
         <div style="flex: 1; min-width: 0; background: #e5e5e5; border-radius: 4px; height: 16px; position: relative;">
           <div style="background: ${barColor}; border-radius: 4px; height: 100%; width: ${(c.value / maxCampaign) * 100}%;"></div>
         </div>
@@ -1315,8 +1335,8 @@ function updateEngagementHistoryPreview() {
     assetBarsEl.innerHTML = assets
       .map(
         (a) => `
-      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
-        <span style="flex: 0 0 46%; max-width: 46%; font-size: 11px; color: #181818; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere;">${escapeHtmlEh(a.name)}</span>
+      <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+        <span style="flex: 0 0 30%; max-width: 30%; font-size: 11px; color: #181818; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere;">${escapeHtmlEh(a.name)}</span>
         <div style="flex: 1; min-width: 0; background: #e5e5e5; border-radius: 4px; height: 16px; position: relative;">
           <div style="background: ${assetColor}; border-radius: 4px; height: 100%; width: ${(a.value / maxAsset) * 100}%;"></div>
         </div>
@@ -1362,83 +1382,7 @@ function ehHexToRgba(hex, alpha) {
   return `rgba(${r},${g},${b},${alpha})`;
 }
 
-// Render engagement history line chart on canvas
-function renderEhLineChart(color) {
-  const canvas = document.getElementById("previewEhLineChart");
-  if (!canvas) return;
-  const ctx = canvas.getContext("2d");
-  const w = canvas.width;
-  const h = canvas.height;
-  ctx.clearRect(0, 0, w, h);
-
-  // Mock data points for line chart
-  const points = [2, 3, 4, 5, 6, 8, 10, 12];
-  const maxVal = Math.max(...points);
-  const padding = { top: 10, right: 10, bottom: 20, left: 30 };
-  const chartW = w - padding.left - padding.right;
-  const chartH = h - padding.top - padding.bottom;
-
-  // Draw axes
-  ctx.strokeStyle = "#e5e5e5";
-  ctx.lineWidth = 1;
-  ctx.beginPath();
-  ctx.moveTo(padding.left, padding.top);
-  ctx.lineTo(padding.left, h - padding.bottom);
-  ctx.lineTo(w - padding.right, h - padding.bottom);
-  ctx.stroke();
-
-  // Draw Y axis labels
-  ctx.fillStyle = "#706e6b";
-  ctx.font = "9px sans-serif";
-  ctx.textAlign = "right";
-  for (let i = 0; i <= 4; i++) {
-    const yVal = Math.round((maxVal / 4) * i);
-    const y = h - padding.bottom - (i / 4) * chartH;
-    ctx.fillText(yVal, padding.left - 4, y + 3);
-    // Grid line
-    ctx.strokeStyle = "#f0f0f0";
-    ctx.beginPath();
-    ctx.moveTo(padding.left, y);
-    ctx.lineTo(w - padding.right, y);
-    ctx.stroke();
-  }
-
-  // Draw line
-  ctx.strokeStyle = color;
-  ctx.lineWidth = 2;
-  ctx.beginPath();
-  points.forEach((val, i) => {
-    const x = padding.left + (i / (points.length - 1)) * chartW;
-    const y = h - padding.bottom - (val / maxVal) * chartH;
-    if (i === 0) ctx.moveTo(x, y);
-    else ctx.lineTo(x, y);
-  });
-  ctx.stroke();
-
-  // Fill area under line
-  ctx.lineTo(padding.left + chartW, h - padding.bottom);
-  ctx.lineTo(padding.left, h - padding.bottom);
-  ctx.closePath();
-  ctx.fillStyle = ehHexToRgba(color, 0.12);
-  ctx.fill();
-
-  // Draw dots
-  ctx.fillStyle = color;
-  points.forEach((val, i) => {
-    const x = padding.left + (i / (points.length - 1)) * chartW;
-    const y = h - padding.bottom - (val / maxVal) * chartH;
-    ctx.beginPath();
-    ctx.arc(x, y, 3, 0, Math.PI * 2);
-    ctx.fill();
-  });
-
-  // X axis label
-  ctx.fillStyle = "#706e6b";
-  ctx.font = "9px sans-serif";
-  ctx.textAlign = "center";
-  ctx.fillText("Activity Date", w / 2, h - 2);
-}
-
+// Render modern engagement history line chart on canvas
 // Helper function to process form data for image uploads
 function processFormData(form, componentType) {
   const formData = new FormData(form);
