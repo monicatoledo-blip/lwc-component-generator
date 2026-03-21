@@ -1,4 +1,4 @@
-/* engagementHistoryLwc.css — v2.0.0 fix-engagement-history */
+/* engagementHistoryLwc.css — v2.1.0 chart-polish */
 
 :host {
   display: block;
@@ -23,7 +23,7 @@
   border: 1px solid #d8dde6;
   border-radius: 8px;
   background: #ffffff;
-  overflow: hidden;
+  overflow: visible;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
   transition: box-shadow 0.2s ease;
 }
@@ -79,6 +79,12 @@
   position: relative;
   background: #ffffff;
   border-radius: 4px;
+  box-sizing: border-box;
+  padding-left: 4px;
+  padding-right: 4px;
+  overflow-x: auto;
+  overflow-y: visible;
+  min-width: 0;
 }
 
 .campaign-chart-container {

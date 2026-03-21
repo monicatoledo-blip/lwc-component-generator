@@ -1,7 +1,51 @@
-// engagementHistoryLwc.js — v2.0.0 fix-engagement-history
+// engagementHistoryLwc.js — v2.1.0 chart-polish
 import { LightningElement, api } from "lwc";
 import { loadScript } from "lightning/platformResourceLoader";
 import ChartJs from "@salesforce/resourceUrl/ChartJs";
+
+/** Salesforce brand colors for horizontal bars (uniform per chart). */
+const SF_CAMPAIGN_BAR = "#0176d3";
+const SF_ASSET_BAR = "#2e844a";
+
+/**
+ * Inline Chart.js plugin: draw the numeric value just past the end of each bar
+ * (no chartjs-plugin-datalabels dependency).
+ */
+function createBarEndValuePlugin(pluginId) {
+  return {
+    id: pluginId,
+    afterDatasetsDraw(chart) {
+      const dataset = chart.data?.datasets?.[0];
+      const meta = chart.getDatasetMeta(0);
+      if (!dataset?.data?.length || !meta?.data?.length) {
+        return;
+      }
+      const { ctx } = chart;
+      ctx.save();
+      ctx.font =
+        '600 12px system-ui, -apple-system, "Segoe UI", "Salesforce Sans", sans-serif';
+      ctx.fillStyle = "#3e3e3c";
+      ctx.textBaseline = "middle";
+      ctx.textAlign = "left";
+
+      meta.data.forEach((element, index) => {
+        const raw = dataset.data[index];
+        if (raw === null || raw === undefined) {
+          return;
+        }
+        const num = Number(raw);
+        if (Number.isNaN(num)) {
+          return;
+        }
+        const text = String(num);
+        const { x, y, base } = element.getProps(["x", "y", "base"], true);
+        const endX = Math.max(x, base);
+        ctx.fillText(text, endX + 8, y);
+      });
+      ctx.restore();
+    }
+  };
+}
 
 const DATE_RANGE_OPTIONS = [
   { label: "All Time", value: "all" },
@@ -15,28 +59,28 @@ export default class EngagementHistoryLwc extends LightningElement {
   // ── Configurable properties ────────────────────────────────
   @api cardTitle = "Engagement History";
 
-  @api accentColor = "#0070d2";
-  @api barChartColor = "#0070d2";
-  @api assetBarColor = "#7b68ee";
+  @api accentColor = "#0176d3";
+  @api barChartColor = "#0176d3";
+  @api assetBarColor = "#2e844a";
   @api tableLinkColor = "#0070d2";
 
   // Campaign bar data (design-time values — match generator form defaults)
   @api campaign1Name = "Q3 Wealth Management Webinar";
-  @api campaign1Value = "28";
+  @api campaign1Value = "8";
   @api campaign2Name = "High Net Worth Prospect Outreach";
-  @api campaign2Value = "19";
+  @api campaign2Value = "5";
   @api campaign3Name = "Retirement Planning Drip Campaign";
-  @api campaign3Value = "12";
+  @api campaign3Value = "4";
 
   // Asset bar data
   @api asset1Name = "Wealth Management eBook";
-  @api asset1Value = "15";
+  @api asset1Value = "8";
   @api asset2Name = "Investment Portfolio Guide";
-  @api asset2Value = "12";
+  @api asset2Value = "5";
   @api asset3Name = "HNW Client Onboarding Email";
-  @api asset3Value = "9";
+  @api asset3Value = "4";
   @api asset4Name = "Retirement Calculator Landing Page";
-  @api asset4Value = "6";
+  @api asset4Value = "2";
 
   // Table row data
   @api row1Asset = "Wealth Management eBook";
@@ -382,17 +426,20 @@ export default class EngagementHistoryLwc extends LightningElement {
 
     const labels = Object.keys(campMap);
     const data = labels.map((l) => campMap[l]);
+    const yAxisMinWidth = this._yAxisMinWidthForLabels(labels);
+    const valueLabelPaddingRight = 44;
 
     const ctx = canvas.getContext("2d");
     this.campaignChart = new window.Chart(ctx, {
       type: "bar",
+      plugins: [createBarEndValuePlugin("ehBarEndValuesCampaign")],
       data: {
         labels,
         datasets: [
           {
             label: "Activities",
             data,
-            backgroundColor: this.barChartColor || "#0070d2",
+            backgroundColor: SF_CAMPAIGN_BAR,
             borderRadius: 6,
             barThickness: 28,
             borderSkipped: false
@@ -405,8 +452,8 @@ export default class EngagementHistoryLwc extends LightningElement {
         maintainAspectRatio: false,
         layout: {
           padding: {
-            left: 0,
-            right: 20,
+            left: 8,
+            right: valueLabelPaddingRight,
             top: 8,
             bottom: 8
           }
@@ -430,8 +477,9 @@ export default class EngagementHistoryLwc extends LightningElement {
               padding: { top: 8 }
             },
             beginAtZero: true,
+            suggestedMax: 10,
             ticks: {
-              stepSize: 5,
+              stepSize: 1,
               font: { size: 11 },
               padding: 6
             },
@@ -446,16 +494,12 @@ export default class EngagementHistoryLwc extends LightningElement {
             ticks: {
               autoSkip: false,
               font: { size: 12, weight: "500" },
-              padding: 2,
-              color: "#3e3e3c"
+              padding: 8,
+              color: "#3e3e3c",
+              mirror: false
             },
             afterFit: (scale) => {
-              // Ultra-compact label width for extremely tight bar alignment
-              const longestLabel = labels.reduce(
-                (max, label) => Math.max(max, String(label).length),
-                0
-              );
-              scale.width = Math.min(Math.max(longestLabel * 5 + 4, 70), 180);
+              scale.width = Math.max(scale.width, yAxisMinWidth);
             }
           }
         }
@@ -492,26 +536,20 @@ export default class EngagementHistoryLwc extends LightningElement {
 
     const labels = Object.keys(assetMap);
     const data = labels.map((l) => assetMap[l]);
-
-    // Multi-color bars for assets
-    const palette = [
-      this.barChartColor || "#0070d2",
-      this.assetBarColor || "#7b68ee",
-      "#16a34a",
-      "#ea580c"
-    ];
-    const bgColors = data.map((_, idx) => palette[idx % palette.length]);
+    const yAxisMinWidth = this._yAxisMinWidthForLabels(labels);
+    const valueLabelPaddingRight = 44;
 
     const ctx = canvas.getContext("2d");
     this.assetChart = new window.Chart(ctx, {
       type: "bar",
+      plugins: [createBarEndValuePlugin("ehBarEndValuesAsset")],
       data: {
         labels,
         datasets: [
           {
             label: "Activities",
             data,
-            backgroundColor: bgColors,
+            backgroundColor: SF_ASSET_BAR,
             borderRadius: 6,
             barThickness: 28,
             borderSkipped: false
@@ -524,8 +562,8 @@ export default class EngagementHistoryLwc extends LightningElement {
         maintainAspectRatio: false,
         layout: {
           padding: {
-            left: 0,
-            right: 20,
+            left: 8,
+            right: valueLabelPaddingRight,
             top: 8,
             bottom: 8
           }
@@ -549,8 +587,9 @@ export default class EngagementHistoryLwc extends LightningElement {
               padding: { top: 8 }
             },
             beginAtZero: true,
+            suggestedMax: 10,
             ticks: {
-              stepSize: 3,
+              stepSize: 1,
               font: { size: 11 },
               padding: 6
             },
@@ -565,16 +604,12 @@ export default class EngagementHistoryLwc extends LightningElement {
             ticks: {
               autoSkip: false,
               font: { size: 12, weight: "500" },
-              padding: 2,
-              color: "#3e3e3c"
+              padding: 8,
+              color: "#3e3e3c",
+              mirror: false
             },
             afterFit: (scale) => {
-              // Ultra-compact label width for extremely tight bar alignment
-              const longestLabel = labels.reduce(
-                (max, label) => Math.max(max, String(label).length),
-                0
-              );
-              scale.width = Math.min(Math.max(longestLabel * 5 + 4, 70), 180);
+              scale.width = Math.max(scale.width, yAxisMinWidth);
             }
           }
         }
@@ -583,16 +618,19 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Helpers ────────────────────────────────────────────────
-  /** Room for long horizontal-bar category labels (Chart.js y-axis when indexAxis is 'y'). */
-  _ehHorizontalBarLabelAxisWidth(labels) {
+  /**
+   * Minimum y-axis width so category labels are not clipped (horizontal bars, indexAxis "y").
+   * Uses a generous char-width estimate; afterFit expands the scale when Chart's default is too narrow.
+   */
+  _yAxisMinWidthForLabels(labels) {
     if (!labels || !labels.length) {
-      return 140;
+      return 160;
     }
     const longest = labels.reduce(
       (max, s) => Math.max(max, String(s).length),
       0
     );
-    return Math.min(Math.max(longest * 7 + 28, 120), 340);
+    return Math.max(longest * 8 + 48, 160);
   }
 
   _parseDate(str) {
