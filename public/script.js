@@ -1258,9 +1258,9 @@ function updateEngagementHistoryPreview() {
     previewCardTitle.textContent = data.cardTitle;
   }
 
-  // Header icon (accent) — was hardcoded; must match accentColor input
+  // Header icon (accent) — generator uses fixed Salesforce blue (no accent picker)
   const headerIcon = document.getElementById("previewEhHeaderIcon");
-  const accentColor = readEngagementHexColor("ehAccentColorHex", "#0176D3");
+  const accentColor = "#0176D3";
   if (headerIcon) {
     headerIcon.setAttribute("fill", accentColor);
   }

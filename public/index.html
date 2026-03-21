@@ -2187,30 +2187,8 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     required
                   />
                 </div>
-                <div class="form-row">
-                  <div class="form-group">
-                    <label>Accent Color</label>
-                    <div class="color-input-group">
-                      <input
-                        type="color"
-                        class="color-picker"
-                        data-hex="ehAccentColorHex"
-                        value="#0176D3"
-                        required
-                      />
-                      <input
-                        type="text"
-                        class="hex-input"
-                        name="accentColor"
-                        id="ehAccentColorHex"
-                        value="#0176D3"
-                        pattern="^#[0-9A-Fa-f]{6}$"
-                        placeholder="#0176D3"
-                        required
-                      />
-                    </div>
-                  </div>
-                </div>
+                <!-- Header/metrics accent: fixed Salesforce blue (matches LWC default); not exposed in UI -->
+                <input type="hidden" name="accentColor" value="#0176d3" />
                 <div class="form-row">
                   <div class="form-group">
                     <label>Campaign Bar Color</label>
