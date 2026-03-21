@@ -1,0 +1,64 @@
+<template>
+  <article class="ro-card" style={rootStyle}>
+    <div class="ro-accent-bar"></div>
+    <div class="ro-card-inner">
+      <div class="ro-header">
+        <div class="ro-header-icon" aria-hidden="true">
+          <lightning-icon
+            icon-name="utility:metrics"
+            size="x-small"
+            alternative-text="Savings insight"
+            class="ro-header-icon-el"
+          ></lightning-icon>
+        </div>
+        <div class="ro-header-text">
+          <h2 class="ro-title">{cardTitle}</h2>
+          <template if:true={showHeaderBadge}>
+            <span class="ro-badge">{headerBadgeText}</span>
+          </template>
+        </div>
+      </div>
+
+      <div class="ro-rate-grid">
+        <div class="ro-rate-card">
+          <p class="ro-rate-card-label">{externalLoanLabel}</p>
+          <p class="ro-rate-card-apr">{externalApr}</p>
+          <p class="ro-rate-card-monthly">{externalMonthly}</p>
+        </div>
+        <div class="ro-rate-card">
+          <p class="ro-rate-card-label">{institutionRateLabel}</p>
+          <p class="ro-rate-card-apr">{institutionApr}</p>
+          <p class="ro-rate-card-monthly">{institutionMonthly}</p>
+        </div>
+      </div>
+
+      <div class="ro-drop-block">
+        <p class="ro-drop-label">{rateDropSectionLabel}</p>
+        <div class="ro-bar-track">
+          <div class="ro-bar-fill" style={barFillStyle}></div>
+        </div>
+        <p class="ro-drop-caption">{rateDropCaption}</p>
+      </div>
+
+      <div class="ro-savings">
+        <p class="ro-savings-label">{savingsSectionLabel}</p>
+        <p class="ro-savings-amount">{savingsAmount}</p>
+        <p class="ro-savings-formula">{savingsFormula}</p>
+      </div>
+
+      <template if:true={showDisclaimer}>
+        <p class="ro-disclaimer">{disclaimerNote}</p>
+      </template>
+
+      <template if:true={showCta}>
+        <div class="ro-cta-wrap">
+          <lightning-button
+            label={ctaLabel}
+            variant="brand"
+            class="ro-cta"
+          ></lightning-button>
+        </div>
+      </template>
+    </div>
+  </article>
+</template>

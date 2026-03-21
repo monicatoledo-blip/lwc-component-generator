@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>60.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Refinance Offer</masterLabel>
+    <targets>
+        <target>lightning__AppPage</target>
+        <target>lightning__RecordPage</target>
+        <target>lightning__HomePage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig
+      targets="lightning__RecordPage,lightning__AppPage,lightning__HomePage"
+    >
+            <property
+        name="cardTitle"
+        type="String"
+        default="{{{cardTitle}}}"
+        label="Card Title"
+        description="Main headline at the top of the card"
+      />
+            <property
+        name="headerBadgeText"
+        type="String"
+        default="{{{headerBadgeText}}}"
+        label="Header Badge"
+        description="Small badge under the title (leave blank to hide)"
+      />
+            <property
+        name="externalLoanLabel"
+        type="String"
+        default="{{{externalLoanLabel}}}"
+        label="External / Current Loan Label"
+        description="Label for the current loan column (e.g. Current External Loan)"
+      />
+            <property
+        name="externalApr"
+        type="String"
+        default="{{{externalApr}}}"
+        label="External APR"
+        description="APR for the current loan (e.g. 7.5% APR)"
+      />
+            <property
+        name="externalMonthly"
+        type="String"
+        default="{{{externalMonthly}}}"
+        label="External Monthly Payment"
+        description="Monthly payment line (e.g. Monthly: $350)"
+      />
+            <property
+        name="institutionRateLabel"
+        type="String"
+        default="{{{institutionRateLabel}}}"
+        label="Institution Rate Label"
+        description="Label for your rate (include brand name, e.g. Cumulus Pre-Approved Rate)"
+      />
+            <property
+        name="institutionApr"
+        type="String"
+        default="{{{institutionApr}}}"
+        label="Institution APR"
+        description="APR for your offer (e.g. 4.9% APR)"
+      />
+            <property
+        name="institutionMonthly"
+        type="String"
+        default="{{{institutionMonthly}}}"
+        label="Institution Monthly Payment"
+        description="Monthly payment line (e.g. Monthly: $266)"
+      />
+            <property
+        name="rateDropSectionLabel"
+        type="String"
+        default="{{{rateDropSectionLabel}}}"
+        label="Rate Drop Section Title"
+        description="Label above the rate-drop bar"
+      />
+            <property
+        name="rateDropBarFillPercent"
+        type="String"
+        default="{{{rateDropBarFillPercent}}}"
+        label="Rate Drop Bar Fill (%)"
+        description="0–100: how much of the bar is filled (visual emphasis)"
+      />
+            <property
+        name="rateDropCaption"
+        type="String"
+        default="{{{rateDropCaption}}}"
+        label="Rate Drop Caption"
+        description="Text under the bar (e.g. 7.5% → 4.9% (2.6 pts))"
+      />
+            <property
+        name="savingsSectionLabel"
+        type="String"
+        default="{{{savingsSectionLabel}}}"
+        label="Savings Section Title"
+        description="Label above the monthly savings amount"
+      />
+            <property
+        name="savingsAmount"
+        type="String"
+        default="{{{savingsAmount}}}"
+        label="Monthly Savings Amount"
+        description="Primary savings metric (e.g. $84/month)"
+      />
+            <property
+        name="savingsFormula"
+        type="String"
+        default="{{{savingsFormula}}}"
+        label="Savings Explanation"
+        description="Small text explaining the calculation"
+      />
+            <property
+        name="savingsLabelColor"
+        type="String"
+        default="{{{savingsLabelColor}}}"
+        label="Savings Title Color"
+        description="Hex color for the savings section title"
+      />
+            <property
+        name="savingsCardBgColor"
+        type="String"
+        default="{{{savingsCardBgColor}}}"
+        label="Savings Card Background"
+        description="Background color for the savings block (hex)"
+      />
+            <property
+        name="savingsAccentBorderColor"
+        type="String"
+        default="{{{savingsAccentBorderColor}}}"
+        label="Savings Card Accent Stripe"
+        description="Left border color on the savings card (hex)"
+      />
+            <property
+        name="disclaimerNote"
+        type="String"
+        default="{{{disclaimerNote}}}"
+        label="Disclaimer"
+        description="Optional fine print above the CTA (leave blank to hide)"
+      />
+            <property
+        name="ctaLabel"
+        type="String"
+        default="{{{ctaLabel}}}"
+        label="CTA Button Label"
+        description="Leave blank to hide the button"
+      />
+            <property
+        name="ctaButtonColor"
+        type="String"
+        default="{{{ctaButtonColor}}}"
+        label="CTA Button Color"
+        description="Background/border color for the primary button only (hex). Card uses fixed Cumulus blue #0176d3."
+      />
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

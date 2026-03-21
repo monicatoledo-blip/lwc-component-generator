@@ -3,8 +3,8 @@ let isAuthenticated = false;
 let instanceUrl = null;
 
 // Form state management
-/** Bump when default form values change so users get fresh HTML defaults (not stale sessionStorage). */
-const FORM_STATE_KEY = "lwc_generator_form_state_v2";
+/** Bump when default form values change or component ids change (v4: Refinance Offer — accent picker removed, CTA color added). */
+const FORM_STATE_KEY = "lwc_generator_form_state_v4";
 const AUTH_PENDING_KEY = "lwc_generator_auth_pending";
 
 function saveFormState() {
@@ -23,6 +23,8 @@ function saveFormState() {
       form = document.getElementById("nblForm");
     } else if (selectedComponent === "engagementHistoryLwc") {
       form = document.getElementById("engagementHistoryForm");
+    } else if (selectedComponent === "refinanceOfferLwc") {
+      form = document.getElementById("refinanceOfferForm");
     }
 
     if (!form) return;
@@ -75,6 +77,8 @@ function restoreFormState() {
         form = document.getElementById("nblForm");
       } else if (formState.componentType === "engagementHistoryLwc") {
         form = document.getElementById("engagementHistoryForm");
+      } else if (formState.componentType === "refinanceOfferLwc") {
+        form = document.getElementById("refinanceOfferForm");
       }
 
       if (!form) return;
@@ -236,7 +240,8 @@ const SALESFORCE_COMPONENT_PALETTE_LABELS = {
   agentforceLeadBriefLwc: "Agentforce Lead Brief (Custom)",
   nextBestActionsLwc: "Next Best Actions (Custom)",
   nextBestLeadsLwc: "Next Best Leads (Custom)",
-  engagementHistoryLwc: "Engagement History"
+  engagementHistoryLwc: "Engagement History",
+  refinanceOfferLwc: "Refinance Offer"
 };
 
 // Handle deployment
@@ -280,6 +285,8 @@ async function handleDeploy(buttonElement) {
       form = document.getElementById("nblForm");
     } else if (selectedComponent === "engagementHistoryLwc") {
       form = document.getElementById("engagementHistoryForm");
+    } else if (selectedComponent === "refinanceOfferLwc") {
+      form = document.getElementById("refinanceOfferForm");
     }
 
     const formData = processFormData(form, selectedComponent);
@@ -508,6 +515,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const engagementHistoryContainer = document.getElementById(
     "engagement-history-container"
   );
+  const refinanceOfferContainer = document.getElementById(
+    "refinance-offer-container"
+  );
 
   // Update deployment instructions based on selected component
   function updateDeploymentInstructions(componentType) {
@@ -524,31 +534,44 @@ document.addEventListener("DOMContentLoaded", () => {
       nextBestActionsContainer.style.display = "none";
       nextBestLeadsContainer.style.display = "none";
       engagementHistoryContainer.style.display = "none";
+      refinanceOfferContainer.style.display = "none";
     } else if (selectedComponent === "agentforceLeadBriefLwc") {
       unifiedProfileContainer.style.display = "none";
       agentforceBriefContainer.style.display = "block";
       nextBestActionsContainer.style.display = "none";
       nextBestLeadsContainer.style.display = "none";
       engagementHistoryContainer.style.display = "none";
+      refinanceOfferContainer.style.display = "none";
     } else if (selectedComponent === "nextBestActionsLwc") {
       unifiedProfileContainer.style.display = "none";
       agentforceBriefContainer.style.display = "none";
       nextBestActionsContainer.style.display = "block";
       nextBestLeadsContainer.style.display = "none";
       engagementHistoryContainer.style.display = "none";
+      refinanceOfferContainer.style.display = "none";
     } else if (selectedComponent === "nextBestLeadsLwc") {
       unifiedProfileContainer.style.display = "none";
       agentforceBriefContainer.style.display = "none";
       nextBestActionsContainer.style.display = "none";
       nextBestLeadsContainer.style.display = "block";
       engagementHistoryContainer.style.display = "none";
+      refinanceOfferContainer.style.display = "none";
     } else if (selectedComponent === "engagementHistoryLwc") {
       unifiedProfileContainer.style.display = "none";
       agentforceBriefContainer.style.display = "none";
       nextBestActionsContainer.style.display = "none";
       nextBestLeadsContainer.style.display = "none";
       engagementHistoryContainer.style.display = "block";
+      refinanceOfferContainer.style.display = "none";
       updateEngagementHistoryPreview();
+    } else if (selectedComponent === "refinanceOfferLwc") {
+      unifiedProfileContainer.style.display = "none";
+      agentforceBriefContainer.style.display = "none";
+      nextBestActionsContainer.style.display = "none";
+      nextBestLeadsContainer.style.display = "none";
+      engagementHistoryContainer.style.display = "none";
+      refinanceOfferContainer.style.display = "block";
+      updateRefinanceOfferPreview();
     }
 
     // Update deployment instructions
@@ -575,6 +598,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const isNbaActive = nextBestActionsContainer.style.display !== "none";
       const isNblActive = nextBestLeadsContainer.style.display !== "none";
       const isEhActive = engagementHistoryContainer.style.display !== "none";
+      const isRoActive = refinanceOfferContainer.style.display !== "none";
 
       // Map base IDs to component-specific IDs
       let actualTargetId = targetId;
@@ -602,6 +626,12 @@ document.addEventListener("DOMContentLoaded", () => {
         } else if (targetId === "preview") {
           actualTargetId = "eh-preview";
         }
+      } else if (isRoActive) {
+        if (targetId === "create") {
+          actualTargetId = "ro-create";
+        } else if (targetId === "preview") {
+          actualTargetId = "ro-preview";
+        }
       }
 
       const targetSection = document.getElementById(actualTargetId);
@@ -621,6 +651,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const isNblActive = nextBestLeadsContainer.style.display !== "none";
     const isEhActiveScroll =
       engagementHistoryContainer.style.display !== "none";
+    const isRoActiveScroll = refinanceOfferContainer.style.display !== "none";
 
     // Get visible sections only
     const visibleSections = Array.from(
@@ -665,6 +696,14 @@ document.addEventListener("DOMContentLoaded", () => {
           } else {
             current = sectionId;
           }
+        } else if (isRoActiveScroll) {
+          if (sectionId === "ro-create") {
+            current = "create";
+          } else if (sectionId === "ro-preview") {
+            current = "preview";
+          } else {
+            current = sectionId;
+          }
         } else {
           current = sectionId;
         }
@@ -701,6 +740,8 @@ document.addEventListener("DOMContentLoaded", () => {
           updateNblPreview();
         } else if (selectedComponent === "engagementHistoryLwc") {
           updateEngagementHistoryPreview();
+        } else if (selectedComponent === "refinanceOfferLwc") {
+          updateRefinanceOfferPreview();
         }
       }
 
@@ -734,6 +775,9 @@ document.addEventListener("DOMContentLoaded", () => {
         // while hex is incomplete)
         if (componentSelect.value === "engagementHistoryLwc") {
           updateEngagementHistoryPreview();
+        }
+        if (componentSelect.value === "refinanceOfferLwc") {
+          updateRefinanceOfferPreview();
         }
         // Force uppercase
         e.target.value = value.toUpperCase();
@@ -881,6 +925,24 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Initial Engagement History preview update
   updateEngagementHistoryPreview();
+
+  // Refinance Offer preview
+  const refinanceOfferForm = document.getElementById("refinanceOfferForm");
+  const roInputs = refinanceOfferForm.querySelectorAll("input, textarea");
+  roInputs.forEach((input) => {
+    input.addEventListener("input", updateRefinanceOfferPreview);
+    input.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" && input.tagName !== "TEXTAREA") {
+        e.preventDefault();
+      }
+    });
+  });
+  refinanceOfferForm.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+      e.preventDefault();
+    }
+  });
+  updateRefinanceOfferPreview();
 });
 
 function updatePreview() {
@@ -1225,6 +1287,107 @@ function escapeHtmlEh(value) {
     .replace(/"/g, "&quot;");
 }
 
+function readRefinanceHexColor(hexInputId, fallback) {
+  const hexEl = document.getElementById(hexInputId);
+  const picker = document.querySelector(
+    `.color-picker[data-hex="${hexInputId}"]`
+  );
+  let hexVal = hexEl?.value?.trim() || "";
+  if (hexVal && !hexVal.startsWith("#")) {
+    hexVal = `#${hexVal}`;
+  }
+  if (/^#[0-9A-Fa-f]{6}$/.test(hexVal)) {
+    return hexVal.toUpperCase();
+  }
+  const pv = (picker?.value || "").trim();
+  if (/^#[0-9A-Fa-f]{6}$/i.test(pv)) {
+    return pv.toUpperCase();
+  }
+  return fallback;
+}
+
+function updateRefinanceOfferPreview() {
+  const form = document.getElementById("refinanceOfferForm");
+  if (!form) return;
+  const formData = new FormData(form);
+  const data = Object.fromEntries(formData.entries());
+
+  const setText = (id, text) => {
+    const el = document.getElementById(id);
+    if (el) el.textContent = text ?? "";
+  };
+
+  setText("previewRoTitle", data.cardTitle);
+
+  const badgeWrap = document.getElementById("previewRoBadgeWrap");
+  const badgeText = (data.headerBadgeText || "").trim();
+  if (badgeWrap) {
+    badgeWrap.style.display = badgeText ? "block" : "none";
+  }
+  setText("previewRoBadge", badgeText);
+
+  setText("previewRoExtLabel", data.externalLoanLabel);
+  setText("previewRoExtApr", data.externalApr);
+  setText("previewRoExtMo", data.externalMonthly);
+  setText("previewRoInstLabel", data.institutionRateLabel);
+  setText("previewRoInstApr", data.institutionApr);
+  setText("previewRoInstMo", data.institutionMonthly);
+
+  setText("previewRoDropLabel", data.rateDropSectionLabel);
+  setText("previewRoDropCaption", data.rateDropCaption);
+
+  const fillRaw = parseInt(String(data.rateDropBarFillPercent || "0"), 10);
+  const fillPct = Number.isNaN(fillRaw)
+    ? 42
+    : Math.min(100, Math.max(0, fillRaw));
+  const barFill = document.getElementById("previewRoBarFill");
+  if (barFill) barFill.style.width = `${fillPct}%`;
+
+  setText("previewRoSavLabel", data.savingsSectionLabel);
+  setText("previewRoSavAmt", data.savingsAmount);
+  setText("previewRoSavFormula", data.savingsFormula);
+
+  const ctaColor = readRefinanceHexColor("roCtaHex", "#0176D3");
+  const savBg = readRefinanceHexColor("roSavingsBgHex", "#F3F6F9");
+  const savBorder = readRefinanceHexColor("roSavingsBorderHex", "#0176D3");
+  const savLbl = readRefinanceHexColor("roSavingsLabelHex", "#2E844A");
+
+  const savBlock = document.getElementById("previewRoSavingsBlock");
+  if (savBlock) {
+    savBlock.style.background = savBg;
+    savBlock.style.borderLeft = `3px solid ${savBorder}`;
+  }
+
+  const savLabelEl = document.getElementById("previewRoSavLabel");
+  if (savLabelEl) savLabelEl.style.color = savLbl;
+
+  const savAmtEl = document.getElementById("previewRoSavAmt");
+  if (savAmtEl) savAmtEl.style.color = "#0176d3";
+
+  const extApr = document.getElementById("previewRoExtApr");
+  if (extApr) extApr.style.color = "#0176d3";
+
+  const disclaimerEl = document.getElementById("previewRoDisclaimer");
+  if (disclaimerEl) {
+    const disc = (data.disclaimerNote || "").trim();
+    disclaimerEl.textContent = disc;
+    disclaimerEl.style.display = disc ? "block" : "none";
+  }
+
+  const ctaWrap = document.getElementById("previewRoCtaWrap");
+  const ctaLabel = document.getElementById("previewRoCtaLabel");
+  const cta = (data.ctaLabel || "").trim();
+  if (ctaWrap && ctaLabel) {
+    if (cta) {
+      ctaWrap.style.display = "block";
+      ctaLabel.textContent = cta;
+      ctaLabel.style.background = ctaColor;
+    } else {
+      ctaWrap.style.display = "none";
+    }
+  }
+}
+
 /** Read a 6-digit hex color from the named hex field or its paired color picker. */
 function readEngagementHexColor(hexInputId, fallback) {
   const hexEl = document.getElementById(hexInputId);
@@ -1463,6 +1626,8 @@ async function handleDownload(buttonElement) {
       form = document.getElementById("nblForm");
     } else if (selectedComponent === "engagementHistoryLwc") {
       form = document.getElementById("engagementHistoryForm");
+    } else if (selectedComponent === "refinanceOfferLwc") {
+      form = document.getElementById("refinanceOfferForm");
     }
 
     const formData = processFormData(form, selectedComponent);
@@ -1518,6 +1683,12 @@ document.getElementById("nblForm").addEventListener("submit", (e) => {
 
 document
   .getElementById("engagementHistoryForm")
+  .addEventListener("submit", (e) => {
+    e.preventDefault();
+  });
+
+document
+  .getElementById("refinanceOfferForm")
   .addEventListener("submit", (e) => {
     e.preventDefault();
   });

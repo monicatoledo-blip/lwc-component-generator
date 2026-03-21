@@ -1,0 +1,223 @@
+:host {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+}
+
+/* Clean Cumulus card: white, subtle border, top brand stripe (matches prior Rate Drop card feel) */
+.ro-card {
+  background: #ffffff;
+  border: 1px solid #e5e5e5;
+  border-radius: 0.5rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+  font-family: var(
+    --lwc-fontFamily,
+    "Salesforce Sans",
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    sans-serif
+  );
+  padding: 0;
+}
+
+.ro-accent-bar {
+  height: 3px;
+  background: var(--ro-cumulus-blue, #0176d3);
+  width: 100%;
+}
+
+.ro-card-inner {
+  padding: 0.75rem 1rem 1rem;
+}
+
+.ro-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.ro-header-icon {
+  flex-shrink: 0;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  background: var(--ro-cumulus-blue, #0176d3);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ro-header-icon-el {
+  --slds-c-icon-color-foreground-default: #ffffff;
+}
+
+.ro-header-text {
+  min-width: 0;
+  flex: 1;
+}
+
+.ro-title {
+  margin: 0 0 0.35rem;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.35;
+  color: #181818;
+}
+
+.ro-badge {
+  display: inline-block;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--ro-cumulus-blue, #0176d3);
+  background: #e8f4fc;
+  border: 1px solid #c9e8fa;
+  padding: 0.2rem 0.5rem;
+  border-radius: 1rem;
+}
+
+.ro-rate-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+/* External + institution tiles share one look: white card, Cumulus left stripe, blue APR */
+.ro-rate-card {
+  border: 1px solid #e5e5e5;
+  border-left: 3px solid var(--ro-cumulus-blue, #0176d3);
+  border-radius: 0.35rem;
+  padding: 0.55rem 0.65rem;
+  background: #ffffff;
+}
+
+.ro-rate-card-label {
+  margin: 0 0 0.25rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: #706e6b;
+  line-height: 1.3;
+}
+
+.ro-rate-card-apr {
+  margin: 0 0 0.2rem;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--ro-cumulus-blue, #0176d3);
+  line-height: 1.15;
+}
+
+.ro-rate-card-monthly {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #706e6b;
+}
+
+.ro-drop-block {
+  margin-bottom: 0.75rem;
+  padding-bottom: 0.65rem;
+  border-bottom: 1px solid #f3f3f3;
+}
+
+.ro-drop-label {
+  margin: 0 0 0.35rem;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: #706e6b;
+}
+
+.ro-bar-track {
+  height: 0.35rem;
+  border-radius: 0.25rem;
+  background: #e5e5e5;
+  overflow: hidden;
+}
+
+.ro-bar-fill {
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(
+    90deg,
+    var(--ro-cumulus-blue, #0176d3) 0%,
+    #a8d8ff 100%
+  );
+  min-width: 4px;
+  transition: width 0.25s ease-out;
+}
+
+.ro-drop-caption {
+  margin: 0.35rem 0 0;
+  font-size: 0.75rem;
+  color: #706e6b;
+  line-height: 1.35;
+}
+
+.ro-savings {
+  background: var(--ro-savings-bg, #f3f6f9);
+  border-left: 3px solid var(--ro-savings-border, #0176d3);
+  border-radius: 0.35rem;
+  padding: 0.65rem 0.75rem;
+  margin-bottom: 0.65rem;
+}
+
+.ro-savings-label {
+  margin: 0 0 0.25rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--ro-savings-label, #2e844a);
+}
+
+.ro-savings-amount {
+  margin: 0 0 0.35rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--ro-cumulus-blue, #0176d3);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.ro-savings-formula {
+  margin: 0;
+  font-size: 0.6875rem;
+  line-height: 1.4;
+  color: #706e6b;
+}
+
+.ro-disclaimer {
+  margin: 0 0 0.65rem;
+  font-size: 0.6875rem;
+  line-height: 1.45;
+  color: #706e6b;
+  text-align: center;
+}
+
+.ro-cta-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.ro-cta {
+  width: 100%;
+  --slds-c-button-brand-color-background: var(--ro-cta-bg, #0176d3);
+  --slds-c-button-brand-color-border: var(--ro-cta-border, #0176d3);
+}
+
+@media (min-width: 22rem) {
+  .ro-rate-grid {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .ro-rate-card {
+    flex: 1;
+    min-width: 0;
+  }
+}

@@ -39,6 +39,7 @@
             <option value="nextBestActionsLwc">Next Best Actions</option>
             <option value="nextBestLeadsLwc">Next Best Leads</option>
             <option value="engagementHistoryLwc">Engagement History</option>
+            <option value="refinanceOfferLwc">Refinance Offer</option>
           </select>
         </div>
         <div class="control-bar-right">
@@ -3007,6 +3008,646 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
         </div>
         <!-- End Engagement History Container -->
 
+        <!-- Refinance Offer Container -->
+        <div id="refinance-offer-container" style="display: none">
+          <section id="ro-create" class="page-section">
+            <h2 class="section-title">Create Component</h2>
+            <p class="section-guidance">
+              Build a <strong>Refinance Offer</strong> card: external loan vs.
+              your institution’s pre-approved rate, a rate-drop bar, estimated
+              monthly savings, and CTA. Swap the institution label (e.g.
+              Cumulus) to match your brand. The preview uses a narrow width for
+              side columns.
+            </p>
+            <div class="auth-notice" style="display: none">
+              <div class="auth-notice-text">
+                <strong>Connect to Salesforce first</strong> to save your
+                progress!
+              </div>
+              <button type="button" class="auth-notice-btn deploy-btn">
+                🔐 Connect to Salesforce
+              </button>
+            </div>
+
+            <form id="refinanceOfferForm" method="POST" action="/generate">
+              <section class="form-section">
+                <h2>Header</h2>
+                <div class="form-group">
+                  <label>Card title</label>
+                  <input
+                    type="text"
+                    name="cardTitle"
+                    value="Member Savings Insight"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Header badge (leave blank to hide)</label>
+                  <input
+                    type="text"
+                    name="headerBadgeText"
+                    value="LIVE DATA MATCH"
+                  />
+                </div>
+              </section>
+
+              <section class="form-section">
+                <h2>Rate comparison</h2>
+                <p style="color: #666; font-size: 13px; margin-bottom: 12px">
+                  Two stacked cards in a skinny column (side-by-side when space
+                  allows in Salesforce).
+                </p>
+                <div class="form-group">
+                  <label>External / current loan label</label>
+                  <input
+                    type="text"
+                    name="externalLoanLabel"
+                    value="Current External Loan"
+                    required
+                  />
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>External APR</label>
+                    <input
+                      type="text"
+                      name="externalApr"
+                      value="7.5% APR"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>External monthly line</label>
+                    <input
+                      type="text"
+                      name="externalMonthly"
+                      value="Monthly: $350"
+                      required
+                    />
+                  </div>
+                </div>
+                <div class="form-group">
+                  <label>Institution rate label (include brand name)</label>
+                  <input
+                    type="text"
+                    name="institutionRateLabel"
+                    value="Cumulus Pre-Approved Rate"
+                    required
+                  />
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Institution APR</label>
+                    <input
+                      type="text"
+                      name="institutionApr"
+                      value="4.9% APR"
+                      required
+                    />
+                  </div>
+                  <div class="form-group">
+                    <label>Institution monthly line</label>
+                    <input
+                      type="text"
+                      name="institutionMonthly"
+                      value="Monthly: $266"
+                      required
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <section class="form-section">
+                <h2>Rate drop bar</h2>
+                <div class="form-group">
+                  <label>Section label</label>
+                  <input
+                    type="text"
+                    name="rateDropSectionLabel"
+                    value="Rate Drop"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Bar fill (0–100%)</label>
+                  <input
+                    type="number"
+                    name="rateDropBarFillPercent"
+                    min="0"
+                    max="100"
+                    value="42"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Caption under bar</label>
+                  <input
+                    type="text"
+                    name="rateDropCaption"
+                    value="7.5% → 4.9% (2.6 pts)"
+                    required
+                  />
+                </div>
+              </section>
+
+              <section class="form-section">
+                <h2>Monthly savings</h2>
+                <div class="form-group">
+                  <label>Savings section title</label>
+                  <input
+                    type="text"
+                    name="savingsSectionLabel"
+                    value="Estimated Monthly Savings"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Savings amount</label>
+                  <input
+                    type="text"
+                    name="savingsAmount"
+                    value="$84/month"
+                    required
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Savings explanation</label>
+                  <textarea
+                    name="savingsFormula"
+                    class="textarea-input"
+                    rows="2"
+                    required
+                  >
+External payment – Cumulus payment = Your savings</textarea
+                  >
+                </div>
+              </section>
+
+              <section class="form-section">
+                <h2>Colors</h2>
+                <p style="color: #666; font-size: 13px; margin-bottom: 12px">
+                  Cumulus brand blue (<strong>#0176d3</strong>) is fixed for the
+                  header, rate highlights, and rate-drop bar. Adjust savings
+                  block colors below; use <strong>CTA button color</strong> (in
+                  the next section) for the primary button only.
+                </p>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Savings card background</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="roSavingsBgHex"
+                        value="#f3f6f9"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="savingsCardBgColor"
+                        id="roSavingsBgHex"
+                        value="#F3F6F9"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#F3F6F9"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Savings card accent stripe</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="roSavingsBorderHex"
+                        value="#0176d3"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="savingsAccentBorderColor"
+                        id="roSavingsBorderHex"
+                        value="#0176D3"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#0176D3"
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Savings title color</label>
+                    <div class="color-input-group">
+                      <input
+                        type="color"
+                        class="color-picker"
+                        data-hex="roSavingsLabelHex"
+                        value="#2e844a"
+                        required
+                      />
+                      <input
+                        type="text"
+                        class="hex-input"
+                        name="savingsLabelColor"
+                        id="roSavingsLabelHex"
+                        value="#2E844A"
+                        pattern="^#[0-9A-Fa-f]{6}$"
+                        placeholder="#2E844A"
+                        required
+                      />
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="form-section">
+                <h2>Disclaimer &amp; CTA</h2>
+                <div class="form-group">
+                  <label>Disclaimer (leave blank to hide)</label>
+                  <textarea
+                    name="disclaimerNote"
+                    class="textarea-input"
+                    rows="2"
+                  >
+Rates and payments are illustrative. Subject to credit approval.</textarea
+                  >
+                </div>
+                <div class="form-group">
+                  <label>CTA button label (leave blank to hide)</label>
+                  <input
+                    type="text"
+                    name="ctaLabel"
+                    value="Generate Refinance Offer"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>CTA button color</label>
+                  <div class="color-input-group">
+                    <input
+                      type="color"
+                      class="color-picker"
+                      data-hex="roCtaHex"
+                      value="#0176d3"
+                      required
+                    />
+                    <input
+                      type="text"
+                      class="hex-input"
+                      name="ctaButtonColor"
+                      id="roCtaHex"
+                      value="#0176D3"
+                      pattern="^#[0-9A-Fa-f]{6}$"
+                      placeholder="#0176D3"
+                      required
+                    />
+                  </div>
+                </div>
+              </section>
+
+              <div class="button-group">
+                <button type="button" class="deploy-btn deploy-btn-primary">
+                  🔐 Connect to Salesforce
+                </button>
+              </div>
+            </form>
+          </section>
+
+          <section id="ro-preview" class="page-section">
+            <h2 class="section-title">Live Preview</h2>
+            <p class="section-guidance" style="margin-bottom: 12px">
+              Narrow preview; in App Builder, place in a slim column—the rate
+              cards stack on small widths.
+            </p>
+            <div
+              style="
+                background: #f3f3f3;
+                border-radius: 8px;
+                padding: 16px;
+                display: flex;
+                justify-content: center;
+              "
+            >
+              <div
+                id="previewRoCard"
+                style="
+                  width: 100%;
+                  max-width: 320px;
+                  background: #fff;
+                  border: 1px solid #e5e5e5;
+                  border-radius: 8px;
+                  overflow: hidden;
+                  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+                  font-family:
+                    -apple-system, BlinkMacSystemFont, &quot;Segoe UI&quot;,
+                    Roboto, sans-serif;
+                  padding: 0;
+                "
+              >
+                <div
+                  style="height: 3px; background: #0176d3; width: 100%"
+                ></div>
+                <div style="padding: 12px 14px 14px">
+                  <div style="display: flex; gap: 8px; margin-bottom: 10px">
+                    <div
+                      id="previewRoHeaderIcon"
+                      style="
+                        width: 32px;
+                        height: 32px;
+                        border-radius: 50%;
+                        background: #0176d3;
+                        flex-shrink: 0;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                      "
+                    >
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        aria-hidden="true"
+                      >
+                        <rect
+                          x="4"
+                          y="12"
+                          width="4"
+                          height="8"
+                          rx="0.5"
+                          fill="#ffffff"
+                        />
+                        <rect
+                          x="10"
+                          y="8"
+                          width="4"
+                          height="12"
+                          rx="0.5"
+                          fill="#ffffff"
+                        />
+                        <rect
+                          x="16"
+                          y="10"
+                          width="4"
+                          height="10"
+                          rx="0.5"
+                          fill="#ffffff"
+                        />
+                      </svg>
+                    </div>
+                    <div style="min-width: 0">
+                      <h3
+                        id="previewRoTitle"
+                        style="
+                          margin: 0 0 6px;
+                          font-size: 15px;
+                          font-weight: 700;
+                          color: #181818;
+                          line-height: 1.35;
+                        "
+                      >
+                        Member Savings Insight
+                      </h3>
+                      <div id="previewRoBadgeWrap" style="display: block">
+                        <span
+                          id="previewRoBadge"
+                          style="
+                            display: inline-block;
+                            font-size: 9px;
+                            font-weight: 700;
+                            letter-spacing: 0.05em;
+                            text-transform: uppercase;
+                            color: #0176d3;
+                            background: #e8f4fc;
+                            border: 1px solid #c9e8fa;
+                            padding: 3px 8px;
+                            border-radius: 999px;
+                          "
+                          >LIVE DATA MATCH</span
+                        >
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style="
+                      display: flex;
+                      flex-direction: column;
+                      gap: 8px;
+                      margin-bottom: 10px;
+                    "
+                  >
+                    <div
+                      style="
+                        border: 1px solid #e5e5e5;
+                        border-left: 3px solid #0176d3;
+                        border-radius: 6px;
+                        padding: 8px 10px;
+                        background: #fff;
+                      "
+                    >
+                      <p
+                        id="previewRoExtLabel"
+                        style="
+                          margin: 0 0 4px;
+                          font-size: 11px;
+                          font-weight: 600;
+                          color: #706e6b;
+                        "
+                      >
+                        Current External Loan
+                      </p>
+                      <p
+                        id="previewRoExtApr"
+                        style="
+                          margin: 0 0 3px;
+                          font-size: 18px;
+                          font-weight: 700;
+                          color: #0176d3;
+                        "
+                      >
+                        7.5% APR
+                      </p>
+                      <p
+                        id="previewRoExtMo"
+                        style="margin: 0; font-size: 12px; color: #706e6b"
+                      >
+                        Monthly: $350
+                      </p>
+                    </div>
+                    <div
+                      id="previewRoInstCard"
+                      style="
+                        border: 1px solid #e5e5e5;
+                        border-left: 3px solid #0176d3;
+                        border-radius: 6px;
+                        padding: 8px 10px;
+                        background: #fff;
+                      "
+                    >
+                      <p
+                        id="previewRoInstLabel"
+                        style="
+                          margin: 0 0 4px;
+                          font-size: 11px;
+                          font-weight: 600;
+                          color: #706e6b;
+                        "
+                      >
+                        Cumulus Pre-Approved Rate
+                      </p>
+                      <p
+                        id="previewRoInstApr"
+                        style="
+                          margin: 0 0 3px;
+                          font-size: 18px;
+                          font-weight: 700;
+                          color: #0176d3;
+                        "
+                      >
+                        4.9% APR
+                      </p>
+                      <p
+                        id="previewRoInstMo"
+                        style="margin: 0; font-size: 12px; color: #706e6b"
+                      >
+                        Monthly: $266
+                      </p>
+                    </div>
+                  </div>
+                  <div style="margin-bottom: 10px; padding-bottom: 10px">
+                    <p
+                      id="previewRoDropLabel"
+                      style="
+                        margin: 0 0 6px;
+                        font-size: 10px;
+                        font-weight: 600;
+                        text-transform: uppercase;
+                        letter-spacing: 0.03em;
+                        color: #706e6b;
+                      "
+                    >
+                      Rate Drop
+                    </p>
+                    <div
+                      style="
+                        height: 6px;
+                        border-radius: 4px;
+                        background: #e5e5e5;
+                        overflow: hidden;
+                      "
+                    >
+                      <div
+                        id="previewRoBarFill"
+                        style="
+                          width: 42%;
+                          height: 100%;
+                          border-radius: inherit;
+                          background: linear-gradient(
+                            90deg,
+                            #0176d3 0%,
+                            #a8d8ff 100%
+                          );
+                        "
+                      ></div>
+                    </div>
+                    <p
+                      id="previewRoDropCaption"
+                      style="
+                        margin: 6px 0 0;
+                        font-size: 12px;
+                        color: #706e6b;
+                        line-height: 1.35;
+                      "
+                    >
+                      7.5% → 4.9% (2.6 pts)
+                    </p>
+                  </div>
+                  <div
+                    id="previewRoSavingsBlock"
+                    style="
+                      background: #f3f6f9;
+                      border-left: 3px solid #0176d3;
+                      border-radius: 6px;
+                      padding: 10px 12px;
+                      margin-bottom: 10px;
+                    "
+                  >
+                    <p
+                      id="previewRoSavLabel"
+                      style="
+                        margin: 0 0 4px;
+                        font-size: 13px;
+                        font-weight: 700;
+                        color: #2e844a;
+                      "
+                    >
+                      Estimated Monthly Savings
+                    </p>
+                    <p
+                      id="previewRoSavAmt"
+                      style="
+                        margin: 0 0 6px;
+                        font-size: 26px;
+                        font-weight: 700;
+                        color: #0176d3;
+                        line-height: 1.1;
+                      "
+                    >
+                      $84/month
+                    </p>
+                    <p
+                      id="previewRoSavFormula"
+                      style="
+                        margin: 0;
+                        font-size: 11px;
+                        line-height: 1.4;
+                        color: #706e6b;
+                      "
+                    >
+                      External payment – Cumulus payment = Your savings
+                    </p>
+                  </div>
+                  <p
+                    id="previewRoDisclaimer"
+                    style="
+                      margin: 0 0 10px;
+                      font-size: 11px;
+                      line-height: 1.45;
+                      color: #706e6b;
+                      text-align: center;
+                    "
+                  >
+                    Rates and payments are illustrative. Subject to credit
+                    approval.
+                  </p>
+                  <div
+                    id="previewRoCtaWrap"
+                    style="margin-top: 4px; text-align: center"
+                  >
+                    <span
+                      id="previewRoCtaLabel"
+                      style="
+                        display: inline-block;
+                        width: 100%;
+                        padding: 10px 16px;
+                        background: #0176d3;
+                        color: #fff;
+                        font-size: 13px;
+                        font-weight: 600;
+                        border-radius: 4px;
+                        box-sizing: border-box;
+                      "
+                      >Generate Refinance Offer</span
+                    >
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+        <!-- End Refinance Offer Container -->
+
         <section id="deploy" class="page-section deployment-section">
           <h2 class="section-title">How to Deploy Your Component</h2>
           <p class="deployment-intro">
@@ -3032,10 +3673,26 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
               automatically generate the code, upload files to the cloud when
               applicable, and push everything directly to your org.
             </p>
+            <p style="margin-top: 12px">
+              For <strong>Refinance Offer</strong>, set the institution rate
+              label to your brand (e.g. replace “Cumulus” in the default copy).
+              The card uses fixed <strong>Cumulus / Salesforce blue</strong>
+              (#0176d3) for the header, rates, and bar; only the
+              <strong>CTA button color</strong> is configurable separately in
+              the form (and in App Builder). All values are static mock data for
+              demos until you wire real data in Salesforce.
+            </p>
           </div>
 
           <div class="instruction-step">
             <h3>Step 3: Add to Your Lightning Page</h3>
+            <p style="margin-bottom: 12px">
+              In App Builder, search the Custom section for the
+              <strong>friendly label</strong> below (not the technical LWC
+              folder name <code>refinanceOfferLwc</code>). The
+              <strong>Refinance Offer</strong> component is built for slim
+              columns: the two rate cards stack when the column is narrow.
+            </p>
             <ol>
               <li>
                 Log into your Salesforce org and navigate to the page where you
@@ -3060,6 +3717,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                   <li><strong>Next Best Actions (Custom)</strong></li>
                   <li><strong>Next Best Leads (Custom)</strong></li>
                   <li><strong>Engagement History</strong></li>
+                  <li><strong>Refinance Offer</strong></li>
                 </ul>
                 Drag it onto the page canvas.
               </li>
