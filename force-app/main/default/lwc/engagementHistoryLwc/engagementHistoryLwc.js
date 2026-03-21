@@ -16,59 +16,62 @@ export default class EngagementHistoryLwc extends LightningElement {
   @api cardTitle = "Engagement History";
 
   @api accentColor = "#0070d2";
-  @api lineChartColor = "#0070d2";
   @api barChartColor = "#0070d2";
   @api assetBarColor = "#7b68ee";
   @api tableLinkColor = "#0070d2";
 
   // Campaign bar data (design-time values — match generator form defaults)
-  @api campaign1Name = "My 1st Campaign";
-  @api campaign1Value = "14";
-  @api campaign2Name = "Nurture Campaign";
-  @api campaign2Value = "8";
-  @api campaign3Name = "Product Launch";
-  @api campaign3Value = "5";
+  @api campaign1Name = "Q3 Wealth Management Webinar";
+  @api campaign1Value = "28";
+  @api campaign2Name = "High Net Worth Prospect Outreach";
+  @api campaign2Value = "19";
+  @api campaign3Name = "Retirement Planning Drip Campaign";
+  @api campaign3Value = "12";
 
   // Asset bar data
-  @api asset1Name = "Email_20260209_073552";
-  @api asset1Value = "7";
-  @api asset2Name = "Progressive Profiling Mail";
-  @api asset2Value = "3";
-  @api asset3Name = "Progressive Profiling Landing Page";
-  @api asset3Value = "3";
-  @api asset4Name = "Progressive Profiling LP";
-  @api asset4Value = "1";
+  @api asset1Name = "Wealth Management eBook";
+  @api asset1Value = "15";
+  @api asset2Name = "Investment Portfolio Guide";
+  @api asset2Value = "12";
+  @api asset3Name = "HNW Client Onboarding Email";
+  @api asset3Value = "9";
+  @api asset4Name = "Retirement Calculator Landing Page";
+  @api asset4Value = "6";
 
   // Table row data
-  @api row1Asset = "Progressive Profiling Mail";
-  @api row1ContentType = "Email";
-  @api row1ActivityType = "Email Click";
-  @api row1Campaign = "My 1st Campaign";
-  @api row1Date = "2026/2/23 10:33";
+  @api row1Asset = "Wealth Management eBook";
+  @api row1ContentType = "eBook";
+  @api row1ActivityType = "Download";
+  @api row1Campaign = "Q3 Wealth Management Webinar";
+  @api row1Date = "2026/3/15 14:22";
 
-  @api row2Asset = "Progressive Profiling Mail";
-  @api row2ContentType = "Email";
-  @api row2ActivityType = "Email Open";
-  @api row2Campaign = "My 1st Campaign";
-  @api row2Date = "2026/2/23 10:33";
+  @api row2Asset = "Investment Portfolio Guide";
+  @api row2ContentType = "Whitepaper";
+  @api row2ActivityType = "Download";
+  @api row2Campaign = "High Net Worth Prospect Outreach";
+  @api row2Date = "2026/3/14 09:18";
 
-  @api row3Asset = "Progressive Profiling Mail";
+  @api row3Asset = "HNW Client Onboarding Email";
   @api row3ContentType = "Email";
-  @api row3ActivityType = "Email Open";
-  @api row3Campaign = "My 1st Campaign";
-  @api row3Date = "2026/2/23 10:33";
+  @api row3ActivityType = "Email Click";
+  @api row3Campaign = "High Net Worth Prospect Outreach";
+  @api row3Date = "2026/3/12 16:45";
 
-  @api row4Asset = "Progressive Profiling Mail";
-  @api row4ContentType = "Email";
-  @api row4ActivityType = "Email Open";
-  @api row4Campaign = "My 1st Campaign";
-  @api row4Date = "2026/2/23 10:33";
+  @api row4Asset = "Retirement Calculator Landing Page";
+  @api row4ContentType = "Landing Page";
+  @api row4ActivityType = "Form Submit";
+  @api row4Campaign = "Retirement Planning Drip Campaign";
+  @api row4Date = "2026/3/10 11:30";
 
-  @api row5Asset = "Email_20260209_073552";
-  @api row5ContentType = "Email";
-  @api row5ActivityType = "Email Click";
-  @api row5Campaign = "My 1st Campaign";
-  @api row5Date = "2026/2/23 10:33";
+  @api row5Asset = "Q3 Webinar Registration";
+  @api row5ContentType = "Webinar";
+  @api row5ActivityType = "Registration";
+  @api row5Campaign = "Q3 Wealth Management Webinar";
+  @api row5Date = "2026/3/08 13:55";
+
+  // Line chart configuration
+  @api lineChartTrend = "upward"; // "upward" or "downward"
+  @api lineChartColor = "#0070d2";
 
   // ── Internal state ─────────────────────────────────────────
   _chartScriptRequested = false;
@@ -78,6 +81,10 @@ export default class EngagementHistoryLwc extends LightningElement {
   selectedDateRange = "all";
   selectedCampaign = "all";
   selectedContentType = "all";
+
+  // Internal tracked properties for line chart
+  _currentTrend = "upward";
+  _currentLineColor = "#0070d2";
 
   lineChart = null;
   campaignChart = null;
@@ -95,6 +102,13 @@ export default class EngagementHistoryLwc extends LightningElement {
   // ── Dropdown options ───────────────────────────────────────
   get dateRangeOptions() {
     return DATE_RANGE_OPTIONS;
+  }
+
+  get trendOptions() {
+    return [
+      { label: "Trending Upward", value: "upward" },
+      { label: "Trending Downward", value: "downward" }
+    ];
   }
 
   get campaignOptions() {
@@ -188,6 +202,18 @@ export default class EngagementHistoryLwc extends LightningElement {
     return `--eh-table-link-color: ${c}`;
   }
 
+  get colorPreviewStyle() {
+    return `background-color: ${this._currentLineColor}`;
+  }
+
+  get currentTrend() {
+    return this._currentTrend || this.lineChartTrend || "upward";
+  }
+
+  get currentLineColor() {
+    return this._currentLineColor || this.lineChartColor || "#0070d2";
+  }
+
   // ── Sort indicator getters ─────────────────────────────────
   get sortAssetClass() {
     return this.sortField === "asset" ? "sorted" : "";
@@ -270,6 +296,12 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Lifecycle ──────────────────────────────────────────────
+  connectedCallback() {
+    // Initialize internal properties from @api properties
+    this._currentTrend = this.lineChartTrend || "upward";
+    this._currentLineColor = this.lineChartColor || "#0070d2";
+  }
+
   renderedCallback() {
     if (!this._chartScriptRequested) {
       this._chartScriptRequested = true;
@@ -355,65 +387,127 @@ export default class EngagementHistoryLwc extends LightningElement {
       this.lineChart.destroy();
     }
 
-    // Build time-series data from filtered rows
-    const rows = this.filteredRows;
-    const dateMap = {};
-    rows.forEach((r) => {
-      const d = this._parseDate(r.date);
-      if (d) {
-        const key = d.toLocaleDateString("en-US", {
-          year: "numeric",
-          month: "short"
-        });
-        dateMap[key] = (dateMap[key] || 0) + 1;
-      }
-    });
+    // Predefined trend data
+    const labels = [
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday",
+      "Sunday"
+    ];
+    const trendData = {
+      upward: [12, 28, 45, 68, 95, 135, 188],
+      downward: [188, 152, 118, 85, 58, 32, 15]
+    };
+    const dataValues = trendData[this.currentTrend] || trendData.upward;
 
-    const sortedKeys = Object.keys(dateMap).sort((a, b) => {
-      return new Date(a) - new Date(b);
-    });
-
-    // Cumulative total
-    let cumulative = 0;
-    const cumulativeData = sortedKeys.map((k) => {
-      cumulative += dateMap[k];
-      return cumulative;
-    });
+    // Convert hex color to rgba for gradient
+    const hexToRgba = (hex, alpha) => {
+      const r = parseInt(hex.slice(1, 3), 16);
+      const g = parseInt(hex.slice(3, 5), 16);
+      const b = parseInt(hex.slice(5, 7), 16);
+      return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+    };
 
     const ctx = canvas.getContext("2d");
+
+    // Create gradient for area fill
+    const gradient = ctx.createLinearGradient(0, 0, 0, canvas.height);
+    gradient.addColorStop(0, hexToRgba(this.currentLineColor, 0.3));
+    gradient.addColorStop(1, hexToRgba(this.currentLineColor, 0.01));
+
     this.lineChart = new window.Chart(ctx, {
       type: "line",
       data: {
-        labels: sortedKeys,
+        labels: labels,
         datasets: [
           {
-            label: "Total Activities",
-            data: cumulativeData,
-            borderColor: this.lineChartColor || "#0070d2",
-            backgroundColor: "rgba(0,112,210,0.08)",
+            label: "Engagement",
+            data: dataValues,
+            borderColor: this.currentLineColor,
+            backgroundColor: gradient,
             fill: true,
-            tension: 0.3,
-            pointRadius: 5,
-            pointBackgroundColor: this.lineChartColor || "#0070d2"
+            tension: 0.4,
+            borderWidth: 3,
+            pointRadius: 0,
+            pointHoverRadius: 8,
+            pointHoverBackgroundColor: "#ffffff",
+            pointHoverBorderColor: this.currentLineColor,
+            pointHoverBorderWidth: 3
           }
         ]
       },
       options: {
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 8,
+            right: 8,
+            top: 20,
+            bottom: 8
+          }
+        },
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: {
+            enabled: true,
+            mode: "index",
+            intersect: false,
+            backgroundColor: "rgba(0, 0, 0, 0.85)",
+            padding: 14,
+            titleFont: { size: 14, weight: "600" },
+            bodyFont: { size: 13 },
+            displayColors: false,
+            borderColor: this.currentLineColor,
+            borderWidth: 2,
+            cornerRadius: 8,
+            callbacks: {
+              label: function (context) {
+                return "Engagement: " + context.parsed.y;
+              }
+            }
+          }
         },
         scales: {
           x: {
-            title: { display: true, text: "Activity Date" },
-            grid: { display: false }
+            grid: {
+              display: false,
+              drawBorder: false
+            },
+            ticks: {
+              font: { size: 11, weight: "500" },
+              padding: 10,
+              color: "#6b7280"
+            }
           },
           y: {
-            title: { display: true, text: "Total Activities" },
             beginAtZero: true,
-            ticks: { stepSize: 1 }
+            grid: {
+              display: true,
+              drawBorder: false,
+              color: "rgba(0, 0, 0, 0.03)",
+              lineWidth: 1
+            },
+            ticks: {
+              font: { size: 11, weight: "500" },
+              padding: 12,
+              color: "#6b7280",
+              callback: function (value) {
+                return value;
+              }
+            }
           }
+        },
+        interaction: {
+          mode: "index",
+          intersect: false
+        },
+        animation: {
+          duration: 750,
+          easing: "easeInOutQuart"
         }
       }
     });
@@ -458,11 +552,12 @@ export default class EngagementHistoryLwc extends LightningElement {
         labels,
         datasets: [
           {
-            label: "Total Activities",
+            label: "Activities",
             data,
             backgroundColor: this.barChartColor || "#0070d2",
-            borderRadius: 4,
-            barThickness: 22
+            borderRadius: 6,
+            barThickness: 28,
+            borderSkipped: false
           }
         ]
       },
@@ -470,26 +565,59 @@ export default class EngagementHistoryLwc extends LightningElement {
         indexAxis: "y",
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 0,
+            right: 20,
+            top: 8,
+            bottom: 8
+          }
+        },
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            padding: 12,
+            titleFont: { size: 13, weight: "600" },
+            bodyFont: { size: 12 },
+            displayColors: false
+          }
         },
         scales: {
           x: {
-            title: { display: true, text: "Total Activities" },
+            title: {
+              display: true,
+              text: "Activities",
+              font: { size: 11, weight: "600" },
+              padding: { top: 8 }
+            },
             beginAtZero: true,
-            ticks: { stepSize: 1 }
+            ticks: {
+              stepSize: 5,
+              font: { size: 11 },
+              padding: 6
+            },
+            grid: {
+              display: true,
+              drawBorder: false,
+              color: "rgba(0, 0, 0, 0.06)"
+            }
           },
           y: {
             grid: { display: false },
             ticks: {
               autoSkip: false,
-              font: { size: 11 }
+              font: { size: 12, weight: "500" },
+              padding: 2,
+              color: "#3e3e3c"
             },
             afterFit: (scale) => {
-              const minW = this._ehHorizontalBarLabelAxisWidth(labels);
-              if (scale.width < minW) {
-                scale.width = minW;
-              }
+              // Ultra-compact label width for extremely tight bar alignment
+              const longestLabel = labels.reduce(
+                (max, label) => Math.max(max, String(label).length),
+                0
+              );
+              scale.width = Math.min(Math.max(longestLabel * 5 + 4, 70), 180);
             }
           }
         }
@@ -531,8 +659,8 @@ export default class EngagementHistoryLwc extends LightningElement {
     const palette = [
       this.barChartColor || "#0070d2",
       this.assetBarColor || "#7b68ee",
-      "#2e8b57",
-      "#e6812f"
+      "#16a34a",
+      "#ea580c"
     ];
     const bgColors = data.map((_, idx) => palette[idx % palette.length]);
 
@@ -543,11 +671,12 @@ export default class EngagementHistoryLwc extends LightningElement {
         labels,
         datasets: [
           {
-            label: "Total Activities",
+            label: "Activities",
             data,
             backgroundColor: bgColors,
-            borderRadius: 4,
-            barThickness: 22
+            borderRadius: 6,
+            barThickness: 28,
+            borderSkipped: false
           }
         ]
       },
@@ -555,26 +684,59 @@ export default class EngagementHistoryLwc extends LightningElement {
         indexAxis: "y",
         responsive: true,
         maintainAspectRatio: false,
+        layout: {
+          padding: {
+            left: 0,
+            right: 20,
+            top: 8,
+            bottom: 8
+          }
+        },
         plugins: {
-          legend: { display: false }
+          legend: { display: false },
+          tooltip: {
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            padding: 12,
+            titleFont: { size: 13, weight: "600" },
+            bodyFont: { size: 12 },
+            displayColors: false
+          }
         },
         scales: {
           x: {
-            title: { display: true, text: "Total Activities" },
+            title: {
+              display: true,
+              text: "Activities",
+              font: { size: 11, weight: "600" },
+              padding: { top: 8 }
+            },
             beginAtZero: true,
-            ticks: { stepSize: 1 }
+            ticks: {
+              stepSize: 3,
+              font: { size: 11 },
+              padding: 6
+            },
+            grid: {
+              display: true,
+              drawBorder: false,
+              color: "rgba(0, 0, 0, 0.06)"
+            }
           },
           y: {
             grid: { display: false },
             ticks: {
               autoSkip: false,
-              font: { size: 11 }
+              font: { size: 12, weight: "500" },
+              padding: 2,
+              color: "#3e3e3c"
             },
             afterFit: (scale) => {
-              const minW = this._ehHorizontalBarLabelAxisWidth(labels);
-              if (scale.width < minW) {
-                scale.width = minW;
-              }
+              // Ultra-compact label width for extremely tight bar alignment
+              const longestLabel = labels.reduce(
+                (max, label) => Math.max(max, String(label).length),
+                0
+              );
+              scale.width = Math.min(Math.max(longestLabel * 5 + 4, 70), 180);
             }
           }
         }
@@ -601,5 +763,28 @@ export default class EngagementHistoryLwc extends LightningElement {
     const normalised = str.replace(/\//g, "-");
     const d = new Date(normalised);
     return isNaN(d.getTime()) ? null : d;
+  }
+
+  _parseCommaSeparated(str) {
+    if (!str) return [];
+    return str
+      .split(",")
+      .map((s) => s.trim())
+      .filter((s) => s);
+  }
+
+  // ── Line Chart Configuration Handlers ──────────────────────
+  handleTrendChange(event) {
+    this._currentTrend = event.detail.value;
+    if (this._chartsReady) {
+      this._renderLineChart();
+    }
+  }
+
+  handleLineColorChange(event) {
+    this._currentLineColor = event.target.value;
+    if (this._chartsReady) {
+      this._renderLineChart();
+    }
   }
 }

@@ -56,6 +56,42 @@
               ></lightning-icon>
             </div>
             <div class={lineChartSectionClass}>
+              <div class="chart-config-controls slds-m-bottom_small">
+                <div class="slds-grid slds-gutters slds-wrap">
+                  <div
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2"
+                  >
+                    <lightning-combobox
+                      label="Trend Direction"
+                      value={currentTrend}
+                      options={trendOptions}
+                      onchange={handleTrendChange}
+                      variant="label-stacked"
+                    ></lightning-combobox>
+                  </div>
+                  <div
+                    class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2"
+                  >
+                    <div class="slds-form-element">
+                      <label class="slds-form-element__label">
+                        <span>Line Color</span>
+                      </label>
+                      <div class="color-picker-wrapper">
+                        <input
+                          type="color"
+                          class="color-picker-input"
+                          value={currentLineColor}
+                          onchange={handleLineColorChange}
+                        />
+                        <span
+                          class="color-preview"
+                          style={colorPreviewStyle}
+                        ></span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
               <div class="line-chart-container">
                 <canvas></canvas>
               </div>

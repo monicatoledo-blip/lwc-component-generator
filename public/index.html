@@ -2361,6 +2361,49 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                 </div>
               </section>
 
+              <!-- Line Chart Configuration -->
+              <section class="form-section">
+                <h2>Line Chart Configuration (Engagement Over Time)</h2>
+                <p style="color: #666; font-size: 13px; margin-bottom: 12px">
+                  Configure the trend direction and visual styling for the
+                  engagement trend chart.
+                </p>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Trend Direction</label>
+                    <select name="lineChartTrend">
+                      <option value="upward" selected>Trending Upward</option>
+                      <option value="downward">Trending Downward</option>
+                    </select>
+                    <small
+                      style="
+                        color: #666;
+                        font-size: 12px;
+                        display: block;
+                        margin-top: 4px;
+                      "
+                    >
+                      Choose whether engagement is increasing or decreasing over
+                      time
+                    </small>
+                  </div>
+                  <div class="form-group">
+                    <label>Line Color</label>
+                    <input type="color" name="lineChartColor" value="#0070d2" />
+                    <small
+                      style="
+                        color: #666;
+                        font-size: 12px;
+                        display: block;
+                        margin-top: 4px;
+                      "
+                    >
+                      Pick a color for the trend line and gradient fill
+                    </small>
+                  </div>
+                </div>
+              </section>
+
               <!-- Campaign Chart Data -->
               <section class="form-section">
                 <h2>Campaign Chart Data</h2>
@@ -2373,7 +2416,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     <input
                       type="text"
                       name="campaign1Name"
-                      value="My 1st Campaign"
+                      value="Q3 Wealth Management Webinar"
                     />
                   </div>
                   <div class="form-group">
@@ -2381,7 +2424,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     <input
                       type="number"
                       name="campaign1Value"
-                      value="14"
+                      value="28"
                       min="0"
                     />
                   </div>
@@ -2392,7 +2435,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     <input
                       type="text"
                       name="campaign2Name"
-                      value="Nurture Campaign"
+                      value="High Net Worth Prospect Outreach"
                     />
                   </div>
                   <div class="form-group">
@@ -2400,7 +2443,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     <input
                       type="number"
                       name="campaign2Value"
-                      value="8"
+                      value="19"
                       min="0"
                     />
                   </div>
@@ -2411,7 +2454,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     <input
                       type="text"
                       name="campaign3Name"
-                      value="Product Launch"
+                      value="Retirement Planning Drip Campaign"
                     />
                   </div>
                   <div class="form-group">
@@ -2419,7 +2462,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     <input
                       type="number"
                       name="campaign3Value"
-                      value="5"
+                      value="12"
                       min="0"
                     />
                   </div>
@@ -2438,12 +2481,17 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     <input
                       type="text"
                       name="asset1Name"
-                      value="Email_20260209_073552"
+                      value="Wealth Management eBook"
                     />
                   </div>
                   <div class="form-group">
                     <label>Asset 1 Value</label>
-                    <input type="number" name="asset1Value" value="7" min="0" />
+                    <input
+                      type="number"
+                      name="asset1Value"
+                      value="15"
+                      min="0"
+                    />
                   </div>
                 </div>
                 <div class="form-row">
@@ -2452,12 +2500,17 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     <input
                       type="text"
                       name="asset2Name"
-                      value="Progressive Profiling Mail"
+                      value="Investment Portfolio Guide"
                     />
                   </div>
                   <div class="form-group">
                     <label>Asset 2 Value</label>
-                    <input type="number" name="asset2Value" value="3" min="0" />
+                    <input
+                      type="number"
+                      name="asset2Value"
+                      value="12"
+                      min="0"
+                    />
                   </div>
                 </div>
                 <div class="form-row">
@@ -2466,12 +2519,12 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     <input
                       type="text"
                       name="asset3Name"
-                      value="Progressive Profiling Landing Page"
+                      value="HNW Client Onboarding Email"
                     />
                   </div>
                   <div class="form-group">
                     <label>Asset 3 Value</label>
-                    <input type="number" name="asset3Value" value="3" min="0" />
+                    <input type="number" name="asset3Value" value="9" min="0" />
                   </div>
                 </div>
                 <div class="form-row">
@@ -2480,12 +2533,12 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     <input
                       type="text"
                       name="asset4Name"
-                      value="Progressive Profiling LP"
+                      value="Retirement Calculator Landing Page"
                     />
                   </div>
                   <div class="form-group">
                     <label>Asset 4 Value</label>
-                    <input type="number" name="asset4Value" value="1" min="0" />
+                    <input type="number" name="asset4Value" value="6" min="0" />
                   </div>
                 </div>
               </section>
@@ -2503,19 +2556,19 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row1Asset"
-                      value="Progressive Profiling Mail"
+                      value="Wealth Management eBook"
                     />
                   </div>
                   <div class="form-group">
                     <label>Content Type</label
-                    ><input type="text" name="row1ContentType" value="Email" />
+                    ><input type="text" name="row1ContentType" value="eBook" />
                   </div>
                   <div class="form-group">
                     <label>Activity</label
                     ><input
                       type="text"
                       name="row1ActivityType"
-                      value="Email Click"
+                      value="Download"
                     />
                   </div>
                 </div>
@@ -2525,7 +2578,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row1Campaign"
-                      value="My 1st Campaign"
+                      value="Q3 Wealth Management Webinar"
                     />
                   </div>
                   <div class="form-group">
@@ -2533,7 +2586,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row1Date"
-                      value="2026/2/23 10:33"
+                      value="2026/3/15 14:22"
                     />
                   </div>
                 </div>
@@ -2544,19 +2597,23 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row2Asset"
-                      value="Progressive Profiling Mail"
+                      value="Investment Portfolio Guide"
                     />
                   </div>
                   <div class="form-group">
                     <label>Content Type</label
-                    ><input type="text" name="row2ContentType" value="Email" />
+                    ><input
+                      type="text"
+                      name="row2ContentType"
+                      value="Whitepaper"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Activity</label
                     ><input
                       type="text"
                       name="row2ActivityType"
-                      value="Email Open"
+                      value="Download"
                     />
                   </div>
                 </div>
@@ -2566,7 +2623,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row2Campaign"
-                      value="My 1st Campaign"
+                      value="High Net Worth Prospect Outreach"
                     />
                   </div>
                   <div class="form-group">
@@ -2574,7 +2631,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row2Date"
-                      value="2026/2/23 10:33"
+                      value="2026/3/14 09:18"
                     />
                   </div>
                 </div>
@@ -2585,7 +2642,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row3Asset"
-                      value="Progressive Profiling Mail"
+                      value="HNW Client Onboarding Email"
                     />
                   </div>
                   <div class="form-group">
@@ -2597,7 +2654,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row3ActivityType"
-                      value="Email Open"
+                      value="Email Click"
                     />
                   </div>
                 </div>
@@ -2607,7 +2664,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row3Campaign"
-                      value="My 1st Campaign"
+                      value="High Net Worth Prospect Outreach"
                     />
                   </div>
                   <div class="form-group">
@@ -2615,7 +2672,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row3Date"
-                      value="2026/2/23 10:33"
+                      value="2026/3/12 16:45"
                     />
                   </div>
                 </div>
@@ -2626,19 +2683,23 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row4Asset"
-                      value="Progressive Profiling Mail"
+                      value="Retirement Calculator Landing Page"
                     />
                   </div>
                   <div class="form-group">
                     <label>Content Type</label
-                    ><input type="text" name="row4ContentType" value="Email" />
+                    ><input
+                      type="text"
+                      name="row4ContentType"
+                      value="Landing Page"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Activity</label
                     ><input
                       type="text"
                       name="row4ActivityType"
-                      value="Email Open"
+                      value="Form Submit"
                     />
                   </div>
                 </div>
@@ -2648,7 +2709,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row4Campaign"
-                      value="My 1st Campaign"
+                      value="Retirement Planning Drip Campaign"
                     />
                   </div>
                   <div class="form-group">
@@ -2656,7 +2717,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row4Date"
-                      value="2026/2/23 10:33"
+                      value="2026/3/10 11:30"
                     />
                   </div>
                 </div>
@@ -2667,19 +2728,23 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row5Asset"
-                      value="Email_20260209_073552"
+                      value="Q3 Webinar Registration"
                     />
                   </div>
                   <div class="form-group">
                     <label>Content Type</label
-                    ><input type="text" name="row5ContentType" value="Email" />
+                    ><input
+                      type="text"
+                      name="row5ContentType"
+                      value="Webinar"
+                    />
                   </div>
                   <div class="form-group">
                     <label>Activity</label
                     ><input
                       type="text"
                       name="row5ActivityType"
-                      value="Email Click"
+                      value="Registration"
                     />
                   </div>
                 </div>
@@ -2689,7 +2754,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row5Campaign"
-                      value="My 1st Campaign"
+                      value="Q3 Wealth Management Webinar"
                     />
                   </div>
                   <div class="form-group">
@@ -2697,7 +2762,7 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
                     ><input
                       type="text"
                       name="row5Date"
-                      value="2026/2/23 10:33"
+                      value="2026/3/08 13:55"
                     />
                   </div>
                 </div>
@@ -3032,35 +3097,6 @@ Downloaded 'Scaling with Credit' whitepaper. 3x engagement increase.</textarea
             Deploy your custom Lightning Web Component directly to Salesforce
             with just a few clicks.
           </p>
-
-          <div
-            class="palette-names-reference"
-            style="
-              margin: 0 0 24px;
-              padding: 16px 18px;
-              background: #fafaf9;
-              border: 1px solid #dddbda;
-              border-radius: 8px;
-              border-left: 4px solid #0176d3;
-            "
-          >
-            <p style="margin: 0 0 10px; font-weight: 700; color: #181818">
-              Salesforce Custom palette — exact names
-            </p>
-            <p style="margin: 0 0 10px; font-size: 14px; line-height: 1.5">
-              In Lightning App Builder, open the
-              <strong>Custom</strong> section. Each generated component appears
-              under one of these <strong>labels</strong> (not the technical
-              folder name):
-            </p>
-            <ul style="margin: 0 0 12px; padding-left: 22px; line-height: 1.6">
-              <li><strong>Unified Profile</strong></li>
-              <li><strong>Agentforce Lead Brief (Custom)</strong></li>
-              <li><strong>Next Best Actions (Custom)</strong></li>
-              <li><strong>Next Best Leads (Custom)</strong></li>
-              <li><strong>Engagement History</strong></li>
-            </ul>
-          </div>
 
           <div class="instruction-step">
             <h3>Step 1: Connect to Salesforce</h3>
