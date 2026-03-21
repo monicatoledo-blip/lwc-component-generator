@@ -416,7 +416,7 @@ export default class EngagementHistoryLwc extends LightningElement {
     }
 
     const labels = Object.keys(campMap);
-    const data = labels.map((l) => campMap[l]);
+    const data = labels.map((l) => this._barDisplayCount(campMap[l]));
     const yAxisMinWidth = this._yAxisMinWidthForLabels(labels);
     const valueLabelPaddingRight = 44;
 
@@ -534,7 +534,7 @@ export default class EngagementHistoryLwc extends LightningElement {
     }
 
     const labels = Object.keys(assetMap);
-    const data = labels.map((l) => assetMap[l]);
+    const data = labels.map((l) => this._barDisplayCount(assetMap[l]));
     const yAxisMinWidth = this._yAxisMinWidthForLabels(labels);
     const valueLabelPaddingRight = 44;
 
@@ -617,6 +617,15 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Helpers ────────────────────────────────────────────────
+  /** Single-digit mock counts (0–9) for bar lengths and end labels; caps legacy LWB / generator values. */
+  _barDisplayCount(raw) {
+    const n = parseInt(raw, 10);
+    if (Number.isNaN(n) || n < 0) {
+      return 0;
+    }
+    return Math.min(n, 9);
+  }
+
   /** Apply @api tableLinkColor as --eh-table-link-color (avoids style={...} in HTML for IDE/CSS parsers). */
   _syncTableLinkCssVariable() {
     const wrap = this.template.querySelector(".eh-table-wrap");
