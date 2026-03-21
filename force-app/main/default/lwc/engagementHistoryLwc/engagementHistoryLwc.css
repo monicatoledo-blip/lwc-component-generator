@@ -57,8 +57,21 @@
 .campaign-chart-container,
 .asset-chart-container {
   width: 100%;
-  height: 200px;
   position: relative;
+}
+
+.line-chart-container {
+  height: 200px;
+}
+
+.campaign-chart-container {
+  min-height: 200px;
+  height: 220px;
+}
+
+.asset-chart-container {
+  min-height: 240px;
+  height: 260px;
 }
 
 /* ── Data Table ──────────────────────────────────────────── */

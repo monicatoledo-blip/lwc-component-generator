@@ -103,7 +103,7 @@ After deployment:
 | Agentforce Lead Brief           | **Agentforce Lead Brief (Custom)** |
 | Next Best Actions               | **Next Best Actions (Custom)**     |
 | Next Best Leads                 | **Next Best Leads (Custom)**       |
-| Engagement History              | **Engagement History (Mock)**      |
+| Engagement History              | **Engagement History**             |
 
 The technical names (e.g. `engagementHistoryLwc`) do **not** show in the component list—search for the label in the table above.
 

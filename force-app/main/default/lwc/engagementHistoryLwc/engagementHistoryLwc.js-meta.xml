@@ -2,7 +2,7 @@
 <LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
     <apiVersion>62.0</apiVersion>
     <isExposed>true</isExposed>
-    <masterLabel>Engagement History (Mock)</masterLabel>
+    <masterLabel>Engagement History</masterLabel>
     <targets>
         <target>lightning__AppPage</target>
         <target>lightning__RecordPage</target>
@@ -17,7 +17,7 @@
             <property
         name="cardTitle"
         type="String"
-        default="Contact Engagement History"
+        default="Engagement History"
         label="Card Title"
         description="Title displayed at the top of the component"
       />

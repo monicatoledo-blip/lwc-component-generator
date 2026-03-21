@@ -235,7 +235,7 @@ const SALESFORCE_COMPONENT_PALETTE_LABELS = {
   agentforceLeadBriefLwc: "Agentforce Lead Brief (Custom)",
   nextBestActionsLwc: "Next Best Actions (Custom)",
   nextBestLeadsLwc: "Next Best Leads (Custom)",
-  engagementHistoryLwc: "Engagement History (Mock)"
+  engagementHistoryLwc: "Engagement History"
 };
 
 // Handle deployment
@@ -1208,6 +1208,17 @@ function updateNblPreview() {
   }
 }
 
+function escapeHtmlEh(value) {
+  if (value == null) {
+    return "";
+  }
+  return String(value)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
+}
+
 /** Read a 6-digit hex color from the named hex field or its paired color picker. */
 function readEngagementHexColor(hexInputId, fallback) {
   const hexEl = document.getElementById(hexInputId);
@@ -1280,12 +1291,12 @@ function updateEngagementHistoryPreview() {
     campaignBarsEl.innerHTML = campaigns
       .map(
         (c) => `
-      <div style="display: flex; align-items: center; margin-bottom: 6px;">
-        <span style="font-size: 11px; color: #181818; min-width: 100px; max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${c.name}</span>
-        <div style="flex: 1; background: #e5e5e5; border-radius: 4px; height: 16px; margin: 0 8px; position: relative;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="flex: 0 0 46%; max-width: 46%; font-size: 11px; color: #181818; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere;">${escapeHtmlEh(c.name)}</span>
+        <div style="flex: 1; min-width: 0; background: #e5e5e5; border-radius: 4px; height: 16px; position: relative;">
           <div style="background: ${barColor}; border-radius: 4px; height: 100%; width: ${(c.value / maxCampaign) * 100}%;"></div>
         </div>
-        <span style="font-size: 11px; font-weight: 700; color: #181818; min-width: 24px; text-align: right;">${c.value}</span>
+        <span style="font-size: 11px; font-weight: 700; color: #181818; flex: 0 0 28px; text-align: right;">${escapeHtmlEh(String(c.value))}</span>
       </div>`
       )
       .join("");
@@ -1304,12 +1315,12 @@ function updateEngagementHistoryPreview() {
     assetBarsEl.innerHTML = assets
       .map(
         (a) => `
-      <div style="display: flex; align-items: center; margin-bottom: 6px;">
-        <span style="font-size: 11px; color: #181818; min-width: 140px; max-width: 180px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${a.name}</span>
-        <div style="flex: 1; background: #e5e5e5; border-radius: 4px; height: 16px; margin: 0 8px; position: relative;">
+      <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+        <span style="flex: 0 0 46%; max-width: 46%; font-size: 11px; color: #181818; line-height: 1.35; word-break: break-word; overflow-wrap: anywhere;">${escapeHtmlEh(a.name)}</span>
+        <div style="flex: 1; min-width: 0; background: #e5e5e5; border-radius: 4px; height: 16px; position: relative;">
           <div style="background: ${assetColor}; border-radius: 4px; height: 100%; width: ${(a.value / maxAsset) * 100}%;"></div>
         </div>
-        <span style="font-size: 11px; font-weight: 700; color: #181818; min-width: 24px; text-align: right;">${a.value}</span>
+        <span style="font-size: 11px; font-weight: 700; color: #181818; flex: 0 0 28px; text-align: right;">${escapeHtmlEh(String(a.value))}</span>
       </div>`
       )
       .join("");

@@ -480,7 +480,17 @@ export default class EngagementHistoryLwc extends LightningElement {
             ticks: { stepSize: 1 }
           },
           y: {
-            grid: { display: false }
+            grid: { display: false },
+            ticks: {
+              autoSkip: false,
+              font: { size: 11 }
+            },
+            afterFit: (scale) => {
+              const minW = this._ehHorizontalBarLabelAxisWidth(labels);
+              if (scale.width < minW) {
+                scale.width = minW;
+              }
+            }
           }
         }
       }
@@ -555,7 +565,17 @@ export default class EngagementHistoryLwc extends LightningElement {
             ticks: { stepSize: 1 }
           },
           y: {
-            grid: { display: false }
+            grid: { display: false },
+            ticks: {
+              autoSkip: false,
+              font: { size: 11 }
+            },
+            afterFit: (scale) => {
+              const minW = this._ehHorizontalBarLabelAxisWidth(labels);
+              if (scale.width < minW) {
+                scale.width = minW;
+              }
+            }
           }
         }
       }
@@ -563,6 +583,18 @@ export default class EngagementHistoryLwc extends LightningElement {
   }
 
   // ── Helpers ────────────────────────────────────────────────
+  /** Room for long horizontal-bar category labels (Chart.js y-axis when indexAxis is 'y'). */
+  _ehHorizontalBarLabelAxisWidth(labels) {
+    if (!labels || !labels.length) {
+      return 140;
+    }
+    const longest = labels.reduce(
+      (max, s) => Math.max(max, String(s).length),
+      0
+    );
+    return Math.min(Math.max(longest * 7 + 28, 120), 340);
+  }
+
   _parseDate(str) {
     if (!str) return null;
     // Handle "YYYY/M/DD HH:mm" and standard formats
