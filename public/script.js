@@ -3,7 +3,8 @@ let isAuthenticated = false;
 let instanceUrl = null;
 
 // Form state management
-const FORM_STATE_KEY = "lwc_generator_form_state";
+/** Bump when default form values change so users get fresh HTML defaults (not stale sessionStorage). */
+const FORM_STATE_KEY = "lwc_generator_form_state_v2";
 const AUTH_PENDING_KEY = "lwc_generator_auth_pending";
 
 function saveFormState() {
@@ -1304,7 +1305,8 @@ function updateEngagementHistoryPreview() {
     const campaigns = [];
     for (let i = 1; i <= 3; i++) {
       const name = data["campaign" + i + "Name"] || "";
-      const value = parseInt(data["campaign" + i + "Value"]) || 0;
+      const raw = parseInt(data["campaign" + i + "Value"], 10);
+      const value = Math.min(Number.isNaN(raw) ? 0 : Math.max(raw, 0), 9);
       if (name) campaigns.push({ name, value });
     }
     const maxCampaign = Math.max(...campaigns.map((c) => c.value), 1);
@@ -1328,7 +1330,8 @@ function updateEngagementHistoryPreview() {
     const assets = [];
     for (let i = 1; i <= 4; i++) {
       const name = data["asset" + i + "Name"] || "";
-      const value = parseInt(data["asset" + i + "Value"]) || 0;
+      const raw = parseInt(data["asset" + i + "Value"], 10);
+      const value = Math.min(Number.isNaN(raw) ? 0 : Math.max(raw, 0), 9);
       if (name) assets.push({ name, value });
     }
     const maxAsset = Math.max(...assets.map((a) => a.value), 1);
